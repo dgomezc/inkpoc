@@ -10,10 +10,11 @@ namespace InkPoc.ViewModels
     {
         private string _recognizeText;
         private RelayCommand _recognizeTextCommand;
-        private InkStrokeContainer _strokes = new InkStrokeContainer();
+        private InkStrokeContainer _strokes;
 
         public RecognizeTextViewModel()
         {
+            _strokes = new InkStrokeContainer();
         }
 
         public string RecognizeText
@@ -33,7 +34,7 @@ namespace InkPoc.ViewModels
 
         private async Task OnRecognizeText()
         {
-            RecognizeText = await InkService.RecognizeTextTwoAsync(Strokes);
+            RecognizeText = await InkService.RecognizeTextOneAsync(Strokes);
         }
     }
 }

@@ -2,6 +2,8 @@
 using Windows.UI.Input.Inking;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using InkPoc.Helpers;
+using System.Linq;
 
 namespace InkPoc.Controls
 {
@@ -15,6 +17,8 @@ namespace InkPoc.Controls
                 CoreInputDeviceTypes.Mouse |
                 CoreInputDeviceTypes.Pen |
                 CoreInputDeviceTypes.Touch;
+
+            UndoRedoManager = new InkUndoRedoManager(inkCanvas.InkPresenter.StrokeContainer);
         }
 
         public bool ShowToolbar
@@ -22,6 +26,9 @@ namespace InkPoc.Controls
             get { return (bool)GetValue(ShowToolbarProperty); }
             set { SetValue(ShowToolbarProperty, value); }
         }
+
+        public InkUndoRedoManager UndoRedoManager { get; set; }
+
         public InkStrokeContainer Strokes
         {
             get { return (InkStrokeContainer)GetValue(StrokesProperty); }
@@ -55,6 +62,7 @@ namespace InkPoc.Controls
             {
                 var control = d as InkControl;
                 control.inkCanvas.InkPresenter.StrokeContainer = strokes;
+                control.UndoRedoManager.ClearStack();
             }
         }
 
@@ -62,6 +70,12 @@ namespace InkPoc.Controls
         {
             inkCanvas.InkPresenter.StrokeContainer.Clear();
             canvas.Children.Clear();
+            UndoRedoManager.ClearStack();
         }
+
+        private void UndoButton_Click(object sender, RoutedEventArgs e) => UndoRedoManager.Undo();
+
+        private void RedoButton_Click(object sender, RoutedEventArgs e) => UndoRedoManager.Redo();
+
     }
 }
