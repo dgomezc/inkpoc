@@ -74,8 +74,7 @@ namespace InkPoc.Controls
         {
             inkCanvas.InkPresenter.StrokeContainer.Clear();
             canvas.Children.Clear();
-
-            //lanzar el borrado de todo a la vez???
+            UndoRedoManager.ClearUndoRedoStacks();
         }
 
         private void UndoButton_Click(object sender, RoutedEventArgs e) => UndoRedoManager.Undo();

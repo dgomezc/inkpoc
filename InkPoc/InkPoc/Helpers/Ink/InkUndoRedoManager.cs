@@ -20,6 +20,12 @@ namespace InkPoc.Helpers.Ink
             inkPresenter.StrokesCollected += (s, e) => AddToUndoStack(e.Strokes, UndoRedoOperation.Add, clearRedoStack: true);
             inkPresenter.StrokesErased += (s, e) => AddToUndoStack(e.Strokes, UndoRedoOperation.Remove);
         }
+
+        public void ClearUndoRedoStacks()
+        {
+            _undoStack.Clear();
+            _redoStack.Clear();
+        }
         
         public bool CanUndo => _undoStack.Any();
 
