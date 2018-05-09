@@ -4,6 +4,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using InkPoc.Helpers;
 using System.Linq;
+using InkPoc.Helpers.Ink;
 
 namespace InkPoc.Controls
 {
@@ -11,14 +12,18 @@ namespace InkPoc.Controls
     {
         public InkControl()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+            Loaded += InkControl_Loaded;
 
             inkCanvas.InkPresenter.InputDeviceTypes =
                 CoreInputDeviceTypes.Mouse |
                 CoreInputDeviceTypes.Pen |
                 CoreInputDeviceTypes.Touch;
+        }
 
-            UndoRedoManager = new InkUndoRedoManager(inkCanvas.InkPresenter.StrokeContainer);
+        private void InkControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            UndoRedoManager = new InkUndoRedoManager(inkCanvas.InkPresenter);
         }
 
         public bool ShowToolbar
@@ -62,7 +67,6 @@ namespace InkPoc.Controls
             {
                 var control = d as InkControl;
                 control.inkCanvas.InkPresenter.StrokeContainer = strokes;
-                control.UndoRedoManager.ClearStack();
             }
         }
 
@@ -70,7 +74,8 @@ namespace InkPoc.Controls
         {
             inkCanvas.InkPresenter.StrokeContainer.Clear();
             canvas.Children.Clear();
-            UndoRedoManager.ClearStack();
+
+            //lanzar el borrado de todo a la vez???
         }
 
         private void UndoButton_Click(object sender, RoutedEventArgs e) => UndoRedoManager.Undo();
