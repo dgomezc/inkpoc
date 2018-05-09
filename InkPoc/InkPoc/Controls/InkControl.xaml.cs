@@ -26,13 +26,7 @@ namespace InkPoc.Controls
         {
             UndoRedoManager = new InkUndoRedoManager(inkCanvas.InkPresenter);
         }
-
-        public bool ShowToolbar
-        {
-            get { return (bool)GetValue(ShowToolbarProperty); }
-            set { SetValue(ShowToolbarProperty, value); }
-        }
-
+        
         public InkUndoRedoManager UndoRedoManager { get; set; }
 
         public InkStrokeContainer Strokes
@@ -41,26 +35,9 @@ namespace InkPoc.Controls
             set { SetValue(StrokesProperty, value); }
         }
 
-        public static readonly DependencyProperty ShowToolbarProperty =
-            DependencyProperty.Register("ShowToolbar", typeof(bool),
-                typeof(InkControl), new PropertyMetadata(true, OnShowToolbarChanged));
-
         public static readonly DependencyProperty StrokesProperty =
-            DependencyProperty.Register("Strokes",
-                typeof(InkStrokeContainer), typeof(InkControl), new PropertyMetadata(null, OnStrokesChanged));
-
-        private static void OnShowToolbarChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var control = d as InkControl;
-            var toolbar = control?.toolbar;
-
-            if (toolbar != null)
-            {
-                toolbar.Visibility = (bool)e.NewValue
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
-            }
-        }
+            DependencyProperty.Register("Strokes", typeof(InkStrokeContainer),
+                typeof(InkControl), new PropertyMetadata(null, OnStrokesChanged));
 
         private static void OnStrokesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -70,6 +47,50 @@ namespace InkPoc.Controls
                 control.inkCanvas.InkPresenter.StrokeContainer = strokes;
             }
         }
+        
+        public static readonly DependencyProperty ShowToolbarProperty =
+            DependencyProperty.Register("ShowToolbar",
+                typeof(Visibility), typeof(InkControl), new PropertyMetadata(Visibility.Visible));
+        
+        public Visibility ShowLoadFile
+        {
+            get { return (Visibility)GetValue(ShowLoadFileProperty); }
+            set { SetValue(ShowLoadFileProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowLoadFileProperty =
+            DependencyProperty.Register("ShowLoadFile", typeof(Visibility),
+                typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
+        
+        public Visibility ShowSaveFile
+        {
+            get { return (Visibility)GetValue(ShowSaveFileProperty); }
+            set { SetValue(ShowSaveFileProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowSaveFileProperty =
+            DependencyProperty.Register("ShowSaveFile", typeof(Visibility),
+                typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
+        
+        public Visibility ShowUndoRedo
+        {
+            get { return (Visibility)GetValue(ShowUndoRedoProperty); }
+            set { SetValue(ShowUndoRedoProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowUndoRedoProperty =
+            DependencyProperty.Register("ShowUndoRedo", typeof(Visibility),
+                typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
+        
+        public Visibility ShowClearAll
+        {
+            get { return (Visibility)GetValue(ShowClearAllProperty); }
+            set { SetValue(ShowClearAllProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowClearAllProperty =
+            DependencyProperty.Register("ShowClearAll", typeof(Visibility),
+                typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
 
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
@@ -85,5 +106,12 @@ namespace InkPoc.Controls
         private async void openFile_Click(object sender, RoutedEventArgs e) => await InkService.LoadFileAsync(inkCanvas.InkPresenter.StrokeContainer);
 
         private async void SaveFile_Click(object sender, RoutedEventArgs e) => await InkService.SaveFileAsync(inkCanvas.InkPresenter.StrokeContainer);
+                
+        public Visibility ShowToolbar
+        {
+            get { return (Visibility)GetValue(ShowToolbarProperty); }
+            set { SetValue(ShowToolbarProperty, value); }
+        }
+
     }
 }

@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DesignHeight="300"
+    x:Name="inkControl"
     d:DesignWidth="400">
     <UserControl.Resources>
         <Style x:Key="InkToolBarActionButton" TargetType="Button">
@@ -23,20 +24,20 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <InkToolbar x:Name="toolbar" TargetInkCanvas="{x:Bind inkCanvas}" />            
-            <Button Click="Undo_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Undo">
+            <InkToolbar x:Name="toolbar" TargetInkCanvas="{x:Bind inkCanvas}" Visibility="{Binding ShowToolbar, ElementName=inkControl}"/>
+            <Button Click="Undo_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Undo" Visibility="{Binding ShowUndoRedo, ElementName=inkControl}">
                 <SymbolIcon Symbol="Undo"/>
             </Button>
-            <Button Click="Redo_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Redo">
+            <Button Click="Redo_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Redo" Visibility="{Binding ShowUndoRedo, ElementName=inkControl}">
                 <SymbolIcon Symbol="Redo"/>
             </Button>
-            <Button Click="Clear_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Delete all">
+            <Button Click="Clear_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Delete all" Visibility="{Binding ShowClearAll, ElementName=inkControl}">
                 <SymbolIcon Symbol="Delete"/>
             </Button>
-            <Button Click="openFile_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Open file">
+            <Button Click="openFile_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Open file" Visibility="{Binding ShowLoadFile, ElementName=inkControl}">
                 <SymbolIcon Symbol="OpenFile"/>
             </Button>
-            <Button Click="SaveFile_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Save file">
+            <Button Click="SaveFile_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Save file" Visibility="{Binding ShowSaveFile, ElementName=inkControl}">
                 <SymbolIcon Symbol="Save"/>
             </Button>
         </StackPanel>

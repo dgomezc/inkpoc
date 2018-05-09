@@ -133,4 +133,8 @@
     <value>RecognizeText</value>
     <comment>Navigation view item name for RecognizeText</comment>
   </data>
+  <data name="Shell_FullToolbar.Content" xml:space="preserve">
+    <value>FullToolbar</value>
+    <comment>Navigation view item name for FullToolbar</comment>
+  </data>
 </root>

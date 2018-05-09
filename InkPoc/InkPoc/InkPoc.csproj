@@ -119,10 +119,14 @@
     <Compile Include="Services\InkService.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="ViewModels\BasicDrawViewModel.cs" />
+    <Compile Include="ViewModels\FullToolbarViewModel.cs" />
     <Compile Include="ViewModels\RecognizeTextViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Views\BasicDrawPage.xaml.cs">
       <DependentUpon>BasicDrawPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FullToolbarPage.xaml.cs">
+      <DependentUpon>FullToolbarPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RecognizeTextPage.xaml.cs">
       <DependentUpon>RecognizeTextPage.xaml</DependentUpon>
@@ -167,6 +171,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="Views\BasicDrawPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\FullToolbarPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

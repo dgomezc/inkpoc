@@ -24,6 +24,7 @@
             Edit String/en-US/Resources.resw: Add a menu item title for each page
             -->
             <NavigationViewItem x:Uid="Shell_BasicDraw" Icon="Document" helpers:NavHelper.NavigateTo="views:BasicDrawPage" />
+            <NavigationViewItem x:Uid="Shell_FullToolbar" Icon="Document" helpers:NavHelper.NavigateTo="views:FullToolbarPage" />
             <NavigationViewItem x:Uid="Shell_RecognizeText" Icon="Document" helpers:NavHelper.NavigateTo="views:RecognizeTextPage" />
         </NavigationView.MenuItems>
         <NavigationView.HeaderTemplate>
