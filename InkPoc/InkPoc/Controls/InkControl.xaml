@@ -24,14 +24,20 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
             <InkToolbar x:Name="toolbar" TargetInkCanvas="{x:Bind inkCanvas}" />            
-            <Button x:Name="UndoButton" Click="UndoButton_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Undo">
+            <Button Click="Undo_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Undo">
                 <SymbolIcon Symbol="Undo"/>
             </Button>
-            <Button x:Name="RedoButton" Click="RedoButton_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Redo">
+            <Button Click="Redo_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Redo">
                 <SymbolIcon Symbol="Redo"/>
             </Button>
-            <Button x:Name="clearButton" Click="ClearButton_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Delete all">
+            <Button Click="Clear_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Delete all">
                 <SymbolIcon Symbol="Delete"/>
+            </Button>
+            <Button Click="openFile_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Open file">
+                <SymbolIcon Symbol="OpenFile"/>
+            </Button>
+            <Button Click="SaveFile_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Save file">
+                <SymbolIcon Symbol="Save"/>
             </Button>
         </StackPanel>
 

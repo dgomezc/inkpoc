@@ -5,6 +5,7 @@ using Windows.UI.Xaml.Controls;
 using InkPoc.Helpers;
 using System.Linq;
 using InkPoc.Helpers.Ink;
+using InkPoc.Services;
 
 namespace InkPoc.Controls
 {
@@ -70,16 +71,19 @@ namespace InkPoc.Controls
             }
         }
 
-        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        private void Clear_Click(object sender, RoutedEventArgs e)
         {
             inkCanvas.InkPresenter.StrokeContainer.Clear();
             canvas.Children.Clear();
             UndoRedoManager.ClearUndoRedoStacks();
         }
 
-        private void UndoButton_Click(object sender, RoutedEventArgs e) => UndoRedoManager.Undo();
+        private void Undo_Click(object sender, RoutedEventArgs e) => UndoRedoManager.Undo();
 
-        private void RedoButton_Click(object sender, RoutedEventArgs e) => UndoRedoManager.Redo();
+        private void Redo_Click(object sender, RoutedEventArgs e) => UndoRedoManager.Redo();
 
+        private async void openFile_Click(object sender, RoutedEventArgs e) => await InkService.LoadFileAsync(inkCanvas.InkPresenter.StrokeContainer);
+
+        private async void SaveFile_Click(object sender, RoutedEventArgs e) => await InkService.SaveFileAsync(inkCanvas.InkPresenter.StrokeContainer);
     }
 }
