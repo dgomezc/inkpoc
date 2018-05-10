@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.Storage.Provider;
 using Windows.UI.Input.Inking;
 using Windows.UI.Input.Inking.Analysis;
 
@@ -103,19 +104,28 @@ namespace InkPoc.Services
                         await container.SaveAsync(stream);
                     }
                 }
+
+                // Finalize write so other apps can update file.
+                var status = await CachedFileManager.CompleteUpdatesAsync(file);
+
+                if (status == FileUpdateStatus.Complete)
+                {
+                    // File saved.
+                }
+                else
+                {
+                    // File couldn't be saved.
+                }
             }
+        }
 
-            ////// Finalize write so other apps can update file.
-            ////Windows.Storage.Provider.FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(file);
-
-            ////if (status == Windows.Storage.Provider.FileUpdateStatus.Complete)
-            ////{
-            ////    // File saved.
-            ////}
-            ////else
-            ////{
-            ////    // File couldn't be saved.
-            ////}
+        public static void ClearStrokesSelection(InkStrokeContainer container)
+        {
+            var strokes = container.GetStrokes();
+            foreach (var stroke in strokes)
+            {
+                stroke.Selected = false;
+            }
         }
     }
 }
