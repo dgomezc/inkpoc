@@ -23,45 +23,60 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <InkToolbar x:Name="toolbar" TargetInkCanvas="{x:Bind inkCanvas}" Visibility="{Binding ShowToolbar, ElementName=inkControl}">
-
+        <StackPanel Orientation="Horizontal" Visibility="{Binding ShowToolbar, ElementName=inkControl}">
+            <InkToolbar x:Name="toolbar" TargetInkCanvas="{x:Bind inkCanvas}">
                 <InkToolbarCustomToolButton 
-                Click="Selection_Click" 
-                ToolTipService.ToolTip="Selection tool">
+                    Click="Selection_Click"
+                    Visibility="{Binding ShowSelectionTool, ElementName=inkControl}"
+                    ToolTipService.ToolTip="Selection tool">
                     <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEF20;" />
                 </InkToolbarCustomToolButton>
-
             </InkToolbar>
-            <Button Click="Undo_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Undo" Visibility="{Binding ShowUndoRedo, ElementName=inkControl}">
-                <SymbolIcon Symbol="Undo"/>
-            </Button>
-            <Button Click="Redo_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Redo" Visibility="{Binding ShowUndoRedo, ElementName=inkControl}">
-                <SymbolIcon Symbol="Redo"/>
-            </Button>
-            <Button Click="Clear_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Delete all" Visibility="{Binding ShowClearAll, ElementName=inkControl}">
-                <SymbolIcon Symbol="Delete"/>
-            </Button>
-            <Button Click="openFile_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Open file" Visibility="{Binding ShowLoadFile, ElementName=inkControl}">
-                <SymbolIcon Symbol="OpenFile"/>
-            </Button>
-            <Button Click="SaveFile_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Save file" Visibility="{Binding ShowSaveFile, ElementName=inkControl}">
-                <SymbolIcon Symbol="Save"/>
-            </Button>
+            
+            <!-- Cut // Copy // Paste -->
+            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowCopyPaste, ElementName=inkControl}">
+                <!--line-->
+                <Button Click="Cut_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Cut" >
+                    <SymbolIcon Symbol="Cut"/>
+                </Button>
+                <Button Click="Copy_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Copy">
+                    <SymbolIcon Symbol="Copy"/>
+                </Button>
 
+                <Button Click="Paste_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Paste">
+                    <SymbolIcon Symbol="Paste"/>
+                </Button>
+            </StackPanel>
 
-            <Button Click="Cut_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Cut">
-                <SymbolIcon Symbol="Cut"/>
-            </Button>
+            <!-- Undo // Redo -->
+            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowUndoRedo, ElementName=inkControl}">
+                <!--line-->
+                <Button Click="Undo_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Undo">
+                    <SymbolIcon Symbol="Undo"/>
+                </Button>
+                <Button Click="Redo_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Redo">
+                    <SymbolIcon Symbol="Redo"/>
+                </Button>
+            </StackPanel>
 
-            <Button Click="Copy_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Copy">
-                <SymbolIcon Symbol="Copy"/>
-            </Button>
+            <!-- Open // Save files -->
+            <StackPanel Orientation="Horizontal"  Visibility="{Binding ShowOpenSaveFile, ElementName=inkControl}">
+                <!-- line -->
+                <Button Click="openFile_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Open file">
+                    <SymbolIcon Symbol="OpenFile"/>
+                </Button>
+                <Button Click="SaveFile_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Save file">
+                    <SymbolIcon Symbol="Save"/>
+                </Button>
+            </StackPanel>
 
-            <Button Click="Paste_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Paste">
-                <SymbolIcon Symbol="Paste"/>
-            </Button>
-
+            <!-- Clear canvas -->
+            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowClearAll, ElementName=inkControl}">
+                <!-- line -->
+                <Button Click="Clear_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Clear all" >
+                    <SymbolIcon Symbol="Delete"/>
+                </Button>
+            </StackPanel>
         </StackPanel>
 
         <Border Grid.Row="1" BorderBrush="#000000" BorderThickness="1" Background="#FFFFFF" Margin="10">

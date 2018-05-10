@@ -12,10 +12,14 @@
         Margin="{StaticResource MediumLeftRightMargin}">
         <Grid Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <controls:InkControl
-                ShowClearAll="Visible"
-                ShowLoadFile="Visible"
-                ShowSaveFile="Visible"
-                ShowUndoRedo="Visible" />
+                ShowToolbar="{Binding ElementName=showToolbarCheck, Path=IsChecked, Mode=TwoWay}"
+                ShowSelectionTool="Visible"
+                ShowCopyPaste="Visible"
+                ShowOpenSaveFile="Visible"
+                ShowUndoRedo="Visible"
+                ShowClearAll="Visible" />
+            
+            <CheckBox x:Name="showToolbarCheck" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,15,20,0">Show Toolbar</CheckBox>
         </Grid>
     </Grid>
 </Page>

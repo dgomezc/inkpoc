@@ -35,7 +35,6 @@ namespace InkPoc.Controls
 
         public InkSelectionManager SelectionManager { get; set; }
 
-
         public InkStrokeContainer Strokes
         {
             get { return (InkStrokeContainer)GetValue(StrokesProperty); }
@@ -53,51 +52,7 @@ namespace InkPoc.Controls
                 var control = d as InkControl;
                 control.inkCanvas.InkPresenter.StrokeContainer = strokes;
             }
-        }
-        
-        public static readonly DependencyProperty ShowToolbarProperty =
-            DependencyProperty.Register("ShowToolbar",
-                typeof(Visibility), typeof(InkControl), new PropertyMetadata(Visibility.Visible));
-        
-        public Visibility ShowLoadFile
-        {
-            get { return (Visibility)GetValue(ShowLoadFileProperty); }
-            set { SetValue(ShowLoadFileProperty, value); }
-        }
-
-        public static readonly DependencyProperty ShowLoadFileProperty =
-            DependencyProperty.Register("ShowLoadFile", typeof(Visibility),
-                typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
-        
-        public Visibility ShowSaveFile
-        {
-            get { return (Visibility)GetValue(ShowSaveFileProperty); }
-            set { SetValue(ShowSaveFileProperty, value); }
-        }
-
-        public static readonly DependencyProperty ShowSaveFileProperty =
-            DependencyProperty.Register("ShowSaveFile", typeof(Visibility),
-                typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
-        
-        public Visibility ShowUndoRedo
-        {
-            get { return (Visibility)GetValue(ShowUndoRedoProperty); }
-            set { SetValue(ShowUndoRedoProperty, value); }
-        }
-
-        public static readonly DependencyProperty ShowUndoRedoProperty =
-            DependencyProperty.Register("ShowUndoRedo", typeof(Visibility),
-                typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
-        
-        public Visibility ShowClearAll
-        {
-            get { return (Visibility)GetValue(ShowClearAllProperty); }
-            set { SetValue(ShowClearAllProperty, value); }
-        }
-
-        public static readonly DependencyProperty ShowClearAllProperty =
-            DependencyProperty.Register("ShowClearAll", typeof(Visibility),
-                typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
+        }        
 
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
@@ -112,19 +67,9 @@ namespace InkPoc.Controls
 
         private async void openFile_Click(object sender, RoutedEventArgs e) => await InkService.LoadInkAsync(inkCanvas.InkPresenter.StrokeContainer);
 
-        private async void SaveFile_Click(object sender, RoutedEventArgs e) => await InkService.SaveInkAsync(inkCanvas.InkPresenter.StrokeContainer);
-                
-        public Visibility ShowToolbar
-        {
-            get { return (Visibility)GetValue(ShowToolbarProperty); }
-            set { SetValue(ShowToolbarProperty, value); }
-        }
-
-
-        private void Selection_Click(object sender, RoutedEventArgs e)
-        {
-            SelectionManager.StartSelection();
-        }
+        private async void SaveFile_Click(object sender, RoutedEventArgs e) => await InkService.SaveInkAsync(inkCanvas.InkPresenter.StrokeContainer);                
+        
+        private void Selection_Click(object sender, RoutedEventArgs e) => SelectionManager.StartSelection();
 
         private void Cut_Click(object sender, RoutedEventArgs e)
         {
@@ -144,6 +89,7 @@ namespace InkPoc.Controls
             {
                 inkCanvas.InkPresenter.StrokeContainer.PasteFromClipboard(new Point(20,20));
             }
-        }                
+        }
+       
     }
 }
