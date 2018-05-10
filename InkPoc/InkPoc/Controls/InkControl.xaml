@@ -24,7 +24,15 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <InkToolbar x:Name="toolbar" TargetInkCanvas="{x:Bind inkCanvas}" Visibility="{Binding ShowToolbar, ElementName=inkControl}"/>
+            <InkToolbar x:Name="toolbar" TargetInkCanvas="{x:Bind inkCanvas}" Visibility="{Binding ShowToolbar, ElementName=inkControl}">
+
+                <InkToolbarCustomToolButton 
+                Click="Selection_Click" 
+                ToolTipService.ToolTip="Selection tool">
+                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEF20;" />
+                </InkToolbarCustomToolButton>
+
+            </InkToolbar>
             <Button Click="Undo_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Undo" Visibility="{Binding ShowUndoRedo, ElementName=inkControl}">
                 <SymbolIcon Symbol="Undo"/>
             </Button>
@@ -40,12 +48,26 @@
             <Button Click="SaveFile_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Save file" Visibility="{Binding ShowSaveFile, ElementName=inkControl}">
                 <SymbolIcon Symbol="Save"/>
             </Button>
+
+
+            <Button Click="Cut_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Cut">
+                <SymbolIcon Symbol="Cut"/>
+            </Button>
+
+            <Button Click="Copy_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Copy">
+                <SymbolIcon Symbol="Copy"/>
+            </Button>
+
+            <Button Click="Paste_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Paste">
+                <SymbolIcon Symbol="Paste"/>
+            </Button>
+
         </StackPanel>
 
         <Border Grid.Row="1" BorderBrush="#000000" BorderThickness="1" Background="#FFFFFF" Margin="10">
             <Grid>
                 <!-- Canvas for displaying selection UI. -->
-                <Canvas x:Name="canvas"/>
+                <Canvas x:Name="selectionCanvas"/>
                 <!-- Canvas for displaying ink. -->
                 <InkCanvas x:Name="inkCanvas"
                     HorizontalAlignment="Stretch"

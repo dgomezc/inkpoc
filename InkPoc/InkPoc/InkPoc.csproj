@@ -108,7 +108,9 @@
     <Compile Include="Controls\InkControl.xaml.cs">
       <DependentUpon>InkControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Ink\InkSelectionManager.cs" />
     <Compile Include="Helpers\Ink\InkUndoRedoManager.cs" />
+    <Compile Include="Helpers\Ink\InkSimpleUndoRedoManager.cs" />
     <Compile Include="Helpers\Ink\UndoRedoElement.cs" />
     <Compile Include="Helpers\Ink\UndoRedoOperation.cs" />
     <Compile Include="Helpers\NavHelper.cs" />

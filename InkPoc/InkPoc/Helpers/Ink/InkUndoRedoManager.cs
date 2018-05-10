@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InkPoc.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -107,6 +108,7 @@ namespace InkPoc.Helpers.Ink
 
             if (deleteStroke != null)
             {
+                InkService.ClearStrokesSelection(_strokeContainer);
                 deleteStroke.Selected = true;
                 _strokeContainer.DeleteSelected();
             }

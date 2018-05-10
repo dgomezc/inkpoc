@@ -6,6 +6,9 @@ using InkPoc.Helpers;
 using System.Linq;
 using InkPoc.Helpers.Ink;
 using InkPoc.Services;
+using Windows.UI.Xaml.Shapes;
+using Windows.Foundation;
+using Windows.UI.Xaml.Media;
 
 namespace InkPoc.Controls
 {
@@ -14,20 +17,24 @@ namespace InkPoc.Controls
         public InkControl()
         {
             InitializeComponent();
-            Loaded += InkControl_Loaded;
-
-            inkCanvas.InkPresenter.InputDeviceTypes =
-                CoreInputDeviceTypes.Mouse |
-                CoreInputDeviceTypes.Pen |
-                CoreInputDeviceTypes.Touch;
+            Loaded += InkControl_Loaded;           
         }
 
         private void InkControl_Loaded(object sender, RoutedEventArgs e)
         {
+            inkCanvas.InkPresenter.InputDeviceTypes =
+                CoreInputDeviceTypes.Mouse |
+                CoreInputDeviceTypes.Pen |
+                CoreInputDeviceTypes.Touch;
+
             UndoRedoManager = new InkUndoRedoManager(inkCanvas.InkPresenter);
+            SelectionManager = new InkSelectionManager(inkCanvas.InkPresenter, selectionCanvas);
         }
         
         public InkUndoRedoManager UndoRedoManager { get; set; }
+
+        public InkSelectionManager SelectionManager { get; set; }
+
 
         public InkStrokeContainer Strokes
         {
@@ -95,7 +102,7 @@ namespace InkPoc.Controls
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
             inkCanvas.InkPresenter.StrokeContainer.Clear();
-            canvas.Children.Clear();
+            selectionCanvas.Children.Clear();
             UndoRedoManager.ClearUndoRedoStacks();
         }
 
@@ -113,5 +120,30 @@ namespace InkPoc.Controls
             set { SetValue(ShowToolbarProperty, value); }
         }
 
+
+        private void Selection_Click(object sender, RoutedEventArgs e)
+        {
+            SelectionManager.StartSelection();
+        }
+
+        private void Cut_Click(object sender, RoutedEventArgs e)
+        {
+            inkCanvas.InkPresenter.StrokeContainer.CopySelectedToClipboard();
+            inkCanvas.InkPresenter.StrokeContainer.DeleteSelected();
+            SelectionManager.ClearSelection();
+        }
+
+        private void Copy_Click(object sender, RoutedEventArgs e)
+        {
+            inkCanvas.InkPresenter.StrokeContainer.CopySelectedToClipboard();
+        }
+
+        private void Paste_Click(object sender, RoutedEventArgs e)
+        {
+            if (inkCanvas.InkPresenter.StrokeContainer.CanPasteFromClipboard())
+            {
+                inkCanvas.InkPresenter.StrokeContainer.PasteFromClipboard(new Point(20,20));
+            }
+        }                
     }
 }
