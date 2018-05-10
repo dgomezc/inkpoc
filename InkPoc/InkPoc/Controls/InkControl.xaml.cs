@@ -103,9 +103,9 @@ namespace InkPoc.Controls
 
         private void Redo_Click(object sender, RoutedEventArgs e) => UndoRedoManager.Redo();
 
-        private async void openFile_Click(object sender, RoutedEventArgs e) => await InkService.LoadFileAsync(inkCanvas.InkPresenter.StrokeContainer);
+        private async void openFile_Click(object sender, RoutedEventArgs e) => await InkService.LoadInkAsync(inkCanvas.InkPresenter.StrokeContainer);
 
-        private async void SaveFile_Click(object sender, RoutedEventArgs e) => await InkService.SaveFileAsync(inkCanvas.InkPresenter.StrokeContainer);
+        private async void SaveFile_Click(object sender, RoutedEventArgs e) => await InkService.SaveInkAsync(inkCanvas.InkPresenter.StrokeContainer);
                 
         public Visibility ShowToolbar
         {

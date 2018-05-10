@@ -65,47 +65,43 @@ namespace InkPoc.Services
             return textResult;
         }
 
-        public static async Task LoadFileAsync(InkStrokeContainer container)
+        public static async Task LoadInkAsync(InkStrokeContainer container)
         {
-            var file = await GetFileAsync();
+            var openPicker = new FileOpenPicker();
+            openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+            openPicker.FileTypeFilter.Add(".gif");
+            openPicker.FileTypeFilter.Add(".isf");
 
-            if (file is null)
-            {
-                return;
-            }
+            var file = await openPicker.PickSingleFileAsync();
 
-            using (var stream = await file.OpenAsync(FileAccessMode.Read))
+            if (file != null)
             {
-                using (var inputStream = stream.GetInputStreamAt(0))
+                using (var stream = await file.OpenSequentialReadAsync())
                 {
-                    await container.LoadAsync(inputStream);
+                    await container.LoadAsync(stream);
                 }
-            }
+            }            
         }
 
-        public static async Task SaveFileAsync(InkStrokeContainer container)
+        public static async Task SaveInkAsync(InkStrokeContainer container)
         {
-            if(!container.GetStrokes().Any())
+            if (container.GetStrokes().Any())
             {
-                return;
-            }
+                var savePicker = new FileSavePicker();
+                savePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+                savePicker.FileTypeChoices.Add("Gif with embedded ISF", new List<string> { ".gif" });
 
-            var file = await SaveFileAsync();
+                var file = await savePicker.PickSaveFileAsync();
 
-            if(file is null)
-            {
-                return;
-            }
-
-            // Prevent updates to the file until updates are finalized with call to CompleteUpdatesAsync.
-            CachedFileManager.DeferUpdates(file);
-
-            using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite))
-            {
-                using (var outputStream = stream.GetOutputStreamAt(0))
+                if (null != file)
                 {
-                    await container.SaveAsync(outputStream);
-                    await outputStream.FlushAsync();
+                    // Prevent updates to the file until updates are finalized with call to CompleteUpdatesAsync.
+                    CachedFileManager.DeferUpdates(file);
+
+                    using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite))
+                    {
+                        await container.SaveAsync(stream);
+                    }
                 }
             }
 
@@ -120,29 +116,6 @@ namespace InkPoc.Services
             ////{
             ////    // File couldn't be saved.
             ////}
-        }
-
-        private static async Task<StorageFile> GetFileAsync()
-        {
-            var openPicker = new FileOpenPicker();
-            openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-            openPicker.FileTypeFilter.Add(".gif");
-
-            // Show the file picker.
-            var file = await openPicker.PickSingleFileAsync();
-            return file;
-        }
-
-        private static async Task<StorageFile> SaveFileAsync()
-        {
-            var savePicker = new FileSavePicker();
-            savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-            savePicker.FileTypeChoices.Add("GIF with embedded ISF", new List<string>() { ".gif" });
-            savePicker.DefaultFileExtension = ".gif";
-            savePicker.SuggestedFileName = "InkSample";
-
-            var file = await savePicker.PickSaveFileAsync();
-            return file;
         }
     }
 }
