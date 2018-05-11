@@ -90,6 +90,7 @@ namespace InkPoc.Controls
                 inkCanvas.InkPresenter.StrokeContainer.PasteFromClipboard(new Point(20,20));
             }
         }
-       
+
+        private async void Export_Click(object sender, RoutedEventArgs e) => await InkService.ExportAsImageAsync(inkCanvas);
     }
 }

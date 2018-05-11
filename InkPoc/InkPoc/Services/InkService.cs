@@ -1,12 +1,18 @@
-﻿using System;
+﻿using Microsoft.Graphics.Canvas;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Provider;
+using Windows.Storage.Streams;
+using Windows.UI;
 using Windows.UI.Input.Inking;
 using Windows.UI.Input.Inking.Analysis;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace InkPoc.Services
 {
@@ -119,12 +125,79 @@ namespace InkPoc.Services
             }
         }
 
+        public static async Task ExportAsImageAsync(InkCanvas inkCanvas)
+        {
+            if (inkCanvas.InkPresenter.StrokeContainer.GetStrokes().Any())
+            {
+                var savePicker = new FileSavePicker();
+                savePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+                savePicker.FileTypeChoices.Add("PNG", new List<string>() { ".png" });
+
+                var saveFile = await savePicker.PickSaveFileAsync();
+                //await Save_InkedImagetoFile(saveFile);
+            }
+        }
+
         public static void ClearStrokesSelection(InkStrokeContainer container)
         {
             var strokes = container.GetStrokes();
             foreach (var stroke in strokes)
             {
                 stroke.Selected = false;
+            }
+        }
+
+        //private static async Task Save_InkedImagetoFile(StorageFile saveFile)
+        //{
+        //    if (saveFile != null)
+        //    {
+        //        CachedFileManager.DeferUpdates(saveFile);
+
+        //        using (var outStream = await saveFile.OpenAsync(FileAccessMode.ReadWrite))
+        //        {
+        //            await Save_InkedImagetoStream(outStream);
+        //        }
+
+        //        var status =  await CachedFileManager.CompleteUpdatesAsync(saveFile);
+        //    }
+        //}
+
+        //private static async Task Save_InkedImagetoStream(IRandomAccessStream stream)
+        //{
+        //    var file = await StorageFile.GetFileFromApplicationUriAsync(((BitmapImage)myImage.Source).UriSource);
+
+        //    var device = CanvasDevice.GetSharedDevice();
+
+        //    var image = await CanvasBitmap.LoadAsync(device, file.Path);
+
+        //    using (var renderTarget = new CanvasRenderTarget(device, (int)myInkCanvas.ActualWidth, (int)myInkCanvas.ActualHeight, image.Dpi))
+        //    {
+        //        using (CanvasDrawingSession ds = renderTarget.CreateDrawingSession())
+        //        {
+        //            ds.Clear(Colors.White);
+
+        //            ds.DrawImage(image, new Rect(0, 0, (int)myInkCanvas.ActualWidth, (int)myInkCanvas.ActualHeight));
+        //            ds.DrawInk(myInkCanvas.InkPresenter.StrokeContainer.GetStrokes());
+        //        }
+
+        //        await renderTarget.SaveAsync(stream, CanvasBitmapFileFormat.Png);
+        //    }
+        //}
+
+        private static async Task ExportInkCanvasToFile(InkCanvas inkCanvas, StorageFile file)
+        {            
+            CanvasDevice device = CanvasDevice.GetSharedDevice();
+            CanvasRenderTarget renderTarget = new CanvasRenderTarget(device, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, 96);
+
+            using (var ds = renderTarget.CreateDrawingSession())
+            {
+                ds.Clear(Colors.White);
+                ds.DrawInk(inkCanvas.InkPresenter.StrokeContainer.GetStrokes());
+            }
+
+            using (var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite))
+            {
+                await renderTarget.SaveAsync(fileStream, CanvasBitmapFileFormat.Png);
             }
         }
     }

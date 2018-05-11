@@ -68,6 +68,9 @@
                 <Button Click="SaveFile_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Save file">
                     <SymbolIcon Symbol="Save"/>
                 </Button>
+                <Button Click="Export_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Export as image" >
+                    <SymbolIcon Symbol="Download"/>
+                </Button>
             </StackPanel>
 
             <!-- Clear canvas -->
