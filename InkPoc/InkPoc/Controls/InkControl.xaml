@@ -17,6 +17,15 @@
             <Setter Property="Background" Value="{ThemeResource InkToolbarButtonBackgroundThemeBrush}"/>
             <Setter Property="Foreground" Value="{ThemeResource InkToolbarButtonForegroundThemeBrush}"/>
         </Style>
+        <Style x:Key="InkToolbarSeparator" TargetType="Line">
+            <Setter Property="Y1" Value="0" />
+            <Setter Property="Y2" Value="{ThemeResource InkToolbarButtonHeight}" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Width" Value="1" />
+            <Setter Property="Height" Value="{ThemeResource InkToolbarButtonHeight}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Stroke" Value="Gray" />
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -35,7 +44,7 @@
             
             <!-- Cut // Copy // Paste -->
             <StackPanel Orientation="Horizontal" Visibility="{Binding ShowCopyPaste, ElementName=inkControl}">
-                <!--line-->
+                <Line  Style="{StaticResource InkToolbarSeparator}"/>
                 <Button Click="Cut_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Cut" >
                     <SymbolIcon Symbol="Cut"/>
                 </Button>
@@ -50,7 +59,7 @@
 
             <!-- Undo // Redo -->
             <StackPanel Orientation="Horizontal" Visibility="{Binding ShowUndoRedo, ElementName=inkControl}">
-                <!--line-->
+                <Line  Style="{StaticResource InkToolbarSeparator}"/>
                 <Button Click="Undo_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Undo">
                     <SymbolIcon Symbol="Undo"/>
                 </Button>
@@ -61,7 +70,7 @@
 
             <!-- Open // Save files -->
             <StackPanel Orientation="Horizontal"  Visibility="{Binding ShowOpenSaveFile, ElementName=inkControl}">
-                <!-- line -->
+                <Line  Style="{StaticResource InkToolbarSeparator}"/>
                 <Button Click="openFile_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Open file">
                     <SymbolIcon Symbol="OpenFile"/>
                 </Button>
@@ -75,7 +84,7 @@
 
             <!-- Clear canvas -->
             <StackPanel Orientation="Horizontal" Visibility="{Binding ShowClearAll, ElementName=inkControl}">
-                <!-- line -->
+                <Line  Style="{StaticResource InkToolbarSeparator}"/>
                 <Button Click="Clear_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Clear all" >
                     <SymbolIcon Symbol="Delete"/>
                 </Button>

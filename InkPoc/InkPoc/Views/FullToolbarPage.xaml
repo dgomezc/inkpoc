@@ -19,7 +19,7 @@
                 ShowUndoRedo="Visible"
                 ShowClearAll="Visible" />
             
-            <CheckBox x:Name="showToolbarCheck" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,15,20,0">Show Toolbar</CheckBox>
+            <CheckBox x:Name="showToolbarCheck" IsChecked="True" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,15,20,0">Show Toolbar</CheckBox>
         </Grid>
     </Grid>
 </Page>
