@@ -24,7 +24,7 @@
                     ShowZoom="Visible"
                     ShowClearAll="Visible"
                     ShowExportFile="Visible"
-                    IsEnabled="{x:Bind ViewModel.HasImage, Mode=OneWay}"/>
+                    CanvasSize="{x:Bind ViewModel.CanvasSize, Mode=TwoWay}"/>
             </Grid>
         </Grid>
     </Grid>

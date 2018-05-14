@@ -33,6 +33,11 @@ namespace InkPoc.Controls
 
             UndoRedoManager = new InkUndoRedoManager(inkCanvas.InkPresenter);
             SelectionManager = new InkSelectionManager(inkCanvas.InkPresenter, selectionCanvas);
+
+            if(CanvasSize.Height == 0 && CanvasSize.Width == 0)
+            {
+                CanvasSize = new Size(inkCanvas.ActualWidth, inkCanvas.ActualHeight);
+            }
         }
         
         public InkUndoRedoManager UndoRedoManager { get; set; }
@@ -88,6 +93,28 @@ namespace InkPoc.Controls
             }
         }
 
+        public Size CanvasSize
+        {
+            get { return (Size)GetValue(CanvasSizeProperty); }
+            set { SetValue(CanvasSizeProperty, value); }
+        }
+
+        public static readonly DependencyProperty CanvasSizeProperty =
+            DependencyProperty.Register("CanvasSize", typeof(Size),
+                typeof(InkControl), new PropertyMetadata(null, OnCanvasSizeChanged));
+
+        private static void OnCanvasSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = d as InkControl;
+            var newCanvasSize = (Size)e.NewValue;
+
+            control.inkCanvas.Width = newCanvasSize.Width;
+            control.inkCanvas.Height = newCanvasSize.Height;
+
+            control.selectionCanvas.Width = newCanvasSize.Width;
+            control.selectionCanvas.Height = newCanvasSize.Height;
+        }
+
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
             inkCanvas.InkPresenter.StrokeContainer.Clear();
@@ -131,5 +158,7 @@ namespace InkPoc.Controls
         }
 
         private async void Export_Click(object sender, RoutedEventArgs e) => await InkService.ExportToImageAsync(inkCanvas, ImageFile);
+
+        private void ImageCanvas_SizeChanged(object sender, SizeChangedEventArgs e) => CanvasSize = e.NewSize;
     }
 }

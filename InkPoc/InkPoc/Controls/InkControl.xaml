@@ -109,7 +109,7 @@
 
         <ScrollViewer Name="canvasScroll" Grid.Row="1" BorderBrush="#000000" BorderThickness="1" Background="#FFFFFF" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" ZoomMode="Enabled">
             <Grid>
-                <Image Name="imageCanvas" />
+                <Image Name="imageCanvas" SizeChanged="ImageCanvas_SizeChanged" />
                 <!-- Canvas for displaying selection UI. -->
                 <Canvas x:Name="selectionCanvas"/>
                 <!-- Canvas for displaying ink. -->

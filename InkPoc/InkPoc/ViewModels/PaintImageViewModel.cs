@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using InkPoc.Helpers;
 using InkPoc.Services;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.UI.Input.Inking;
 using Windows.UI.Xaml.Media;
@@ -49,6 +50,8 @@ namespace InkPoc.ViewModels
         {
             //var imageFile = await FileService.LoadImageAsync();
             //Image = await GetBitmapFromImageAsync(imageFile);
-        }       
+        }
+
+        public Size CanvasSize { get; set; }
     }
 }
