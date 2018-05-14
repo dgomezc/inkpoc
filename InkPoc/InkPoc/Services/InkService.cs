@@ -109,10 +109,10 @@ namespace InkPoc.Services
                     {
                         await container.SaveAsync(stream);
                     }
-                }
 
-                // Finalize write so other apps can update file.
-                var status = await CachedFileManager.CompleteUpdatesAsync(file);
+                    // Finalize write so other apps can update file.
+                    var status = await CachedFileManager.CompleteUpdatesAsync(file);
+                }
             }
         }
 
@@ -166,7 +166,7 @@ namespace InkPoc.Services
                 {
                     using (CanvasDrawingSession ds = renderTarget.CreateDrawingSession())
                     {
-                        ds.Clear(Colors.Transparent);
+                        ds.Clear(Colors.White);
 
                         ds.DrawImage(canvasbitmap, new Rect(0, 0, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight));
                         ds.DrawInk(inkCanvas.InkPresenter.StrokeContainer.GetStrokes());
@@ -192,7 +192,7 @@ namespace InkPoc.Services
 
             using (var ds = renderTarget.CreateDrawingSession())
             {
-                ds.Clear(Colors.Transparent);
+                ds.Clear(Colors.White);
                 ds.DrawInk(inkCanvas.InkPresenter.StrokeContainer.GetStrokes());
             }
 
