@@ -11,7 +11,7 @@ namespace InkPoc.ViewModels
 {
     public class PaintImageViewModel : Observable
     {
-        private ImageSource image;
+        private StorageFile imageFile;
         private RelayCommand loadImageCommand;
         private RelayCommand saveImageCommand;
         private InkStrokeContainer strokes;
@@ -21,17 +21,17 @@ namespace InkPoc.ViewModels
             strokes = new InkStrokeContainer();
         }
 
-        public ImageSource Image
+        public StorageFile ImageFile
         {
-            get => image;
+            get => imageFile;
             set
             {
-                Set(ref image, value);
+                Set(ref imageFile, value);
                 OnPropertyChanged(nameof(HasImage));
             }
         }
 
-        public bool HasImage => Image != null;
+        public bool HasImage => ImageFile != null;
 
         public InkStrokeContainer Strokes
         {
@@ -40,36 +40,15 @@ namespace InkPoc.ViewModels
         }
 
         public RelayCommand LoadImageCommand => loadImageCommand
-            ?? (loadImageCommand = new RelayCommand(async () => await OnLoadImageAsync()));
+            ?? (loadImageCommand = new RelayCommand(async () => ImageFile = await FileService.LoadImageAsync()));
 
         public RelayCommand SaveImageCommand => saveImageCommand
             ?? (saveImageCommand = new RelayCommand(async () => await OnSaveImageAsync()));
         
-        private async Task OnLoadImageAsync()
-        {
-            var imageFile = await FileService.LoadImageAsync();
-            Image = await GetBitmapFromImageAsync(imageFile);
-        }
-
         private async Task OnSaveImageAsync()
         {
             //var imageFile = await FileService.LoadImageAsync();
             //Image = await GetBitmapFromImageAsync(imageFile);
-        }
-
-        private async Task<BitmapImage> GetBitmapFromImageAsync(StorageFile file)
-        {
-            if (file == null)
-            {
-                return null;
-            }
-
-            using (var fileStream = await file.OpenAsync(FileAccessMode.Read))
-            {
-                var bitmapImage = new BitmapImage();
-                bitmapImage.SetSource(fileStream);
-                return bitmapImage;
-            }
-        }
+        }       
     }
 }

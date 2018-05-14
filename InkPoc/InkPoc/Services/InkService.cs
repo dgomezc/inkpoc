@@ -100,7 +100,7 @@ namespace InkPoc.Services
 
                 var file = await savePicker.PickSaveFileAsync();
 
-                if (null != file)
+                if (file != null)
                 {
                     // Prevent updates to the file until updates are finalized with call to CompleteUpdatesAsync.
                     CachedFileManager.DeferUpdates(file);
@@ -113,28 +113,23 @@ namespace InkPoc.Services
 
                 // Finalize write so other apps can update file.
                 var status = await CachedFileManager.CompleteUpdatesAsync(file);
-
-                if (status == FileUpdateStatus.Complete)
-                {
-                    // File saved.
-                }
-                else
-                {
-                    // File couldn't be saved.
-                }
             }
         }
 
-        public static async Task ExportAsImageAsync(InkCanvas inkCanvas)
+        public static async Task ExportToImageAsync(InkCanvas inkCanvas, StorageFile imageFile)
         {
-            if (inkCanvas.InkPresenter.StrokeContainer.GetStrokes().Any())
+            if(!inkCanvas.InkPresenter.StrokeContainer.GetStrokes().Any() && imageFile != null)
             {
-                var savePicker = new FileSavePicker();
-                savePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-                savePicker.FileTypeChoices.Add("PNG", new List<string>() { ".png" });
+                return;
+            }
 
-                var saveFile = await savePicker.PickSaveFileAsync();
-                //await Save_InkedImagetoFile(saveFile);
+            if (imageFile != null)
+            {
+                await ExportCanvasAndImageAsync(inkCanvas, imageFile);
+            }
+            else
+            {
+                await ExportCanvasAsync(inkCanvas);
             }
         }
 
@@ -147,51 +142,57 @@ namespace InkPoc.Services
             }
         }
 
-        //private static async Task Save_InkedImagetoFile(StorageFile saveFile)
-        //{
-        //    if (saveFile != null)
-        //    {
-        //        CachedFileManager.DeferUpdates(saveFile);
+        private static async Task ExportCanvasAndImageAsync(InkCanvas inkCanvas, StorageFile imageFile)
+        {
+            var saveFile = await GetImageToSaveAsync();
+            if (saveFile == null)
+            {
+                return;
+            }
 
-        //        using (var outStream = await saveFile.OpenAsync(FileAccessMode.ReadWrite))
-        //        {
-        //            await Save_InkedImagetoStream(outStream);
-        //        }
+            CachedFileManager.DeferUpdates(saveFile);
 
-        //        var status =  await CachedFileManager.CompleteUpdatesAsync(saveFile);
-        //    }
-        //}
+            using (var outStream = await saveFile.OpenAsync(FileAccessMode.ReadWrite))
+            {
+                var device = CanvasDevice.GetSharedDevice();
+                
+                CanvasBitmap canvasbitmap;
+                using (var stream = await imageFile.OpenAsync(FileAccessMode.Read))
+                {
+                    canvasbitmap = await CanvasBitmap.LoadAsync(device, stream);
+                }
 
-        //private static async Task Save_InkedImagetoStream(IRandomAccessStream stream)
-        //{
-        //    var file = await StorageFile.GetFileFromApplicationUriAsync(((BitmapImage)myImage.Source).UriSource);
+                using (var renderTarget = new CanvasRenderTarget(device, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, canvasbitmap.Dpi))
+                {
+                    using (CanvasDrawingSession ds = renderTarget.CreateDrawingSession())
+                    {
+                        ds.Clear(Colors.Transparent);
 
-        //    var device = CanvasDevice.GetSharedDevice();
+                        ds.DrawImage(canvasbitmap, new Rect(0, 0, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight));
+                        ds.DrawInk(inkCanvas.InkPresenter.StrokeContainer.GetStrokes());
+                    }
 
-        //    var image = await CanvasBitmap.LoadAsync(device, file.Path);
+                    await renderTarget.SaveAsync(outStream, CanvasBitmapFileFormat.Png);
+                }
+            }
 
-        //    using (var renderTarget = new CanvasRenderTarget(device, (int)myInkCanvas.ActualWidth, (int)myInkCanvas.ActualHeight, image.Dpi))
-        //    {
-        //        using (CanvasDrawingSession ds = renderTarget.CreateDrawingSession())
-        //        {
-        //            ds.Clear(Colors.White);
+            FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(saveFile);
+        }
 
-        //            ds.DrawImage(image, new Rect(0, 0, (int)myInkCanvas.ActualWidth, (int)myInkCanvas.ActualHeight));
-        //            ds.DrawInk(myInkCanvas.InkPresenter.StrokeContainer.GetStrokes());
-        //        }
+        private static async Task ExportCanvasAsync(InkCanvas inkCanvas)
+        {
+            var file = await GetImageToSaveAsync();
+            if(file == null)
+            {
+                return;
+            }
 
-        //        await renderTarget.SaveAsync(stream, CanvasBitmapFileFormat.Png);
-        //    }
-        //}
-
-        private static async Task ExportInkCanvasToFile(InkCanvas inkCanvas, StorageFile file)
-        {            
             CanvasDevice device = CanvasDevice.GetSharedDevice();
             CanvasRenderTarget renderTarget = new CanvasRenderTarget(device, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, 96);
 
             using (var ds = renderTarget.CreateDrawingSession())
             {
-                ds.Clear(Colors.White);
+                ds.Clear(Colors.Transparent);
                 ds.DrawInk(inkCanvas.InkPresenter.StrokeContainer.GetStrokes());
             }
 
@@ -199,6 +200,16 @@ namespace InkPoc.Services
             {
                 await renderTarget.SaveAsync(fileStream, CanvasBitmapFileFormat.Png);
             }
+        }
+
+        private static async Task<StorageFile> GetImageToSaveAsync()
+        {
+            var savePicker = new FileSavePicker();
+            savePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+            savePicker.FileTypeChoices.Add("PNG", new List<string>() { ".png" });
+            var saveFile = await savePicker.PickSaveFileAsync();
+
+            return saveFile;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace InkPoc.Helpers.Ink
             inkPresenter.StrokesErased += (s, e) => AddToUndoStack(e.Strokes, UndoRedoOperation.Remove);
         }
 
-        public void ClearUndoRedoStacks()
+        public void Reset()
         {
             _undoStack.Clear();
             _redoStack.Clear();

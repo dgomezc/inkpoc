@@ -79,6 +79,15 @@ namespace InkPoc.Controls
         public static readonly DependencyProperty ShowClearAllProperty =
             DependencyProperty.Register("ShowClearAll", typeof(Visibility),
                 typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
+        public Visibility ShowExportFile
+        {
+            get { return (Visibility)GetValue(ShowExportFileProperty); }
+            set { SetValue(ShowExportFileProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowExportFileProperty =
+            DependencyProperty.Register("ShowExportFile", typeof(Visibility),
+                typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
 
     }
 }

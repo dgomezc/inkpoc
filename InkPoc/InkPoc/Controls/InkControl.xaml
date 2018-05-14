@@ -88,6 +88,11 @@
                 <Button Click="SaveFile_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Save file">
                     <SymbolIcon Symbol="Save"/>
                 </Button>
+            </StackPanel>
+
+            <!-- Export to image -->
+            <StackPanel Orientation="Horizontal"  Visibility="{Binding ShowExportFile, ElementName=inkControl}">
+                <Line  Style="{StaticResource InkToolbarSeparator}"/>
                 <Button Click="Export_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Export as image" >
                     <SymbolIcon Symbol="Download"/>
                 </Button>
@@ -104,7 +109,7 @@
 
         <ScrollViewer Name="canvasScroll" Grid.Row="1" BorderBrush="#000000" BorderThickness="1" Background="#FFFFFF" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" ZoomMode="Enabled">
             <Grid>
-            <Image Name="image" Source="{Binding Image, ElementName=inkControl, Mode=TwoWay}"></Image>
+                <Image Name="imageCanvas" />
                 <!-- Canvas for displaying selection UI. -->
                 <Canvas x:Name="selectionCanvas"/>
                 <!-- Canvas for displaying ink. -->

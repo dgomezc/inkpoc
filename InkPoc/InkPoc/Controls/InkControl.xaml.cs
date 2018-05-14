@@ -10,6 +10,9 @@ using Windows.UI.Xaml.Shapes;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using System;
+using Windows.Storage;
+using System.Threading.Tasks;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace InkPoc.Controls
 {
@@ -54,26 +57,34 @@ namespace InkPoc.Controls
                 control.inkCanvas.InkPresenter.StrokeContainer = strokes;
             }
         }
-
-        public ImageSource Image
+        
+        public StorageFile ImageFile
         {
-            get { return (ImageSource)GetValue(ImageProperty); }
-            set { SetValue(ImageProperty, value); }
+            get { return (StorageFile)GetValue(ImageFileProperty); }
+            set { SetValue(ImageFileProperty, value); }
         }
 
-        public static readonly DependencyProperty ImageProperty =
-            DependencyProperty.Register("Image", typeof(ImageSource),
-                typeof(InkControl), new PropertyMetadata(null, OnImageChanged));
+        public static readonly DependencyProperty ImageFileProperty =
+            DependencyProperty.Register("ImageFile", typeof(StorageFile),
+                typeof(InkControl), new PropertyMetadata(null, OnImageFileChanged));
 
-        private static void OnImageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static async void OnImageFileChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as InkControl;
+            var file = e.NewValue as StorageFile;
 
-            if (control != null)
+            if (control != null && file != null)
             {
                 control.inkCanvas.InkPresenter.StrokeContainer.Clear();
                 control.selectionCanvas.Children.Clear();
-                control.UndoRedoManager.ClearUndoRedoStacks();
+                control.UndoRedoManager.Reset();
+
+                using (var fileStream = await file.OpenAsync(FileAccessMode.Read))
+                {
+                    var bitmapImage = new BitmapImage();
+                    bitmapImage.SetSource(fileStream);
+                    control.imageCanvas.Source = bitmapImage;
+                }
             }
         }
 
@@ -81,9 +92,8 @@ namespace InkPoc.Controls
         {
             inkCanvas.InkPresenter.StrokeContainer.Clear();
             selectionCanvas.Children.Clear();
-            image.Source = null;
-
-            UndoRedoManager.ClearUndoRedoStacks();
+            UndoRedoManager.Reset();
+            imageCanvas.Source = null;
         }
 
         private void Undo_Click(object sender, RoutedEventArgs e) => UndoRedoManager.Undo();
@@ -120,6 +130,6 @@ namespace InkPoc.Controls
             }
         }
 
-        private async void Export_Click(object sender, RoutedEventArgs e) => await InkService.ExportAsImageAsync(inkCanvas);
+        private async void Export_Click(object sender, RoutedEventArgs e) => await InkService.ExportToImageAsync(inkCanvas, ImageFile);
     }
 }
