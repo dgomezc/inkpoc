@@ -137,4 +137,8 @@
     <value>FullToolbar</value>
     <comment>Navigation view item name for FullToolbar</comment>
   </data>
+  <data name="Shell_PaintImage.Content" xml:space="preserve">
+    <value>PaintImage</value>
+    <comment>Navigation view item name for PaintImage</comment>
+  </data>
 </root>

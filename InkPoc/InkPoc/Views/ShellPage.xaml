@@ -26,6 +26,7 @@
             <NavigationViewItem x:Uid="Shell_BasicDraw" Icon="Document" helpers:NavHelper.NavigateTo="views:BasicDrawPage" />
             <NavigationViewItem x:Uid="Shell_FullToolbar" Icon="Document" helpers:NavHelper.NavigateTo="views:FullToolbarPage" />
             <NavigationViewItem x:Uid="Shell_RecognizeText" Icon="Document" helpers:NavHelper.NavigateTo="views:RecognizeTextPage" />
+            <NavigationViewItem x:Uid="Shell_PaintImage" Icon="Document" helpers:NavHelper.NavigateTo="views:PaintImagePage" />
         </NavigationView.MenuItems>
         <NavigationView.HeaderTemplate>
             <DataTemplate>

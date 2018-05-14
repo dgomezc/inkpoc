@@ -1,0 +1,30 @@
+﻿<Page
+    x:Class="InkPoc.Views.PaintImagePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:InkPoc.Controls"
+    Style="{StaticResource PageStyle}"
+    mc:Ignorable="d">
+    <Grid
+        x:Name="ContentArea"
+        Margin="{StaticResource MediumLeftRightMargin}">
+        <Grid Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+          
+            <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Right" VerticalAlignment="Top">
+                <Button Content="Load Image" Command="{x:Bind ViewModel.LoadImageCommand}" />
+                <Button Content="Save Image" Command="{x:Bind ViewModel.SaveImageCommand}"  Margin="10,0" IsEnabled="{x:Bind ViewModel.HasImage, Mode=OneWay}"/>
+            </StackPanel>
+
+            <Grid>
+                <controls:InkControl
+                    Strokes="{x:Bind ViewModel.Strokes}"
+                    Image="{x:Bind ViewModel.Image, Mode=TwoWay}"
+                    ShowZoom="Visible"
+                    ShowClearAll="Visible"
+                    IsEnabled="{x:Bind ViewModel.HasImage, Mode=OneWay}"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>

@@ -9,6 +9,7 @@ using InkPoc.Services;
 using Windows.UI.Xaml.Shapes;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
+using System;
 
 namespace InkPoc.Controls
 {
@@ -52,18 +53,46 @@ namespace InkPoc.Controls
                 var control = d as InkControl;
                 control.inkCanvas.InkPresenter.StrokeContainer = strokes;
             }
-        }        
+        }
+
+        public ImageSource Image
+        {
+            get { return (ImageSource)GetValue(ImageProperty); }
+            set { SetValue(ImageProperty, value); }
+        }
+
+        public static readonly DependencyProperty ImageProperty =
+            DependencyProperty.Register("Image", typeof(ImageSource),
+                typeof(InkControl), new PropertyMetadata(null, OnImageChanged));
+
+        private static void OnImageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = d as InkControl;
+
+            if (control != null)
+            {
+                control.inkCanvas.InkPresenter.StrokeContainer.Clear();
+                control.selectionCanvas.Children.Clear();
+                control.UndoRedoManager.ClearUndoRedoStacks();
+            }
+        }
 
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
             inkCanvas.InkPresenter.StrokeContainer.Clear();
             selectionCanvas.Children.Clear();
+            image.Source = null;
+
             UndoRedoManager.ClearUndoRedoStacks();
         }
 
         private void Undo_Click(object sender, RoutedEventArgs e) => UndoRedoManager.Undo();
 
         private void Redo_Click(object sender, RoutedEventArgs e) => UndoRedoManager.Redo();
+
+        private void ZoomIn_Click(object sender, RoutedEventArgs e) => canvasScroll.ChangeView(canvasScroll.HorizontalOffset, canvasScroll.VerticalOffset, canvasScroll.ZoomFactor + 0.2f);
+
+        private void ZoomOut_Click(object sender, RoutedEventArgs e) => canvasScroll.ChangeView(canvasScroll.HorizontalOffset, canvasScroll.VerticalOffset, canvasScroll.ZoomFactor - 0.2f);
 
         private async void openFile_Click(object sender, RoutedEventArgs e) => await InkService.LoadInkAsync(inkCanvas.InkPresenter.StrokeContainer);
 

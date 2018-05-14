@@ -50,6 +50,16 @@ namespace InkPoc.Controls
             DependencyProperty.Register("ShowUndoRedo", typeof(Visibility),
                 typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
 
+        public Visibility ShowZoom
+        {
+            get { return (Visibility)GetValue(ShowZoomProperty); }
+            set { SetValue(ShowZoomProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowZoomProperty =
+            DependencyProperty.Register("ShowZoom", typeof(Visibility),
+                typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
+
         public Visibility ShowOpenSaveFile
         {
             get { return (Visibility)GetValue(ShowOpenSaveFileProperty); }

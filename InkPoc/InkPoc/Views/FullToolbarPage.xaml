@@ -17,6 +17,7 @@
                 ShowCopyPaste="Visible"
                 ShowOpenSaveFile="Visible"
                 ShowUndoRedo="Visible"
+                ShowZoom="Visible"
                 ShowClearAll="Visible" />
             
             <CheckBox x:Name="showToolbarCheck" IsChecked="True" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,15,20,0">Show Toolbar</CheckBox>

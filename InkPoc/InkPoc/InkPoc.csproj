@@ -122,10 +122,12 @@
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Services\ActivationService.cs" />
     <Compile Include="Activation\DefaultLaunchActivationHandler.cs" />
+    <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\InkService.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="ViewModels\BasicDrawViewModel.cs" />
     <Compile Include="ViewModels\FullToolbarViewModel.cs" />
+    <Compile Include="ViewModels\PaintImageViewModel.cs" />
     <Compile Include="ViewModels\RecognizeTextViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Views\BasicDrawPage.xaml.cs">
@@ -133,6 +135,9 @@
     </Compile>
     <Compile Include="Views\FullToolbarPage.xaml.cs">
       <DependentUpon>FullToolbarPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PaintImagePage.xaml.cs">
+      <DependentUpon>PaintImagePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RecognizeTextPage.xaml.cs">
       <DependentUpon>RecognizeTextPage.xaml</DependentUpon>
@@ -181,6 +186,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\FullToolbarPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PaintImagePage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

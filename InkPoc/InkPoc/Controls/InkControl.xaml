@@ -68,6 +68,17 @@
                 </Button>
             </StackPanel>
 
+            <!-- Zoom -->
+            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowZoom, ElementName=inkControl}">
+                <Line  Style="{StaticResource InkToolbarSeparator}"/>
+                <Button Click="ZoomIn_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Zoom in">
+                    <SymbolIcon Symbol="ZoomIn"/>
+                </Button>
+                <Button Click="ZoomOut_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Zoom out">
+                    <SymbolIcon Symbol="ZoomOut"/>
+                </Button>
+            </StackPanel>
+
             <!-- Open // Save files -->
             <StackPanel Orientation="Horizontal"  Visibility="{Binding ShowOpenSaveFile, ElementName=inkControl}">
                 <Line  Style="{StaticResource InkToolbarSeparator}"/>
@@ -91,8 +102,9 @@
             </StackPanel>
         </StackPanel>
 
-        <Border Grid.Row="1" BorderBrush="#000000" BorderThickness="1" Background="#FFFFFF" Margin="10">
+        <ScrollViewer Name="canvasScroll" Grid.Row="1" BorderBrush="#000000" BorderThickness="1" Background="#FFFFFF" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" ZoomMode="Enabled">
             <Grid>
+            <Image Name="image" Source="{Binding Image, ElementName=inkControl, Mode=TwoWay}"></Image>
                 <!-- Canvas for displaying selection UI. -->
                 <Canvas x:Name="selectionCanvas"/>
                 <!-- Canvas for displaying ink. -->
@@ -100,6 +112,6 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch" />
             </Grid>
-        </Border>
+        </ScrollViewer>
     </Grid>
 </UserControl>
