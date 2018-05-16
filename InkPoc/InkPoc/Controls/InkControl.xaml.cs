@@ -31,7 +31,7 @@ namespace InkPoc.Controls
                 CoreInputDeviceTypes.Pen |
                 CoreInputDeviceTypes.Touch;
 
-            UndoRedoManager = new InkUndoRedoManager(inkCanvas.InkPresenter);
+            UndoRedoManager = new InkSimpleUndoRedoManager(inkCanvas.InkPresenter);
             SelectionManager = new InkSelectionManager(inkCanvas.InkPresenter, selectionCanvas);
 
             if(CanvasSize.Height == 0 && CanvasSize.Width == 0)
@@ -40,7 +40,7 @@ namespace InkPoc.Controls
             }
         }
         
-        public InkUndoRedoManager UndoRedoManager { get; set; }
+        public InkSimpleUndoRedoManager UndoRedoManager { get; set; }
 
         public InkSelectionManager SelectionManager { get; set; }
 
@@ -157,7 +157,7 @@ namespace InkPoc.Controls
             }
         }
 
-        private async void Export_Click(object sender, RoutedEventArgs e) => await InkService.ExportToImageAsync(inkCanvas, ImageFile);
+        private async void Export_Click(object sender, RoutedEventArgs e) => await InkService.ExportToImageAsync(inkCanvas.InkPresenter.StrokeContainer, CanvasSize, ImageFile);
 
         private void ImageCanvas_SizeChanged(object sender, SizeChangedEventArgs e) => CanvasSize = e.NewSize;
     }

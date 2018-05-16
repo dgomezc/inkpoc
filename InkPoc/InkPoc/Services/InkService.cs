@@ -77,7 +77,6 @@ namespace InkPoc.Services
             var openPicker = new FileOpenPicker();
             openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
             openPicker.FileTypeFilter.Add(".gif");
-            openPicker.FileTypeFilter.Add(".isf");
 
             var file = await openPicker.PickSingleFileAsync();
 
@@ -116,20 +115,20 @@ namespace InkPoc.Services
             }
         }
 
-        public static async Task ExportToImageAsync(InkCanvas inkCanvas, StorageFile imageFile)
+        public static async Task ExportToImageAsync(InkStrokeContainer container, Size canvasSize, StorageFile imageFile = null)
         {
-            if(!inkCanvas.InkPresenter.StrokeContainer.GetStrokes().Any() && imageFile != null)
+            if(!container.GetStrokes().Any())
             {
                 return;
             }
 
             if (imageFile != null)
             {
-                await ExportCanvasAndImageAsync(inkCanvas, imageFile);
+                await ExportCanvasAndImageAsync(container, canvasSize, imageFile);
             }
             else
             {
-                await ExportCanvasAsync(inkCanvas);
+                await ExportCanvasAsync(container, canvasSize);
             }
         }
 
@@ -142,7 +141,7 @@ namespace InkPoc.Services
             }
         }
 
-        private static async Task ExportCanvasAndImageAsync(InkCanvas inkCanvas, StorageFile imageFile)
+        private static async Task ExportCanvasAndImageAsync(InkStrokeContainer container, Size canvasSize, StorageFile imageFile)
         {
             var saveFile = await GetImageToSaveAsync();
             if (saveFile == null)
@@ -162,14 +161,14 @@ namespace InkPoc.Services
                     canvasbitmap = await CanvasBitmap.LoadAsync(device, stream);
                 }
 
-                using (var renderTarget = new CanvasRenderTarget(device, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, canvasbitmap.Dpi))
+                using (var renderTarget = new CanvasRenderTarget(device, (int)canvasSize.Width, (int)canvasSize.Height, canvasbitmap.Dpi))
                 {
                     using (CanvasDrawingSession ds = renderTarget.CreateDrawingSession())
                     {
                         ds.Clear(Colors.White);
 
-                        ds.DrawImage(canvasbitmap, new Rect(0, 0, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight));
-                        ds.DrawInk(inkCanvas.InkPresenter.StrokeContainer.GetStrokes());
+                        ds.DrawImage(canvasbitmap, new Rect(0, 0, (int)canvasSize.Width, (int)canvasSize.Height));
+                        ds.DrawInk(container.GetStrokes());
                     }
 
                     await renderTarget.SaveAsync(outStream, CanvasBitmapFileFormat.Png);
@@ -179,7 +178,7 @@ namespace InkPoc.Services
             FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(saveFile);
         }
 
-        private static async Task ExportCanvasAsync(InkCanvas inkCanvas)
+        private static async Task ExportCanvasAsync(InkStrokeContainer container, Size canvasSize)
         {
             var file = await GetImageToSaveAsync();
             if(file == null)
@@ -188,12 +187,12 @@ namespace InkPoc.Services
             }
 
             CanvasDevice device = CanvasDevice.GetSharedDevice();
-            CanvasRenderTarget renderTarget = new CanvasRenderTarget(device, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, 96);
+            CanvasRenderTarget renderTarget = new CanvasRenderTarget(device, (int)canvasSize.Width, (int)canvasSize.Height, 96);
 
             using (var ds = renderTarget.CreateDrawingSession())
             {
                 ds.Clear(Colors.White);
-                ds.DrawInk(inkCanvas.InkPresenter.StrokeContainer.GetStrokes());
+                ds.DrawInk(container.GetStrokes());
             }
 
             using (var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite))

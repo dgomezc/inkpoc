@@ -122,7 +122,6 @@
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Services\ActivationService.cs" />
     <Compile Include="Activation\DefaultLaunchActivationHandler.cs" />
-    <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\InkService.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="ViewModels\BasicDrawViewModel.cs" />

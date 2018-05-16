@@ -4,6 +4,7 @@ using InkPoc.Helpers;
 using InkPoc.Services;
 using Windows.Foundation;
 using Windows.Storage;
+using Windows.Storage.Pickers;
 using Windows.UI.Input.Inking;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
@@ -41,17 +42,31 @@ namespace InkPoc.ViewModels
         }
 
         public RelayCommand LoadImageCommand => loadImageCommand
-            ?? (loadImageCommand = new RelayCommand(async () => ImageFile = await FileService.LoadImageAsync()));
+            ?? (loadImageCommand = new RelayCommand(async () => await OnLoadImageAsync()));
 
         public RelayCommand SaveImageCommand => saveImageCommand
             ?? (saveImageCommand = new RelayCommand(async () => await OnSaveImageAsync()));
         
         private async Task OnSaveImageAsync()
         {
-            //var imageFile = await FileService.LoadImageAsync();
-            //Image = await GetBitmapFromImageAsync(imageFile);
+            await InkService.ExportToImageAsync(strokes, CanvasSize, ImageFile);
         }
 
         public Size CanvasSize { get; set; }
+
+        private async Task OnLoadImageAsync()
+        {
+            var openPicker = new FileOpenPicker();
+
+            openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+
+            openPicker.FileTypeFilter.Add(".png");
+            openPicker.FileTypeFilter.Add(".jpeg");
+            openPicker.FileTypeFilter.Add(".jpg");
+            openPicker.FileTypeFilter.Add(".bmp");
+
+            var file = await openPicker.PickSingleFileAsync();
+            ImageFile = file;
+        }
     }
 }

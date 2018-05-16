@@ -22,7 +22,7 @@ namespace InkPoc.Helpers.Ink
 
         public bool CanRedo =>_undoStack.Any();
 
-        public void ClearStack() => _undoStack.Clear();
+        public void Reset() => _undoStack.Clear();
 
         public void Undo()
         {
