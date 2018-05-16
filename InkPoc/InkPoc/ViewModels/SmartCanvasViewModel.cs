@@ -1,4 +1,7 @@
 ﻿using System;
+
+using InkPoc.Helpers;
+using System;
 using System.Threading.Tasks;
 using InkPoc.Helpers;
 using InkPoc.Services;
@@ -6,13 +9,13 @@ using Windows.UI.Input.Inking;
 
 namespace InkPoc.ViewModels
 {
-    public class RecognizeTextViewModel : Observable
+    public class SmartCanvasViewModel : Observable
     {
         private string _recognizeText;
         private RelayCommand _recognizeTextCommand;
         private InkStrokeContainer _strokes;
 
-        public RecognizeTextViewModel()
+        public SmartCanvasViewModel()
         {
             _strokes = new InkStrokeContainer();
         }

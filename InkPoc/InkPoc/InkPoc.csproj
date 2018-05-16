@@ -127,8 +127,8 @@
     <Compile Include="ViewModels\BasicDrawViewModel.cs" />
     <Compile Include="ViewModels\FullToolbarViewModel.cs" />
     <Compile Include="ViewModels\PaintImageViewModel.cs" />
-    <Compile Include="ViewModels\RecognizeTextViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
+    <Compile Include="ViewModels\SmartCanvasViewModel.cs" />
     <Compile Include="Views\BasicDrawPage.xaml.cs">
       <DependentUpon>BasicDrawPage.xaml</DependentUpon>
     </Compile>
@@ -138,11 +138,11 @@
     <Compile Include="Views\PaintImagePage.xaml.cs">
       <DependentUpon>PaintImagePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\RecognizeTextPage.xaml.cs">
-      <DependentUpon>RecognizeTextPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ShellPage.xaml.cs">
       <DependentUpon>ShellPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SmartCanvasPage.xaml.cs">
+      <DependentUpon>SmartCanvasPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -192,11 +192,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\RecognizeTextPage.xaml">
+    <Page Include="Views\ShellPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ShellPage.xaml">
+    <Page Include="Views\SmartCanvasPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

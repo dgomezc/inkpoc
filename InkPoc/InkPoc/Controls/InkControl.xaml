@@ -107,8 +107,8 @@
             </StackPanel>
         </StackPanel>
 
-        <ScrollViewer Name="canvasScroll" Grid.Row="1" BorderBrush="#000000" BorderThickness="1" Background="#FFFFFF" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" ZoomMode="Enabled">
-            <Grid>
+        <ScrollViewer Name="canvasScroll" Grid.Row="1" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" ZoomMode="Enabled">
+            <Grid Background="#ffffff">
                 <Image Name="imageCanvas" SizeChanged="ImageCanvas_SizeChanged" />
                 <!-- Canvas for displaying selection UI. -->
                 <Canvas x:Name="selectionCanvas"/>
