@@ -13,6 +13,7 @@
         <Grid Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <controls:InkControl
                 ShowSelectionTool="True"
+                ShowRecognize="True"
                 ShowCopyPaste="True"
                 ShowOpenSaveFile="True"
                 ShowUndoRedo="True"

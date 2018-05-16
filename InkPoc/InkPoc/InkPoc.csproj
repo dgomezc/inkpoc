@@ -112,6 +112,7 @@
       <DependentUpon>InkControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\InkControl_ShowProperties.cs" />
+    <Compile Include="Helpers\Ink\InkRecognizeManager.cs" />
     <Compile Include="Helpers\Ink\InkSelectionManager.cs" />
     <Compile Include="Helpers\Ink\InkUndoRedoManager.cs" />
     <Compile Include="Helpers\Ink\InkSimpleUndoRedoManager.cs" />

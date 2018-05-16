@@ -33,8 +33,9 @@ namespace InkPoc.Controls
 
             UndoRedoManager = new InkSimpleUndoRedoManager(inkCanvas.InkPresenter);
             SelectionManager = new InkSelectionManager(inkCanvas.InkPresenter, selectionCanvas);
+            RecognizeManager = new InkRecognizeManager(inkCanvas.InkPresenter, drawingCanvas);
 
-            if(CanvasSize.Height == 0 && CanvasSize.Width == 0)
+            if (CanvasSize.Height == 0 && CanvasSize.Width == 0)
             {
                 CanvasSize = new Size(inkCanvas.ActualWidth, inkCanvas.ActualHeight);
             }
@@ -43,6 +44,8 @@ namespace InkPoc.Controls
         public InkSimpleUndoRedoManager UndoRedoManager { get; set; }
 
         public InkSelectionManager SelectionManager { get; set; }
+
+        public InkRecognizeManager RecognizeManager { get; set; }
 
         public InkStrokeContainer Strokes
         {
@@ -80,9 +83,7 @@ namespace InkPoc.Controls
 
             if (control != null && file != null)
             {
-                control.inkCanvas.InkPresenter.StrokeContainer.Clear();
-                control.selectionCanvas.Children.Clear();
-                control.UndoRedoManager.Reset();
+                control.Clear();
 
                 using (var fileStream = await file.OpenAsync(FileAccessMode.Read))
                 {
@@ -113,13 +114,20 @@ namespace InkPoc.Controls
 
             control.selectionCanvas.Width = newCanvasSize.Width;
             control.selectionCanvas.Height = newCanvasSize.Height;
+
+            control.drawingCanvas.Width = newCanvasSize.Width;
+            control.drawingCanvas.Height = newCanvasSize.Height;
         }
 
-        private void Clear_Click(object sender, RoutedEventArgs e)
+        private void Clear_Click(object sender, RoutedEventArgs e) => Clear();
+
+        private void Clear()
         {
             inkCanvas.InkPresenter.StrokeContainer.Clear();
             selectionCanvas.Children.Clear();
+            drawingCanvas.Children.Clear();
             UndoRedoManager.Reset();
+            RecognizeManager.ClearAnalyzer();
             imageCanvas.Source = null;
         }
 
@@ -160,5 +168,7 @@ namespace InkPoc.Controls
         private async void Export_Click(object sender, RoutedEventArgs e) => await InkService.ExportToImageAsync(inkCanvas.InkPresenter.StrokeContainer, CanvasSize, ImageFile);
 
         private void ImageCanvas_SizeChanged(object sender, SizeChangedEventArgs e) => CanvasSize = e.NewSize;
+
+        private async void recognize_Click(object sender, RoutedEventArgs e) => await RecognizeManager.AnalyzeStrokesAsync();
     }
 }

@@ -79,6 +79,7 @@ namespace InkPoc.Controls
         public static readonly DependencyProperty ShowClearAllProperty =
             DependencyProperty.Register("ShowClearAll", typeof(bool),
                 typeof(InkControl), new PropertyMetadata(false));
+
         public bool ShowExportFile
         {
             get { return (bool)GetValue(ShowExportFileProperty); }
@@ -88,6 +89,16 @@ namespace InkPoc.Controls
         public static readonly DependencyProperty ShowExportFileProperty =
             DependencyProperty.Register("ShowExportFile", typeof(bool),
                 typeof(InkControl), new PropertyMetadata(false));
+
+        public bool ShowRecognize
+        {
+            get { return (bool)GetValue(ShowRecognizeProperty); }
+            set { SetValue(ShowRecognizeProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowRecognizeProperty =
+            DependencyProperty.Register("ShowRecognize",
+                typeof(bool), typeof(InkControl), new PropertyMetadata(false));
 
     }
 }

@@ -39,9 +39,18 @@
                     Visibility="{Binding ShowSelectionTool, ElementName=inkControl}"
                     ToolTipService.ToolTip="Selection tool">
                     <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEF20;" />
-                </InkToolbarCustomToolButton>
+                </InkToolbarCustomToolButton>                
             </InkToolbar>
-            
+
+            <!-- Recognize shapes and text -->
+            <Button
+                    Click="recognize_Click"
+                    Style="{StaticResource InkToolBarActionButton}"
+                    Visibility="{Binding ShowRecognize, ElementName=inkControl}"
+                    ToolTipService.ToolTip="Recognize shapes">
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xF156;" />
+            </Button>
+
             <!-- Cut // Copy // Paste -->
             <StackPanel Orientation="Horizontal" Visibility="{Binding ShowCopyPaste, ElementName=inkControl}">
                 <Line  Style="{StaticResource InkToolbarSeparator}"/>
@@ -110,8 +119,13 @@
         <ScrollViewer Name="canvasScroll" Grid.Row="1" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" ZoomMode="Enabled">
             <Grid Background="#ffffff">
                 <Image Name="imageCanvas" SizeChanged="ImageCanvas_SizeChanged" />
+
                 <!-- Canvas for displaying selection UI. -->
                 <Canvas x:Name="selectionCanvas"/>
+
+                <!-- Canvas for drawing shapes and text. -->
+                <Canvas x:Name="drawingCanvas"/>
+
                 <!-- Canvas for displaying ink. -->
                 <InkCanvas x:Name="inkCanvas"
                     HorizontalAlignment="Stretch"
