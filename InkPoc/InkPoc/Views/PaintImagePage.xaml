@@ -21,9 +21,9 @@
                 <controls:InkControl
                     Strokes="{x:Bind ViewModel.Strokes}"
                     ImageFile="{x:Bind ViewModel.ImageFile, Mode=TwoWay}"
-                    ShowZoom="Visible"
-                    ShowClearAll="Visible"
-                    ShowExportFile="Visible"
+                    ShowZoom="True"
+                    ShowClearAll="True"
+                    ShowExportFile="True"
                     CanvasSize="{x:Bind ViewModel.CanvasSize, Mode=TwoWay}"/>
             </Grid>
         </Grid>

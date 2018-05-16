@@ -10,84 +10,84 @@ namespace InkPoc.Controls
 {
     public sealed partial class InkControl : UserControl
     {
-        public Visibility ShowToolbar
+        public bool ShowToolbar
         {
-            get { return (Visibility)GetValue(ShowToolbarProperty); }
+            get { return (bool)GetValue(ShowToolbarProperty); }
             set { SetValue(ShowToolbarProperty, value); }
         }
 
         public static readonly DependencyProperty ShowToolbarProperty =
             DependencyProperty.Register("ShowToolbar",
-                typeof(Visibility), typeof(InkControl), new PropertyMetadata(Visibility.Visible));
+                typeof(bool), typeof(InkControl), new PropertyMetadata(true));
 
-        public Visibility ShowSelectionTool
+        public bool ShowSelectionTool
         {
-            get { return (Visibility)GetValue(ShowSelectionToolProperty); }
+            get { return (bool)GetValue(ShowSelectionToolProperty); }
             set { SetValue(ShowSelectionToolProperty, value); }
         }
 
         public static readonly DependencyProperty ShowSelectionToolProperty =
             DependencyProperty.Register("ShowSelectionTool",
-                typeof(Visibility), typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
+                typeof(bool), typeof(InkControl), new PropertyMetadata(false));
 
-        public Visibility ShowCopyPaste
+        public bool ShowCopyPaste
         {
-            get { return (Visibility)GetValue(ShowCopyPasteProperty); }
+            get { return (bool)GetValue(ShowCopyPasteProperty); }
             set { SetValue(ShowCopyPasteProperty, value); }
         }
 
         public static readonly DependencyProperty ShowCopyPasteProperty =
-            DependencyProperty.Register("ShowCopyPaste", typeof(Visibility),
-                typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
+            DependencyProperty.Register("ShowCopyPaste", typeof(bool),
+                typeof(InkControl), new PropertyMetadata(false));
 
-        public Visibility ShowUndoRedo
+        public bool ShowUndoRedo
         {
-            get { return (Visibility)GetValue(ShowUndoRedoProperty); }
+            get { return (bool)GetValue(ShowUndoRedoProperty); }
             set { SetValue(ShowUndoRedoProperty, value); }
         }
 
         public static readonly DependencyProperty ShowUndoRedoProperty =
-            DependencyProperty.Register("ShowUndoRedo", typeof(Visibility),
-                typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
+            DependencyProperty.Register("ShowUndoRedo", typeof(bool),
+                typeof(InkControl), new PropertyMetadata(false));
 
-        public Visibility ShowZoom
+        public bool ShowZoom
         {
-            get { return (Visibility)GetValue(ShowZoomProperty); }
+            get { return (bool)GetValue(ShowZoomProperty); }
             set { SetValue(ShowZoomProperty, value); }
         }
 
         public static readonly DependencyProperty ShowZoomProperty =
-            DependencyProperty.Register("ShowZoom", typeof(Visibility),
-                typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
+            DependencyProperty.Register("ShowZoom", typeof(bool),
+                typeof(InkControl), new PropertyMetadata(false));
 
-        public Visibility ShowOpenSaveFile
+        public bool ShowOpenSaveFile
         {
-            get { return (Visibility)GetValue(ShowOpenSaveFileProperty); }
+            get { return (bool)GetValue(ShowOpenSaveFileProperty); }
             set { SetValue(ShowOpenSaveFileProperty, value); }
         }
 
         public static readonly DependencyProperty ShowOpenSaveFileProperty =
-            DependencyProperty.Register("ShowOpenSaveFile", typeof(Visibility),
-                typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
+            DependencyProperty.Register("ShowOpenSaveFile", typeof(bool),
+                typeof(InkControl), new PropertyMetadata(false));
 
-        public Visibility ShowClearAll
+        public bool ShowClearAll
         {
-            get { return (Visibility)GetValue(ShowClearAllProperty); }
+            get { return (bool)GetValue(ShowClearAllProperty); }
             set { SetValue(ShowClearAllProperty, value); }
         }
 
         public static readonly DependencyProperty ShowClearAllProperty =
-            DependencyProperty.Register("ShowClearAll", typeof(Visibility),
-                typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
-        public Visibility ShowExportFile
+            DependencyProperty.Register("ShowClearAll", typeof(bool),
+                typeof(InkControl), new PropertyMetadata(false));
+        public bool ShowExportFile
         {
-            get { return (Visibility)GetValue(ShowExportFileProperty); }
+            get { return (bool)GetValue(ShowExportFileProperty); }
             set { SetValue(ShowExportFileProperty, value); }
         }
 
         public static readonly DependencyProperty ShowExportFileProperty =
-            DependencyProperty.Register("ShowExportFile", typeof(Visibility),
-                typeof(InkControl), new PropertyMetadata(Visibility.Collapsed));
+            DependencyProperty.Register("ShowExportFile", typeof(bool),
+                typeof(InkControl), new PropertyMetadata(false));
 
     }
 }

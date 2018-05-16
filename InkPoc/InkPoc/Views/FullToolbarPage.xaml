@@ -12,13 +12,13 @@
         Margin="{StaticResource MediumLeftRightMargin}">
         <Grid Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <controls:InkControl
-                ShowSelectionTool="Visible"
-                ShowCopyPaste="Visible"
-                ShowOpenSaveFile="Visible"
-                ShowUndoRedo="Visible"
-                ShowZoom="Visible"
-                ShowExportFile="Visible"
-                ShowClearAll="Visible" />            
+                ShowSelectionTool="True"
+                ShowCopyPaste="True"
+                ShowOpenSaveFile="True"
+                ShowUndoRedo="True"
+                ShowZoom="True"
+                ShowExportFile="True"
+                ShowClearAll="True" />            
         </Grid>
     </Grid>
 </Page>
