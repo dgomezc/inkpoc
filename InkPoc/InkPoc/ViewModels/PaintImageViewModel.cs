@@ -66,7 +66,11 @@ namespace InkPoc.ViewModels
             openPicker.FileTypeFilter.Add(".bmp");
 
             var file = await openPicker.PickSingleFileAsync();
-            ImageFile = file;
+
+            if(file != null)
+            {
+                ImageFile = file;
+            }
         }
     }
 }

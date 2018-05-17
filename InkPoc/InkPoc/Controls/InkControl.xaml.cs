@@ -85,13 +85,18 @@ namespace InkPoc.Controls
             if (control != null && file != null)
             {
                 control.Clear();
+                var bitmapImage = new BitmapImage();
 
                 using (var fileStream = await file.OpenAsync(FileAccessMode.Read))
                 {
-                    var bitmapImage = new BitmapImage();
                     bitmapImage.SetSource(fileStream);
-                    control.imageCanvas.Source = bitmapImage;
                 }
+
+                control.CanvasSize = new Size(bitmapImage.PixelWidth, bitmapImage.PixelHeight);
+
+                Image image = new Image();
+                image.Source = bitmapImage;
+                control.drawingCanvas.Children.Add(image);
             }
         }
 
@@ -186,9 +191,7 @@ namespace InkPoc.Controls
             {
                 EnableTouch = false;
             }
-        }
-
-        private void ImageCanvas_SizeChanged(object sender, SizeChangedEventArgs e) => CanvasSize = e.NewSize;        
+        }       
 
         private void Clear()
         {
@@ -197,7 +200,6 @@ namespace InkPoc.Controls
             drawingCanvas.Children.Clear();
             UndoRedoManager.Reset();
             RecognizeManager.ClearAnalyzer();
-            imageCanvas.Source = null;
         }
     }
 }
