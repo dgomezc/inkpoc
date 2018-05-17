@@ -9,7 +9,8 @@
     x:Name="inkControl"
     d:DesignWidth="400">
     <UserControl.Resources>
-        <Style x:Key="InkToolBarActionButton" TargetType="Button">
+        <!-- Default style for tool buttons -->
+        <Style TargetType="Button">
             <Setter Property="MinWidth" Value="{ThemeResource InkToolbarButtonWidth}"/>
             <Setter Property="MinHeight" Value="{ThemeResource InkToolbarButtonHeight}"/>
             <Setter Property="MaxHeight" Value="{ThemeResource InkToolbarButtonHeight}"/>
@@ -17,7 +18,9 @@
             <Setter Property="Background" Value="{ThemeResource InkToolbarButtonBackgroundThemeBrush}"/>
             <Setter Property="Foreground" Value="{ThemeResource InkToolbarButtonForegroundThemeBrush}"/>
         </Style>
-        <Style x:Key="InkToolbarSeparator" TargetType="Line">
+
+        <!-- Default style for separator lines -->
+        <Style TargetType="Line">
             <Setter Property="Y1" Value="0" />
             <Setter Property="Y2" Value="{ThemeResource InkToolbarButtonHeight}" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -49,74 +52,74 @@
             </InkToolbar>
 
             <!-- Recognize shapes and text -->
-            <Button
+            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowRecognize, ElementName=inkControl}">
+                <Button
                     Click="Recognize_Click"
-                    Style="{StaticResource InkToolBarActionButton}"
-                    Visibility="{Binding ShowRecognize, ElementName=inkControl}"
                     ToolTipService.ToolTip="Recognize shapes">
-                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xF156;" />
-            </Button>
+                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xF156;" />
+                </Button>
+            </StackPanel>
 
             <!-- Cut // Copy // Paste -->
             <StackPanel Orientation="Horizontal" Visibility="{Binding ShowCopyPaste, ElementName=inkControl}">
-                <Line  Style="{StaticResource InkToolbarSeparator}"/>
-                <Button Click="Cut_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Cut" >
+                <Line />
+                <Button Click="Cut_Click" ToolTipService.ToolTip="Cut" >
                     <SymbolIcon Symbol="Cut"/>
                 </Button>
-                <Button Click="Copy_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Copy">
+                <Button Click="Copy_Click" ToolTipService.ToolTip="Copy">
                     <SymbolIcon Symbol="Copy"/>
                 </Button>
 
-                <Button Click="Paste_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Paste">
+                <Button Click="Paste_Click" ToolTipService.ToolTip="Paste">
                     <SymbolIcon Symbol="Paste"/>
                 </Button>
             </StackPanel>
 
             <!-- Undo // Redo -->
             <StackPanel Orientation="Horizontal" Visibility="{Binding ShowUndoRedo, ElementName=inkControl}">
-                <Line  Style="{StaticResource InkToolbarSeparator}"/>
-                <Button Click="Undo_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Undo">
+                <Line />
+                <Button Click="Undo_Click" ToolTipService.ToolTip="Undo">
                     <SymbolIcon Symbol="Undo"/>
                 </Button>
-                <Button Click="Redo_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Redo">
+                <Button Click="Redo_Click" ToolTipService.ToolTip="Redo">
                     <SymbolIcon Symbol="Redo"/>
                 </Button>
             </StackPanel>
 
             <!-- Zoom -->
             <StackPanel Orientation="Horizontal" Visibility="{Binding ShowZoom, ElementName=inkControl}">
-                <Line  Style="{StaticResource InkToolbarSeparator}"/>
-                <Button Click="ZoomIn_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Zoom in">
+                <Line />
+                <Button Click="ZoomIn_Click" ToolTipService.ToolTip="Zoom in">
                     <SymbolIcon Symbol="ZoomIn"/>
                 </Button>
-                <Button Click="ZoomOut_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Zoom out">
+                <Button Click="ZoomOut_Click" ToolTipService.ToolTip="Zoom out">
                     <SymbolIcon Symbol="ZoomOut"/>
                 </Button>
             </StackPanel>
 
             <!-- Open // Save files -->
             <StackPanel Orientation="Horizontal"  Visibility="{Binding ShowOpenSaveFile, ElementName=inkControl}">
-                <Line  Style="{StaticResource InkToolbarSeparator}"/>
-                <Button Click="openFile_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Open file">
+                <Line />
+                <Button Click="openFile_Click" ToolTipService.ToolTip="Open file">
                     <SymbolIcon Symbol="OpenFile"/>
                 </Button>
-                <Button Click="SaveFile_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Save file">
+                <Button Click="SaveFile_Click" ToolTipService.ToolTip="Save file">
                     <SymbolIcon Symbol="Save"/>
                 </Button>
             </StackPanel>
 
             <!-- Export to image -->
             <StackPanel Orientation="Horizontal"  Visibility="{Binding ShowExportFile, ElementName=inkControl}">
-                <Line  Style="{StaticResource InkToolbarSeparator}"/>
-                <Button Click="Export_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Export as image" >
+                <Line />
+                <Button Click="Export_Click" ToolTipService.ToolTip="Export as image" >
                     <SymbolIcon Symbol="Download"/>
                 </Button>
             </StackPanel>
 
             <!-- Clear canvas -->
             <StackPanel Orientation="Horizontal" Visibility="{Binding ShowClearAll, ElementName=inkControl}">
-                <Line  Style="{StaticResource InkToolbarSeparator}"/>
-                <Button Click="Clear_Click" Style="{StaticResource InkToolBarActionButton}" ToolTipService.ToolTip="Clear all" >
+                <MenuFlyoutSeparator />
+                <Button Click="Clear_Click" ToolTipService.ToolTip="Clear all" >
                     <SymbolIcon Symbol="Delete"/>
                 </Button>
             </StackPanel>
