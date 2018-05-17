@@ -13,6 +13,7 @@ using System;
 using Windows.Storage;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.Devices.Input;
 
 namespace InkPoc.Controls
 {
@@ -119,17 +120,27 @@ namespace InkPoc.Controls
             control.drawingCanvas.Height = newCanvasSize.Height;
         }
 
-        private void Clear_Click(object sender, RoutedEventArgs e) => Clear();
-
-        private void Clear()
+        public bool EnableTouch
         {
-            inkCanvas.InkPresenter.StrokeContainer.Clear();
-            selectionCanvas.Children.Clear();
-            drawingCanvas.Children.Clear();
-            UndoRedoManager.Reset();
-            RecognizeManager.ClearAnalyzer();
-            imageCanvas.Source = null;
+            get { return (bool)GetValue(EnableTouchProperty); }
+            set { SetValue(EnableTouchProperty, value); }
         }
+
+        public static readonly DependencyProperty EnableTouchProperty =
+            DependencyProperty.Register("EnableTouch", typeof(bool),
+                typeof(InkControl), new PropertyMetadata(true, OnEnableTouchChanged));
+
+        private static void OnEnableTouchChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = d as InkControl;
+            var enableTouch = (bool)e.NewValue;
+
+            control.inkCanvas.InkPresenter.InputDeviceTypes = enableTouch
+                ? CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen | CoreInputDeviceTypes.Touch
+                : CoreInputDeviceTypes.Pen;
+        }
+
+        private void Clear_Click(object sender, RoutedEventArgs e) => Clear();
 
         private void Undo_Click(object sender, RoutedEventArgs e) => UndoRedoManager.Undo();
 
@@ -167,8 +178,26 @@ namespace InkPoc.Controls
 
         private async void Export_Click(object sender, RoutedEventArgs e) => await InkService.ExportToImageAsync(inkCanvas.InkPresenter.StrokeContainer, CanvasSize, ImageFile);
 
-        private void ImageCanvas_SizeChanged(object sender, SizeChangedEventArgs e) => CanvasSize = e.NewSize;
+        private async void Recognize_Click(object sender, RoutedEventArgs e) => await RecognizeManager.AnalyzeStrokesAsync();
 
-        private async void recognize_Click(object sender, RoutedEventArgs e) => await RecognizeManager.AnalyzeStrokesAsync();
+        private void InkCanvas_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (e.Pointer.PointerDeviceType == PointerDeviceType.Pen)
+            {
+                EnableTouch = false;
+            }
+        }
+
+        private void ImageCanvas_SizeChanged(object sender, SizeChangedEventArgs e) => CanvasSize = e.NewSize;        
+
+        private void Clear()
+        {
+            inkCanvas.InkPresenter.StrokeContainer.Clear();
+            selectionCanvas.Children.Clear();
+            drawingCanvas.Children.Clear();
+            UndoRedoManager.Reset();
+            RecognizeManager.ClearAnalyzer();
+            imageCanvas.Source = null;
+        }
     }
 }

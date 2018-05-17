@@ -100,5 +100,15 @@ namespace InkPoc.Controls
             DependencyProperty.Register("ShowRecognize",
                 typeof(bool), typeof(InkControl), new PropertyMetadata(false));
 
+        public bool ShowEnableTouchInking
+        {
+            get { return (bool)GetValue(ShowEnableTouchInkingProperty); }
+            set { SetValue(ShowEnableTouchInkingProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowEnableTouchInkingProperty =
+            DependencyProperty.Register("ShowEnableTouchInking",
+                typeof(bool), typeof(InkControl), new PropertyMetadata(false));
+
     }
 }
