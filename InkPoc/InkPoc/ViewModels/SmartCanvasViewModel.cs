@@ -37,7 +37,7 @@ namespace InkPoc.ViewModels
 
         private async Task OnRecognizeText()
         {
-            RecognizeText = await InkService.RecognizeTextOneAsync(Strokes);
+            RecognizeText = await InkService.RecognizeTextAsync(Strokes);
         }
     }
 }

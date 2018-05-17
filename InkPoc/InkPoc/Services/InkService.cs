@@ -20,60 +20,22 @@ namespace InkPoc.Services
 {
     public static class InkService
     {
-        public static async Task<string> RecognizeTextOneAsync(InkStrokeContainer container)
+        public static async Task<string> RecognizeTextAsync(InkStrokeContainer container)
         {
-            if (container.GetStrokes().Any())
+            if (!container.GetStrokes().Any())
             {
-                var recognizer = new InkRecognizerContainer();
-
-                var candidates = await recognizer.RecognizeAsync(container, InkRecognitionTarget.All);
-
-                var result = candidates.Select(x => x.GetTextCandidates().FirstOrDefault())
-                    .Where(x => !string.IsNullOrEmpty(x));
-
-                return string.Join(" ", result);
+                return string.Empty;
             }
 
-            return string.Empty;
+            var recognizer = new InkRecognizerContainer();
+            var candidates = await recognizer.RecognizeAsync(container, InkRecognitionTarget.All);
+
+            var result = candidates.Select(x => x.GetTextCandidates().FirstOrDefault())
+                .Where(x => !string.IsNullOrEmpty(x));
+
+            return string.Join(" ", result);
         }
-
-        public static async Task<string> RecognizeTextTwoAsync(InkStrokeContainer container)
-        {
-            var textResult = string.Empty;
-            var strokesText = container.GetStrokes();
-            // Ensure an ink stroke is present.
-            if (strokesText.Count > 0)
-            {
-                var analyzerText = new InkAnalyzer();
-                analyzerText.AddDataForStrokes(strokesText);
-
-                // Force analyzer to process strokes as handwriting.
-                foreach (var stroke in strokesText)
-                {
-                    analyzerText.SetStrokeDataKind(stroke.Id, InkAnalysisStrokeKind.Writing);
-                }
-
-                var resultText = await analyzerText.AnalyzeAsync();
-
-                if (resultText.Status == InkAnalysisStatus.Updated)
-                {
-                    textResult = analyzerText.AnalysisRoot.RecognizedText;
-                    //var words = analyzerText.AnalysisRoot.FindNodes(InkAnalysisNodeKind.InkWord);
-                    //foreach (var word in words)
-                    //{
-                    //    InkAnalysisInkWord concreteWord = (InkAnalysisInkWord)word;
-                    //    foreach (string s in concreteWord.TextAlternates)
-                    //    {
-                    //        textResult += s;
-                    //    }
-                    //}
-                }
-                analyzerText.ClearDataForAllStrokes();
-            }
-
-            return textResult;
-        }
-
+                
         public static async Task LoadInkAsync(InkStrokeContainer container)
         {
             var openPicker = new FileOpenPicker();
@@ -93,27 +55,29 @@ namespace InkPoc.Services
 
         public static async Task SaveInkAsync(InkStrokeContainer container)
         {
-            if (container.GetStrokes().Any())
+            if (!container.GetStrokes().Any())
             {
-                var savePicker = new FileSavePicker();
-                savePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-                savePicker.FileTypeChoices.Add("Gif with embedded ISF", new List<string> { ".gif" });
+                return;
+            }
 
-                var file = await savePicker.PickSaveFileAsync();
+            var savePicker = new FileSavePicker();
+            savePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+            savePicker.FileTypeChoices.Add("Gif with embedded ISF", new List<string> { ".gif" });
 
-                if (file != null)
+            var file = await savePicker.PickSaveFileAsync();
+
+            if (file != null)
+            {
+                // Prevent updates to the file until updates are finalized with call to CompleteUpdatesAsync.
+                CachedFileManager.DeferUpdates(file);
+
+                using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite))
                 {
-                    // Prevent updates to the file until updates are finalized with call to CompleteUpdatesAsync.
-                    CachedFileManager.DeferUpdates(file);
-
-                    using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite))
-                    {
-                        await container.SaveAsync(stream);
-                    }
-
-                    // Finalize write so other apps can update file.
-                    var status = await CachedFileManager.CompleteUpdatesAsync(file);
+                    await container.SaveAsync(stream);
                 }
+
+                // Finalize write so other apps can update file.
+                var status = await CachedFileManager.CompleteUpdatesAsync(file);
             }
         }
 
@@ -146,11 +110,13 @@ namespace InkPoc.Services
         private static async Task ExportCanvasAndImageAsync(InkStrokeContainer container, Size canvasSize, StorageFile imageFile)
         {
             var saveFile = await GetImageToSaveAsync();
+
             if (saveFile == null)
             {
                 return;
             }
 
+            // Prevent updates to the file until updates are finalized with call to CompleteUpdatesAsync.
             CachedFileManager.DeferUpdates(saveFile);
 
             using (var outStream = await saveFile.OpenAsync(FileAccessMode.ReadWrite))
@@ -177,6 +143,7 @@ namespace InkPoc.Services
                 }
             }
 
+            // Finalize write so other apps can update file.
             FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(saveFile);
         }
 
@@ -211,6 +178,6 @@ namespace InkPoc.Services
             var saveFile = await savePicker.PickSaveFileAsync();
 
             return saveFile;
-        }        
+        }
     }
 }
