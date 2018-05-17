@@ -7,123 +7,59 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     x:Name="inkControl"
-    d:DesignWidth="400">
-    <UserControl.Resources>
-        <!-- Default style for tool buttons -->
-        <Style TargetType="Button">
-            <Setter Property="MinWidth" Value="{ThemeResource InkToolbarButtonWidth}"/>
-            <Setter Property="MinHeight" Value="{ThemeResource InkToolbarButtonHeight}"/>
-            <Setter Property="MaxHeight" Value="{ThemeResource InkToolbarButtonHeight}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Background" Value="{ThemeResource InkToolbarButtonBackgroundThemeBrush}"/>
-            <Setter Property="Foreground" Value="{ThemeResource InkToolbarButtonForegroundThemeBrush}"/>
-        </Style>
-
-        <!-- Default style for separator lines -->
-        <Style TargetType="Line">
-            <Setter Property="Y1" Value="0" />
-            <Setter Property="Y2" Value="{ThemeResource InkToolbarButtonHeight}" />
-            <Setter Property="HorizontalAlignment" Value="Stretch" />
-            <Setter Property="Width" Value="1" />
-            <Setter Property="Height" Value="{ThemeResource InkToolbarButtonHeight}" />
-            <Setter Property="StrokeThickness" Value="1" />
-            <Setter Property="Stroke" Value="Gray" />
-        </Style>
-    </UserControl.Resources>
+    d:DesignWidth="400">    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Visibility="{Binding ShowToolbar, ElementName=inkControl}">
-            <InkToolbar x:Name="toolbar" TargetInkCanvas="{x:Bind inkCanvas}">
-                <InkToolbarCustomToolButton 
-                    Click="Selection_Click"
-                    Visibility="{Binding ShowSelectionTool, ElementName=inkControl}"
-                    ToolTipService.ToolTip="Selection tool">
-                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEF20;" />
-                </InkToolbarCustomToolButton>
-                <InkToolbarCustomToggleButton
-                    ToolTipService.ToolTip="Touch Inking"
-                    IsChecked="{Binding EnableTouch, ElementName=inkControl, Mode=TwoWay}"
-                    Visibility="{Binding ShowEnableTouchInking, ElementName=inkControl}">
-                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xED5F;" />
-                </InkToolbarCustomToggleButton>
-            </InkToolbar>
+        <CommandBar DefaultLabelPosition="Collapsed" HorizontalAlignment="Left">
+            <CommandBar.Content>
+                <InkToolbar x:Name="toolbar" TargetInkCanvas="{x:Bind inkCanvas}">
+                    <InkToolbarCustomToolButton 
+                            Click="Selection_Click"
+                            Visibility="{Binding ShowSelectionTool, ElementName=inkControl}"
+                            ToolTipService.ToolTip="Selection tool">
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEF20;" />
+                    </InkToolbarCustomToolButton>
+                    <InkToolbarCustomToggleButton
+                            ToolTipService.ToolTip="Touch Inking"
+                            IsChecked="{Binding EnableTouch, ElementName=inkControl, Mode=TwoWay}"
+                            Visibility="{Binding ShowEnableTouchInking, ElementName=inkControl}">
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xED5F;" />
+                    </InkToolbarCustomToggleButton>
+                </InkToolbar>
+            </CommandBar.Content>
 
-            <!-- Recognize shapes and text -->
-            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowRecognize, ElementName=inkControl}">
-                <Button
-                    Click="Recognize_Click"
-                    ToolTipService.ToolTip="Recognize shapes">
-                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xF156;" />
-                </Button>
-            </StackPanel>
+            <AppBarSeparator Visibility="{Binding ShowRecognize, ElementName=inkControl}" />
+            <AppBarButton Label="Recognize shapes"
+                          ToolTipService.ToolTip="Recognize shapes"
+                          Click="Recognize_Click"
+                          Visibility="{Binding ShowRecognize, ElementName=inkControl}">
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xF156;" />
+            </AppBarButton>
 
-            <!-- Cut // Copy // Paste -->
-            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowCopyPaste, ElementName=inkControl}">
-                <Line />
-                <Button Click="Cut_Click" ToolTipService.ToolTip="Cut" >
-                    <SymbolIcon Symbol="Cut"/>
-                </Button>
-                <Button Click="Copy_Click" ToolTipService.ToolTip="Copy">
-                    <SymbolIcon Symbol="Copy"/>
-                </Button>
+            <AppBarSeparator Visibility="{Binding ShowCopyPaste, ElementName=inkControl}" />
+            <AppBarButton Click="Cut_Click" Label="Cut" Icon="Cut" ToolTipService.ToolTip="Cut" Visibility="{Binding ShowCopyPaste, ElementName=inkControl}" />
+            <AppBarButton Click="Copy_Click" Label="Copy" Icon="Copy" ToolTipService.ToolTip="Copy" Visibility="{Binding ShowCopyPaste, ElementName=inkControl}" />
+            <AppBarButton Click="Paste_Click" Label="Paste" Icon="Paste" ToolTipService.ToolTip="Paste" Visibility="{Binding ShowCopyPaste, ElementName=inkControl}" />
 
-                <Button Click="Paste_Click" ToolTipService.ToolTip="Paste">
-                    <SymbolIcon Symbol="Paste"/>
-                </Button>
-            </StackPanel>
+            <AppBarSeparator Visibility="{Binding ShowUndoRedo, ElementName=inkControl}" />
+            <AppBarButton Click="Undo_Click" Label="Undo" Icon="Undo" ToolTipService.ToolTip="Undo" Visibility="{Binding ShowUndoRedo, ElementName=inkControl}" />
+            <AppBarButton Click="Redo_Click" Label="Redo" Icon="Redo" ToolTipService.ToolTip="Redo" Visibility="{Binding ShowUndoRedo, ElementName=inkControl}" />
 
-            <!-- Undo // Redo -->
-            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowUndoRedo, ElementName=inkControl}">
-                <Line />
-                <Button Click="Undo_Click" ToolTipService.ToolTip="Undo">
-                    <SymbolIcon Symbol="Undo"/>
-                </Button>
-                <Button Click="Redo_Click" ToolTipService.ToolTip="Redo">
-                    <SymbolIcon Symbol="Redo"/>
-                </Button>
-            </StackPanel>
+            <AppBarSeparator Visibility="{Binding ShowZoom, ElementName=inkControl}" />
+            <AppBarButton Click="ZoomIn_Click" Label="Zoom in" Icon="ZoomIn" ToolTipService.ToolTip="Zoom in" Visibility="{Binding ShowZoom, ElementName=inkControl}" />
+            <AppBarButton Click="ZoomOut_Click" Label="Zoom out" Icon="ZoomOut" ToolTipService.ToolTip="Zoom out" Visibility="{Binding ShowZoom, ElementName=inkControl}" />
 
-            <!-- Zoom -->
-            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowZoom, ElementName=inkControl}">
-                <Line />
-                <Button Click="ZoomIn_Click" ToolTipService.ToolTip="Zoom in">
-                    <SymbolIcon Symbol="ZoomIn"/>
-                </Button>
-                <Button Click="ZoomOut_Click" ToolTipService.ToolTip="Zoom out">
-                    <SymbolIcon Symbol="ZoomOut"/>
-                </Button>
-            </StackPanel>
+            <AppBarSeparator Visibility="{Binding ShowOpenSaveFile, ElementName=inkControl}" />
+            <AppBarButton Click="openFile_Click" Label="Open file" Icon="OpenFile" ToolTipService.ToolTip="Open file" Visibility="{Binding ShowOpenSaveFile, ElementName=inkControl}" />
+            <AppBarButton Click="SaveFile_Click" Label="Save file" Icon="Save" ToolTipService.ToolTip="Save file" Visibility="{Binding ShowOpenSaveFile, ElementName=inkControl}" />
+            <AppBarButton Click="Export_Click" Label="Export as image" Icon="Download" ToolTipService.ToolTip="Export as image" Visibility="{Binding ShowExportFile, ElementName=inkControl}" />
 
-            <!-- Open // Save files -->
-            <StackPanel Orientation="Horizontal"  Visibility="{Binding ShowOpenSaveFile, ElementName=inkControl}">
-                <Line />
-                <Button Click="openFile_Click" ToolTipService.ToolTip="Open file">
-                    <SymbolIcon Symbol="OpenFile"/>
-                </Button>
-                <Button Click="SaveFile_Click" ToolTipService.ToolTip="Save file">
-                    <SymbolIcon Symbol="Save"/>
-                </Button>
-            </StackPanel>
-
-            <!-- Export to image -->
-            <StackPanel Orientation="Horizontal"  Visibility="{Binding ShowExportFile, ElementName=inkControl}">
-                <Line />
-                <Button Click="Export_Click" ToolTipService.ToolTip="Export as image" >
-                    <SymbolIcon Symbol="Download"/>
-                </Button>
-            </StackPanel>
-
-            <!-- Clear canvas -->
-            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowClearAll, ElementName=inkControl}">
-                <Line />
-                <Button Click="Clear_Click" ToolTipService.ToolTip="Clear all" >
-                    <SymbolIcon Symbol="Delete"/>
-                </Button>
-            </StackPanel>
-        </StackPanel>
+            <AppBarSeparator Visibility="{Binding ShowClearAll, ElementName=inkControl}" />
+            <AppBarButton Click="Clear_Click" Label="Clear all" Icon="Delete" ToolTipService.ToolTip="Clear all" Visibility="{Binding ShowClearAll, ElementName=inkControl}" />
+        </CommandBar>
 
         <ScrollViewer Name="canvasScroll" Grid.Row="1" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" ZoomMode="Enabled">
             <Grid Background="#ffffff">

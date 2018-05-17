@@ -18,7 +18,6 @@
                 ShowOpenSaveFile="True"
                 ShowUndoRedo="True"
                 ShowZoom="True"
-                ShowEnableTouchInking="True"
                 ShowExportFile="True"
                 ShowClearAll="True" />
         </Grid>
