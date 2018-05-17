@@ -118,7 +118,7 @@
 
             <!-- Clear canvas -->
             <StackPanel Orientation="Horizontal" Visibility="{Binding ShowClearAll, ElementName=inkControl}">
-                <MenuFlyoutSeparator />
+                <Line />
                 <Button Click="Clear_Click" ToolTipService.ToolTip="Clear all" >
                     <SymbolIcon Symbol="Delete"/>
                 </Button>
