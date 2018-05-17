@@ -6,11 +6,11 @@ using Windows.UI.Xaml.Controls;
 
 namespace InkPoc.Views
 {
-    public sealed partial class BasicDrawPage : Page
+    public sealed partial class DrawPage : Page
     {
-        public BasicDrawViewModel ViewModel { get; } = new BasicDrawViewModel();
+        public DrawViewModel ViewModel { get; } = new DrawViewModel();
 
-        public BasicDrawPage()
+        public DrawPage()
         {
             InitializeComponent();
         }

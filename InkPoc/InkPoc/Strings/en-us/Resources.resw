@@ -125,13 +125,9 @@
     <value>InkPoc</value>
     <comment>Application description</comment>
   </data>
-  <data name="Shell_BasicDraw.Content" xml:space="preserve">
-    <value>BasicDraw</value>
-    <comment>Navigation view item name for BasicDraw</comment>
-  </data>
-  <data name="Shell_FullToolbar.Content" xml:space="preserve">
-    <value>FullToolbar</value>
-    <comment>Navigation view item name for FullToolbar</comment>
+  <data name="Shell_Draw.Content" xml:space="preserve">
+    <value>Draw</value>
+    <comment>Navigation view item name for Draw</comment>
   </data>
   <data name="Shell_PaintImage.Content" xml:space="preserve">
     <value>PaintImage</value>

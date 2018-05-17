@@ -39,7 +39,7 @@ namespace InkPoc
 
         private ActivationService CreateActivationService()
         {
-            return new ActivationService(this, typeof(Views.BasicDrawPage), new Lazy<UIElement>(CreateShell));
+            return new ActivationService(this, typeof(Views.DrawPage), new Lazy<UIElement>(CreateShell));
         }
 
         private UIElement CreateShell()

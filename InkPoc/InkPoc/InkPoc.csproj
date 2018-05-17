@@ -125,16 +125,12 @@
     <Compile Include="Activation\DefaultLaunchActivationHandler.cs" />
     <Compile Include="Services\InkService.cs" />
     <Compile Include="Services\NavigationService.cs" />
-    <Compile Include="ViewModels\BasicDrawViewModel.cs" />
-    <Compile Include="ViewModels\FullToolbarViewModel.cs" />
+    <Compile Include="ViewModels\DrawViewModel.cs" />
     <Compile Include="ViewModels\PaintImageViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\SmartCanvasViewModel.cs" />
-    <Compile Include="Views\BasicDrawPage.xaml.cs">
-      <DependentUpon>BasicDrawPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\FullToolbarPage.xaml.cs">
-      <DependentUpon>FullToolbarPage.xaml</DependentUpon>
+    <Compile Include="Views\DrawPage.xaml.cs">
+      <DependentUpon>DrawPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PaintImagePage.xaml.cs">
       <DependentUpon>PaintImagePage.xaml</DependentUpon>
@@ -181,11 +177,7 @@
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
-    <Page Include="Views\BasicDrawPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\FullToolbarPage.xaml">
+    <Page Include="Views\DrawPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
