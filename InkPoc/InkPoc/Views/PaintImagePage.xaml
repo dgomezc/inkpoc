@@ -24,6 +24,7 @@
                     ShowZoom="True"
                     ShowClearAll="True"
                     ShowExportFile="True"
+                    ShowEnableTouchInking="True"
                     CanvasSize="{x:Bind ViewModel.CanvasSize, Mode=TwoWay}"/>
             </Grid>
         </Grid>
