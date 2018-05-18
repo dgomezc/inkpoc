@@ -51,6 +51,33 @@ namespace InkPoc.Helpers.Ink
             }
         }
 
+        // TODO: Merge with Inkservice -> RecognizeTextAsync
+        public async Task AnalyzeTextAsync()
+        {
+            if (!_container.GetStrokes().Any())
+            {
+                return;
+            }
+
+            var recognizer = new InkRecognizerContainer();
+            var candidates = await recognizer.RecognizeAsync(_container, InkRecognitionTarget.All);
+
+            foreach(var candidate in candidates)
+            {
+                var text = candidate
+                            .GetTextCandidates()
+                            .FirstOrDefault(t => !string.IsNullOrEmpty(t));
+
+                DrawText(text, candidate.BoundingRect);
+
+                foreach (var stroke in candidate.GetStrokes())
+                {
+                    stroke.Selected = true;
+                }
+            }
+            _container.DeleteSelected();
+        }
+
         public void ClearAnalyzer()
         {
             _inkAnalyzer.ClearDataForAllStrokes();

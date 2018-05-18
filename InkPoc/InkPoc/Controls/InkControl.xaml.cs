@@ -183,7 +183,9 @@ namespace InkPoc.Controls
 
         private async void Export_Click(object sender, RoutedEventArgs e) => await InkService.ExportToImageAsync(inkCanvas.InkPresenter.StrokeContainer, CanvasSize, ImageFile);
 
-        private async void Recognize_Click(object sender, RoutedEventArgs e) => await RecognizeManager.AnalyzeStrokesAsync();
+        private async void RecognizeShapes_Click(object sender, RoutedEventArgs e) => await RecognizeManager.AnalyzeStrokesAsync();
+
+        private async void RecognizeText_Click(object sender, RoutedEventArgs e) => await RecognizeManager.AnalyzeTextAsync();
 
         private void InkCanvas_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
