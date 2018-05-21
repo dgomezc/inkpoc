@@ -35,18 +35,21 @@ namespace InkPoc.Controls
             UndoRedoManager = new InkSimpleUndoRedoManager(inkCanvas.InkPresenter);
             SelectionManager = new InkSelectionManager(inkCanvas.InkPresenter, selectionCanvas);
             RecognizeManager = new InkRecognizeManager(inkCanvas.InkPresenter, drawingCanvas);
+            CopyPasteManager = new InkCopyPasteManager(inkCanvas.InkPresenter);
 
             if (CanvasSize.Height == 0 && CanvasSize.Width == 0)
             {
                 CanvasSize = new Size(inkCanvas.ActualWidth, inkCanvas.ActualHeight);
             }
         }
-        
+
         public InkSimpleUndoRedoManager UndoRedoManager { get; set; }
 
         public InkSelectionManager SelectionManager { get; set; }
 
         public InkRecognizeManager RecognizeManager { get; set; }
+
+        public InkCopyPasteManager CopyPasteManager { get; set; }
 
         public InkStrokeContainer Strokes
         {
@@ -163,24 +166,14 @@ namespace InkPoc.Controls
 
         private void Cut_Click(object sender, RoutedEventArgs e)
         {
-            inkCanvas.InkPresenter.StrokeContainer.CopySelectedToClipboard();
-            inkCanvas.InkPresenter.StrokeContainer.DeleteSelected();
+            CopyPasteManager.Cut();
             SelectionManager.ClearSelection();
         }
 
-        private void Copy_Click(object sender, RoutedEventArgs e)
-        {
-            inkCanvas.InkPresenter.StrokeContainer.CopySelectedToClipboard();
-        }
+        private void Copy_Click(object sender, RoutedEventArgs e) => CopyPasteManager.Copy();
 
-        private void Paste_Click(object sender, RoutedEventArgs e)
-        {
-            if (inkCanvas.InkPresenter.StrokeContainer.CanPasteFromClipboard())
-            {
-                inkCanvas.InkPresenter.StrokeContainer.PasteFromClipboard(new Point(20,20));
-            }
-        }
-
+        private void Paste_Click(object sender, RoutedEventArgs e) => CopyPasteManager.Paste();
+        
         private async void Export_Click(object sender, RoutedEventArgs e) => await InkService.ExportToImageAsync(inkCanvas.InkPresenter.StrokeContainer, CanvasSize, ImageFile);
 
         private async void RecognizeShapes_Click(object sender, RoutedEventArgs e) => await RecognizeManager.AnalyzeStrokesAsync();
