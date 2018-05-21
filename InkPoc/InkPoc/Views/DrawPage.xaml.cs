@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 using InkPoc.ViewModels;
 
 using Windows.UI.Xaml.Controls;

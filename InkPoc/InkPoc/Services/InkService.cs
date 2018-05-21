@@ -7,14 +7,8 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Provider;
-using Windows.Storage.Streams;
 using Windows.UI;
 using Windows.UI.Input.Inking;
-using Windows.UI.Input.Inking.Analysis;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Shapes;
 
 namespace InkPoc.Services
 {

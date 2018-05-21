@@ -1,46 +1,83 @@
-﻿using Windows.UI.Core;
+﻿using InkPoc.Helpers.Ink;
+using InkPoc.Services;
+using System;
+using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.Storage;
+using Windows.UI.Core;
 using Windows.UI.Input.Inking;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using InkPoc.Helpers;
-using System.Linq;
-using InkPoc.Helpers.Ink;
-using InkPoc.Services;
-using Windows.UI.Xaml.Shapes;
-using Windows.Foundation;
-using Windows.UI.Xaml.Media;
-using System;
-using Windows.Storage;
-using System.Threading.Tasks;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.Devices.Input;
 
 namespace InkPoc.Controls
 {
     public sealed partial class InkControl : UserControl
     {
+        public static readonly DependencyProperty ShowToolbarProperty =
+            DependencyProperty.Register("ShowToolbar", typeof(bool), typeof(InkControl), new PropertyMetadata(true));
+
+        public static readonly DependencyProperty ShowSelectionToolProperty =
+            DependencyProperty.Register("ShowSelectionTool", typeof(bool), typeof(InkControl), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty ShowCopyPasteProperty =
+            DependencyProperty.Register("ShowCopyPaste", typeof(bool), typeof(InkControl), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty ShowUndoRedoProperty =
+            DependencyProperty.Register("ShowUndoRedo", typeof(bool), typeof(InkControl), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty ShowZoomProperty =
+            DependencyProperty.Register("ShowZoom", typeof(bool), typeof(InkControl), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty ShowOpenSaveFileProperty =
+            DependencyProperty.Register("ShowOpenSaveFile", typeof(bool), typeof(InkControl), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty ShowClearAllProperty =
+            DependencyProperty.Register("ShowClearAll", typeof(bool), typeof(InkControl), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty ShowExportFileProperty =
+            DependencyProperty.Register("ShowExportFile", typeof(bool), typeof(InkControl), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty ShowRecognizeProperty =
+            DependencyProperty.Register("ShowRecognize", typeof(bool), typeof(InkControl), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty ShowEnableTouchInkingProperty =
+            DependencyProperty.Register("ShowEnableTouchInking", typeof(bool), typeof(InkControl), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty StrokesProperty =
+            DependencyProperty.Register("Strokes", typeof(InkStrokeContainer), typeof(InkControl), new PropertyMetadata(null, OnStrokesChanged));
+
+        public static readonly DependencyProperty ImageFileProperty =
+            DependencyProperty.Register("ImageFile", typeof(StorageFile), typeof(InkControl), new PropertyMetadata(null, OnImageFileChanged));
+
+        public static readonly DependencyProperty CanvasSizeProperty =
+            DependencyProperty.Register("CanvasSize", typeof(Size), typeof(InkControl), new PropertyMetadata(null, OnCanvasSizeChanged));
+
+        public static readonly DependencyProperty EnableTouchProperty =
+            DependencyProperty.Register("EnableTouch", typeof(bool), typeof(InkControl), new PropertyMetadata(true, OnEnableTouchChanged));
+
         public InkControl()
         {
             InitializeComponent();
-            Loaded += InkControl_Loaded;           
-        }
 
-        private void InkControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            inkCanvas.InkPresenter.InputDeviceTypes =
+            Loaded += (s,e) =>
+            {
+                inkCanvas.InkPresenter.InputDeviceTypes =
                 CoreInputDeviceTypes.Mouse |
                 CoreInputDeviceTypes.Pen |
                 CoreInputDeviceTypes.Touch;
 
-            UndoRedoManager = new InkSimpleUndoRedoManager(inkCanvas.InkPresenter);
-            SelectionManager = new InkSelectionManager(inkCanvas.InkPresenter, selectionCanvas);
-            RecognizeManager = new InkRecognizeManager(inkCanvas.InkPresenter, drawingCanvas);
-            CopyPasteManager = new InkCopyPasteManager(inkCanvas.InkPresenter);
+                UndoRedoManager = new InkSimpleUndoRedoManager(inkCanvas.InkPresenter);
+                SelectionManager = new InkSelectionManager(inkCanvas.InkPresenter, selectionCanvas);
+                RecognizeManager = new InkRecognizeManager(inkCanvas.InkPresenter, drawingCanvas);
+                CopyPasteManager = new InkCopyPasteManager(inkCanvas.InkPresenter);
 
-            if (CanvasSize.Height == 0 && CanvasSize.Width == 0)
-            {
-                CanvasSize = new Size(inkCanvas.ActualWidth, inkCanvas.ActualHeight);
-            }
+                if (CanvasSize.Height == 0 && CanvasSize.Width == 0)
+                {
+                    CanvasSize = new Size(inkCanvas.ActualWidth, inkCanvas.ActualHeight);
+                }
+            };           
         }
 
         public InkSimpleUndoRedoManager UndoRedoManager { get; set; }
@@ -51,16 +88,90 @@ namespace InkPoc.Controls
 
         public InkCopyPasteManager CopyPasteManager { get; set; }
 
+        public bool ShowToolbar
+        {
+            get { return (bool)GetValue(ShowToolbarProperty); }
+            set { SetValue(ShowToolbarProperty, value); }
+        }
+
+        public bool ShowSelectionTool
+        {
+            get { return (bool)GetValue(ShowSelectionToolProperty); }
+            set { SetValue(ShowSelectionToolProperty, value); }
+        }
+
+        public bool ShowCopyPaste
+        {
+            get { return (bool)GetValue(ShowCopyPasteProperty); }
+            set { SetValue(ShowCopyPasteProperty, value); }
+        }
+
+        public bool ShowUndoRedo
+        {
+            get { return (bool)GetValue(ShowUndoRedoProperty); }
+            set { SetValue(ShowUndoRedoProperty, value); }
+        }
+
+        public bool ShowZoom
+        {
+            get { return (bool)GetValue(ShowZoomProperty); }
+            set { SetValue(ShowZoomProperty, value); }
+        }
+
+        public bool ShowOpenSaveFile
+        {
+            get { return (bool)GetValue(ShowOpenSaveFileProperty); }
+            set { SetValue(ShowOpenSaveFileProperty, value); }
+        }
+
+        public bool ShowClearAll
+        {
+            get { return (bool)GetValue(ShowClearAllProperty); }
+            set { SetValue(ShowClearAllProperty, value); }
+        }
+        
+        public bool ShowExportFile
+        {
+            get { return (bool)GetValue(ShowExportFileProperty); }
+            set { SetValue(ShowExportFileProperty, value); }
+        }
+        
+        public bool ShowRecognize
+        {
+            get { return (bool)GetValue(ShowRecognizeProperty); }
+            set { SetValue(ShowRecognizeProperty, value); }
+        }
+
+        public bool ShowEnableTouchInking
+        {
+            get { return (bool)GetValue(ShowEnableTouchInkingProperty); }
+            set { SetValue(ShowEnableTouchInkingProperty, value); }
+        }
+
         public InkStrokeContainer Strokes
         {
             get { return (InkStrokeContainer)GetValue(StrokesProperty); }
             set { SetValue(StrokesProperty, value); }
         }
 
-        public static readonly DependencyProperty StrokesProperty =
-            DependencyProperty.Register("Strokes", typeof(InkStrokeContainer),
-                typeof(InkControl), new PropertyMetadata(null, OnStrokesChanged));
+        public StorageFile ImageFile
+        {
+            get { return (StorageFile)GetValue(ImageFileProperty); }
+            set { SetValue(ImageFileProperty, value); }
+        }
 
+        public Size CanvasSize
+        {
+            get { return (Size)GetValue(CanvasSizeProperty); }
+            set { SetValue(CanvasSizeProperty, value); }
+        }
+
+        public bool EnableTouch
+        {
+            get { return (bool)GetValue(EnableTouchProperty); }
+            set { SetValue(EnableTouchProperty, value); }
+        }
+        
         private static void OnStrokesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is InkStrokeContainer strokes)
@@ -69,17 +180,7 @@ namespace InkPoc.Controls
                 control.inkCanvas.InkPresenter.StrokeContainer = strokes;
             }
         }
-        
-        public StorageFile ImageFile
-        {
-            get { return (StorageFile)GetValue(ImageFileProperty); }
-            set { SetValue(ImageFileProperty, value); }
-        }
-
-        public static readonly DependencyProperty ImageFileProperty =
-            DependencyProperty.Register("ImageFile", typeof(StorageFile),
-                typeof(InkControl), new PropertyMetadata(null, OnImageFileChanged));
-
+                
         private static async void OnImageFileChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as InkControl;
@@ -102,17 +203,7 @@ namespace InkPoc.Controls
                 control.drawingCanvas.Children.Add(image);
             }
         }
-
-        public Size CanvasSize
-        {
-            get { return (Size)GetValue(CanvasSizeProperty); }
-            set { SetValue(CanvasSizeProperty, value); }
-        }
-
-        public static readonly DependencyProperty CanvasSizeProperty =
-            DependencyProperty.Register("CanvasSize", typeof(Size),
-                typeof(InkControl), new PropertyMetadata(null, OnCanvasSizeChanged));
-
+        
         private static void OnCanvasSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as InkControl;
@@ -127,17 +218,7 @@ namespace InkPoc.Controls
             control.drawingCanvas.Width = newCanvasSize.Width;
             control.drawingCanvas.Height = newCanvasSize.Height;
         }
-
-        public bool EnableTouch
-        {
-            get { return (bool)GetValue(EnableTouchProperty); }
-            set { SetValue(EnableTouchProperty, value); }
-        }
-
-        public static readonly DependencyProperty EnableTouchProperty =
-            DependencyProperty.Register("EnableTouch", typeof(bool),
-                typeof(InkControl), new PropertyMetadata(true, OnEnableTouchChanged));
-
+        
         private static void OnEnableTouchChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as InkControl;
@@ -180,7 +261,7 @@ namespace InkPoc.Controls
 
         private async void RecognizeText_Click(object sender, RoutedEventArgs e) => await RecognizeManager.AnalyzeTextAsync();
 
-        private void InkCanvas_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private void InkCanvas_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             if (e.Pointer.PointerDeviceType == PointerDeviceType.Pen)
             {

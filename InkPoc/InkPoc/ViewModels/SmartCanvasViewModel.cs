@@ -1,10 +1,7 @@
-﻿using System;
-
-using InkPoc.Helpers;
-using System;
-using System.Threading.Tasks;
+﻿
 using InkPoc.Helpers;
 using InkPoc.Services;
+using System.Threading.Tasks;
 using Windows.UI.Input.Inking;
 
 namespace InkPoc.ViewModels

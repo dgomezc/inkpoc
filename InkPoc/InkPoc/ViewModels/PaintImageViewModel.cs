@@ -1,13 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using InkPoc.Helpers;
+﻿using InkPoc.Helpers;
 using InkPoc.Services;
+using System;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Input.Inking;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 
 namespace InkPoc.ViewModels
 {

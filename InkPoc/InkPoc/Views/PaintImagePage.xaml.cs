@@ -1,9 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
-using InkPoc.ViewModels;
-using Windows.Storage;
+﻿using InkPoc.ViewModels;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
 
 namespace InkPoc.Views
 {
