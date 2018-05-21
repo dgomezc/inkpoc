@@ -66,7 +66,7 @@ namespace InkPoc.Controls
                 inkCanvas.InkPresenter.InputDeviceTypes =
                 CoreInputDeviceTypes.Mouse |
                 CoreInputDeviceTypes.Pen |
-                CoreInputDeviceTypes.Touch;
+                CoreInputDeviceTypes.Touch;                
 
                 UndoRedoManager = new InkSimpleUndoRedoManager(inkCanvas.InkPresenter);
                 SelectionManager = new InkSelectionManager(inkCanvas.InkPresenter, selectionCanvas);
@@ -77,7 +77,15 @@ namespace InkPoc.Controls
                 {
                     CanvasSize = new Size(inkCanvas.ActualWidth, inkCanvas.ActualHeight);
                 }
-            };           
+            };
+
+            inkCanvas.InkPresenter.UnprocessedInput.PointerEntered += (s, e) =>
+            {
+                if (e.CurrentPoint.PointerDevice.PointerDeviceType == PointerDeviceType.Pen)
+                {
+                    EnableTouch = false;
+                }
+            };
         }
 
         public InkSimpleUndoRedoManager UndoRedoManager { get; set; }
@@ -259,15 +267,7 @@ namespace InkPoc.Controls
 
         private async void RecognizeShapes_Click(object sender, RoutedEventArgs e) => await RecognizeManager.AnalyzeStrokesAsync();
 
-        private async void RecognizeText_Click(object sender, RoutedEventArgs e) => await RecognizeManager.AnalyzeTextAsync();
-
-        private void InkCanvas_PointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-            if (e.Pointer.PointerDeviceType == PointerDeviceType.Pen)
-            {
-                EnableTouch = false;
-            }
-        }       
+        private async void RecognizeText_Click(object sender, RoutedEventArgs e) => await RecognizeManager.AnalyzeTextAsync();    
 
         private void Clear()
         {

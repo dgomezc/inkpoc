@@ -79,8 +79,7 @@
                 <!-- Canvas for displaying ink. -->
                 <InkCanvas x:Name="inkCanvas"
                     HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    PointerEntered="InkCanvas_PointerEntered"/>
+                    VerticalAlignment="Stretch"/>
             </Grid>
         </ScrollViewer>
     </Grid>
