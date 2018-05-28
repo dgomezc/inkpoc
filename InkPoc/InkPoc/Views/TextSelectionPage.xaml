@@ -1,0 +1,56 @@
+﻿<Page
+    x:Class="InkPoc.Views.TextSelectionPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Style="{StaticResource PageStyle}"
+    mc:Ignorable="d">
+    <Grid
+        x:Name="ContentArea"
+        Margin="{StaticResource MediumLeftRightMargin}">
+        <Grid
+            Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <CommandBar DefaultLabelPosition="Collapsed" HorizontalAlignment="Left">
+                <CommandBar.Content>
+                    <InkToolbar x:Name="toolbar" TargetInkCanvas="{x:Bind inkCanvas}" InitialControls="None">
+                        <InkToolbarBallpointPenButton SelectedStrokeWidth="2"/>
+                        <InkToolbarPencilButton/>
+                        <InkToolbarEraserButton/>
+                        <InkToolbarCustomToolButton
+                        Name="SelectionButton"
+                        Checked="SelectionButton_Checked"
+                        Unchecked="SelectionButton_Unchecked"
+                        ToolTipService.ToolTip="Selection tool">
+                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEF20;" />
+                        </InkToolbarCustomToolButton>
+                        <InkToolbarCustomToggleButton
+                            Name="MouseInkButton"
+                            Checked="MouseInkButton_Checked"
+                            Unchecked="MouseInkButton_Unchecked"
+                            ToolTipService.ToolTip="Toggle mouse inking">
+                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE962;" />
+                        </InkToolbarCustomToggleButton>
+                    </InkToolbar>
+                </CommandBar.Content>
+                <AppBarSeparator Visibility="{Binding ShowClearAll, ElementName=inkControl}" />
+                <AppBarButton Name="ClearButton" Click="ClearButton_Click" Label="Clear all" Icon="Delete" ToolTipService.ToolTip="Clear all" />
+            </CommandBar>            
+            <Grid Grid.Row="1">
+                <ScrollViewer Margin="10,0,10,0">
+                    <Grid BorderBrush="Lime" BorderThickness="2" Background="White">
+                        <Canvas x:Name="selectionCanvas">
+                            <Rectangle x:Name="selectionRect" Stroke="Gray" StrokeThickness="2" StrokeDashArray="2,2" StrokeDashCap="Round" Visibility="Collapsed" />
+                        </Canvas>
+                        <InkCanvas x:Name="inkCanvas"/>
+                    </Grid>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>

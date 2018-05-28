@@ -112,6 +112,7 @@
       <DependentUpon>InkControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Ink\InkCopyPasteManager.cs" />
+    <Compile Include="Helpers\Ink\InkHelper.cs" />
     <Compile Include="Helpers\Ink\InkRecognizeManager.cs" />
     <Compile Include="Helpers\Ink\InkSelectionManager.cs" />
     <Compile Include="Helpers\Ink\InkUndoRedoManager.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="ViewModels\PaintImageViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\SmartCanvasViewModel.cs" />
+    <Compile Include="ViewModels\TextSelectionViewModel.cs" />
     <Compile Include="Views\DrawPage.xaml.cs">
       <DependentUpon>DrawPage.xaml</DependentUpon>
     </Compile>
@@ -140,6 +142,9 @@
     </Compile>
     <Compile Include="Views\SmartCanvasPage.xaml.cs">
       <DependentUpon>SmartCanvasPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TextSelectionPage.xaml.cs">
+      <DependentUpon>TextSelectionPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +195,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\SmartCanvasPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\TextSelectionPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -137,4 +137,8 @@
     <value>SmartCanvas</value>
     <comment>Navigation view item name for SmartCanvas</comment>
   </data>
+  <data name="Shell_TextSelection.Content" xml:space="preserve">
+    <value>TextSelection</value>
+    <comment>Navigation view item name for TextSelection</comment>
+  </data>
 </root>
