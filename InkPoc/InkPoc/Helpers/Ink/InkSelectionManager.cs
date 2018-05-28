@@ -28,6 +28,7 @@ namespace InkPoc.Helpers.Ink
 
         public void ClearSelection()
         {
+            EndSelection();
             InkService.ClearStrokesSelection(_inkPresenter.StrokeContainer);
 
             if (_selectionCanvas.Children.Any())
@@ -49,6 +50,13 @@ namespace InkPoc.Helpers.Ink
 
             // Listen for unprocessed pointer events from modified input.
             // The input is used to provide selection functionality.
+            _inkPresenter.UnprocessedInput.PointerPressed += UnprocessedInput_PointerPressed;
+            _inkPresenter.UnprocessedInput.PointerMoved += UnprocessedInput_PointerMoved;
+            _inkPresenter.UnprocessedInput.PointerReleased += UnprocessedInput_PointerReleased;
+        }
+
+        public void EndSelection()
+        {
             _inkPresenter.UnprocessedInput.PointerPressed += UnprocessedInput_PointerPressed;
             _inkPresenter.UnprocessedInput.PointerMoved += UnprocessedInput_PointerMoved;
             _inkPresenter.UnprocessedInput.PointerReleased += UnprocessedInput_PointerReleased;

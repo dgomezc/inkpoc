@@ -249,9 +249,11 @@ namespace InkPoc.Controls
 
         private async void openFile_Click(object sender, RoutedEventArgs e) => await InkService.LoadInkAsync(inkCanvas.InkPresenter.StrokeContainer);
 
-        private async void SaveFile_Click(object sender, RoutedEventArgs e) => await InkService.SaveInkAsync(inkCanvas.InkPresenter.StrokeContainer);                
-        
-        private void Selection_Click(object sender, RoutedEventArgs e) => SelectionManager.StartSelection();
+        private async void SaveFile_Click(object sender, RoutedEventArgs e) => await InkService.SaveInkAsync(inkCanvas.InkPresenter.StrokeContainer);
+
+        private void SelectionButton_Checked(object sender, RoutedEventArgs e) => SelectionManager.StartSelection();
+
+        private void SelectionButton_Unchecked(object sender, RoutedEventArgs e) => SelectionManager.EndSelection();
 
         private void Cut_Click(object sender, RoutedEventArgs e)
         {

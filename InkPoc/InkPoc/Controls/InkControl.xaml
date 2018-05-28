@@ -16,10 +16,11 @@
         <CommandBar DefaultLabelPosition="Collapsed" HorizontalAlignment="Left">
             <CommandBar.Content>
                 <InkToolbar x:Name="toolbar" TargetInkCanvas="{x:Bind inkCanvas}">
-                    <InkToolbarCustomToolButton 
-                            Click="Selection_Click"
-                            Visibility="{Binding ShowSelectionTool, ElementName=inkControl}"
-                            ToolTipService.ToolTip="Selection tool">
+                    <InkToolbarCustomToolButton
+                        Checked="SelectionButton_Checked"
+                        Unchecked="SelectionButton_Unchecked"
+                        Visibility="{Binding ShowSelectionTool, ElementName=inkControl}"
+                        ToolTipService.ToolTip="Selection tool">
                         <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEF20;" />
                     </InkToolbarCustomToolButton>
                     <InkToolbarCustomToggleButton
