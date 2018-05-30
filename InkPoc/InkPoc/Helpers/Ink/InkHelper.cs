@@ -20,33 +20,6 @@ namespace InkPoc.Helpers.Ink
     public class InkHelper
     {
         #region Touch Helpers
-        public static bool IfAContainsB(Rect A, Rect B)
-        {
-            // TODOYIBOSUN: implement in real
-            bool contained = false;
-            var intersect = RectHelper.Intersect(A, B);
-            if (!intersect.IsEmpty)
-            {
-                var areaIntersect = intersect.Width * intersect.Height;
-                var areaB = B.Width * B.Height;
-                contained = ((areaIntersect / areaB) > 0.8);
-            }
-            return contained;
-        }
-
-        private static IInkAnalysisNode FindHitNodeByKind(ref InkAnalyzer ia, Point pt, InkAnalysisNodeKind kind, InkStrokeContainer strokeContainer = null)
-        {
-            var nodes = ia.AnalysisRoot.FindNodes(kind);
-            foreach (var node in nodes)
-            {
-                var rect = (strokeContainer == null) ? node.BoundingRect : GetCurrentBoundingRectOfNode(strokeContainer, node);
-                if (RectHelper.Contains(rect, pt))
-                {
-                    return node;
-                }
-            }
-            return null;
-        }
 
         public static IInkAnalysisNode FindHitNode(ref InkAnalyzer ia, Point pt, InkStrokeContainer strokeContainer = null)
         {
@@ -62,9 +35,25 @@ namespace InkPoc.Helpers.Ink
             }
             return node;
         }
+                
+        private static IInkAnalysisNode FindHitNodeByKind(ref InkAnalyzer ia, Point pt, InkAnalysisNodeKind kind, InkStrokeContainer strokeContainer = null)
+        {
+            var nodes = ia.AnalysisRoot.FindNodes(kind);
+            foreach (var node in nodes)
+            {
+                var rect = (strokeContainer == null) ? node.BoundingRect : GetCurrentBoundingRectOfNode(strokeContainer, node);
+                if (RectHelper.Contains(rect, pt))
+                {
+                    return node;
+                }
+            }
+            return null;
+        }
+                
         #endregion
 
         #region Alignment Helper
+
         public static Rect GetCurrentBoundingRectOfNode(InkStrokeContainer strokeContainer, IInkAnalysisNode node)
         {
             Rect rect = new Rect();
@@ -84,70 +73,12 @@ namespace InkPoc.Helpers.Ink
             }
             return rect;
         }
-
-        public static Matrix3x2 ComputeAlignmentMX(Rect rect, double alignmentReference, AlignmentOption option, double tolerance = 0)
-        {
-            Matrix3x2 mx = Matrix3x2.Identity;
-            double shift = 0;
-
-            switch (option)
-            {
-                case AlignmentOption.Left:
-                    shift = alignmentReference - rect.Left;
-                    break;
-                case AlignmentOption.Right:
-                    shift = alignmentReference - rect.Right;
-                    break;
-                case AlignmentOption.Center:
-                    shift = alignmentReference - (rect.Left + rect.Right) / 2;
-                    break;
-                default:
-                    break;
-            }
-
-            if (System.Math.Abs(shift) > tolerance)
-            {
-                mx = GetTranslationMX(shift, 0);
-            }
-            return mx;
-        }
-
+                
         public static Matrix3x2 GetTranslationMX(double x, double y)
         {
             return Matrix3x2.CreateTranslation((float)x, (float)y);
         }
-
-        public static Matrix3x2 GetScaleMX(double x, double y, double scaleFactor)
-        {
-            var mx1 = GetTranslationMX(-x, -y);
-            var mx2 = Matrix3x2.CreateScale((float)scaleFactor);
-            var mx3 = GetTranslationMX(x, y);
-            return mx1 * mx2 * mx3;
-        }
-
-        public static double GetRotationAngle(IInkAnalysisNode node)
-        {
-            var rrect = node.RotatedBoundingRect;
-            var TopLeft = rrect[0];
-            var TopRight = rrect[1];
-
-            var dy = TopRight.Y - TopLeft.Y;
-            var dx = TopRight.X - TopLeft.X;
-            var theta = -1 * System.Math.Atan2(dy, dx);
-            return theta;
-        }
-
-        public static Matrix3x2 GetRotationMX(IInkAnalysisNode node, double theta = 0)
-        {
-            if (theta == 0)
-            {
-                theta = GetRotationAngle(node);
-            }
-            var rect = node.BoundingRect;
-            var center = new Vector2((float)(rect.Left + rect.Right) / 2, (float)(rect.Top + rect.Bottom) / 2);
-            return Matrix3x2.CreateRotation((float)theta, center);
-        }
-
+                
         private static void TransformInkById(InkStrokeContainer strokeContainer, IReadOnlyList<uint> strokeIds, Matrix3x2 mx)
         {
             foreach (var id in strokeIds)
@@ -166,37 +97,10 @@ namespace InkPoc.Helpers.Ink
             }
         }
 
-        public static void AlignBaseline(InkStrokeContainer strokes, IInkAnalysisNode node)
-        {
-            if (node != null && node.Kind == InkAnalysisNodeKind.Line)
-            {
-                double baseline = node.BoundingRect.Bottom;
-                foreach (var word in node.Children)
-                {
-                    double offsetY = word.BoundingRect.Bottom - baseline;
-
-                    var mx = Matrix3x2.CreateTranslation(0, (float)offsetY);
-                    InkHelper.TransformInk(strokes, word, mx);
-                }
-            }
-        }
-        #endregion
-
-        #region Styling Helper
-        public static void ChangeInkColorByNode(InkStrokeContainer strokeContainer, IInkAnalysisNode node, Color color)
-        {
-            var strokeIds = GetNodeStrokeIds(node);
-            foreach (var id in strokeIds)
-            {
-                var stroke = strokeContainer.GetStrokeById(id);
-                var drawingAttributes = stroke.DrawingAttributes;
-                drawingAttributes.Color = color;
-                stroke.DrawingAttributes = drawingAttributes;
-            }
-        }
         #endregion
 
         #region InkAnalyzer Operation Simplifier
+
         public static IReadOnlyList<uint> GetNodeStrokeIds(IInkAnalysisNode node)
         {
             var strokeIds = node.GetStrokeIds();
@@ -205,18 +109,6 @@ namespace InkPoc.Helpers.Ink
                 strokeIds = new HashSet<uint>(strokeIds).ToList<uint>();
             }
             return strokeIds;
-        }
-
-        public static void RemoveInkForNode(InkAnalyzer inkAnalyzer, InkStrokeContainer strokeContainer, IInkAnalysisNode node)
-        {
-            var strokeIds = GetNodeStrokeIds(node);
-            inkAnalyzer.RemoveDataForStrokes(strokeIds);
-
-            foreach (var id in strokeIds)
-            {
-                strokeContainer.GetStrokeById(id).Selected = true;
-            }
-            strokeContainer.DeleteSelected();
         }
 
         public static void UpdateInkForNode(InkAnalyzer inkAnalyzer, InkStrokeContainer strokeContainer, IInkAnalysisNode node)
@@ -248,16 +140,7 @@ namespace InkPoc.Helpers.Ink
                 ExtractWordsAndBullets(child, ref words);
             }
         }
-
-        public static List<IInkAnalysisNode> ExtractWordNodesInParagraph(IInkAnalysisNode node)
-        {
-            List<IInkAnalysisNode> words = new List<IInkAnalysisNode>();
-            if (node.Kind == InkAnalysisNodeKind.Paragraph)
-            {
-                ExtractWordsAndBullets(node, ref words);
-            }
-            return words;
-        }
+        
         #endregion
     }
 }
