@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI.Input.Inking;
 using Windows.UI.Input.Inking.Analysis;
 using Windows.UI.Xaml;
@@ -46,11 +47,38 @@ namespace InkPoc.Helpers.Ink
             return result.Status == InkAnalysisStatus.Updated;
         }
 
+        public IInkAnalysisNode FindHitNode(Point position)
+        {
+            // Start with smallest scope
+            var node = FindHitNodeByKind(position, InkAnalysisNodeKind.InkWord);
+            if (node == null)
+            {
+                node = FindHitNodeByKind(position, InkAnalysisNodeKind.InkBullet);
+                if (node == null)
+                {
+                    node = FindHitNodeByKind(position, InkAnalysisNodeKind.InkDrawing);
+                }
+            }
+            return node;
+        }
+
         public void StartTimer() => dispatcherTimer.Start();
 
         public void StopTimer() => dispatcherTimer.Stop();
 
         private async void DispatcherTimer_Tick(object sender, object e) => await AnalyzeAsync();
-                
+
+        private IInkAnalysisNode FindHitNodeByKind(Point position, InkAnalysisNodeKind kind)
+        {
+            var nodes = InkAnalyzer.AnalysisRoot.FindNodes(kind);
+            foreach (var node in nodes)
+            {
+                if (RectHelper.Contains(node.BoundingRect, position))
+                {
+                    return node;
+                }
+            }
+            return null;
+        }
     }
 }

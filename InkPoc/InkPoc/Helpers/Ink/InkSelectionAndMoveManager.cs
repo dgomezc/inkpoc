@@ -25,7 +25,7 @@ namespace InkPoc.Helpers.Ink
         private readonly InkCanvas inkCanvas;
         private readonly InkPresenter inkPresenter;
         private readonly InkStrokeContainer strokeContainer;
-        private InkAsyncAnalyzer analyzer;
+        private readonly InkAsyncAnalyzer analyzer;
 
         private bool enableLasso;
         private Polyline lasso;
@@ -63,6 +63,7 @@ namespace InkPoc.Helpers.Ink
         }
 
 
+        // Selection events
 
         private void InkCanvas_Tapped(object sender, TappedRoutedEventArgs e)
         {
@@ -77,8 +78,7 @@ namespace InkPoc.Helpers.Ink
             }
             else
             {
-                var inkAnalyzer = analyzer.InkAnalyzer; //??
-                selectedNode = InkHelper.FindHitNode(ref inkAnalyzer, position, strokeContainer);
+                selectedNode = analyzer.FindHitNode(position);
                 ShowOrHideSelection(selectedNode);
             }
         }
@@ -95,25 +95,24 @@ namespace InkPoc.Helpers.Ink
         }
 
 
-
-
+        // Drag and Drop selection events
 
         private async void InkCanvas_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             var position = e.GetCurrentPoint(inkCanvas).Position;
+
             while (analyzer.IsAnalyzing)
             {
                 await Task.Delay(TimeSpan.FromMilliseconds(BUSY_WAITING_TIME));
             }
 
-            if ((selectedNode != null) && (RectHelper.Contains(selectedNode.BoundingRect, position)))
+            if (selectedNode != null && RectHelper.Contains(selectedNode.BoundingRect, position))
             {
                 // Pressed on the selected node, do nothing
                 return;
             }
 
-            var inkAnalyzer = analyzer.InkAnalyzer; //??
-            selectedNode = InkHelper.FindHitNode(ref inkAnalyzer, position, strokeContainer);
+            selectedNode = analyzer.FindHitNode(position);
             ShowOrHideSelection(selectedNode);
         }
 
@@ -140,11 +139,7 @@ namespace InkPoc.Helpers.Ink
         {
             if (selectedNode != null)
             {
-                MoveInk(e.Position);
-
-                ////var mx = InkHelper.GetTranslationMX(e.Position.X - dragStartPosition.X, e.Position.Y - dragStartPosition.Y);
-                ////InkHelper.TransformInk(strokeContainer, selectedNode, mx);
-                ////InkHelper.UpdateInkForNode(inkAnalyzer, strokeContainer, selectedNode);
+                MoveSelectedNode(e.Position);
 
                 // Strokes are moved and the analysis result is not valid anymore.
                 await analyzer.AnalyzeAsync();
@@ -152,7 +147,7 @@ namespace InkPoc.Helpers.Ink
         }
 
 
-
+        // Lasso selection events
 
         private void StrokeInput_StrokeStarted(InkStrokeInput sender, PointerEventArgs args)
         {
@@ -166,6 +161,7 @@ namespace InkPoc.Helpers.Ink
         private void InkPresenter_StrokesErased(InkPresenter sender, InkStrokesErasedEventArgs args)
         {
             analyzer.StopTimer();
+
             foreach (var stroke in args.Strokes)
             {
                 // Remove strokes from InkAnalyzer
@@ -218,11 +214,31 @@ namespace InkPoc.Helpers.Ink
         }
 
 
+        //Methods
 
+        public void ClearSelection()
+        {
+            selectionCanvas.Children.Clear();
+            selectedNode = null;
+        }
 
-        
+        public void StartLassoSelectionConfig()
+        {
+            inkPresenter.InputProcessingConfiguration.RightDragAction = InkInputRightDragAction.LeaveUnprocessed;
 
-        private void MoveInk(Point position)
+            inkPresenter.UnprocessedInput.PointerPressed += UnprocessedInput_PointerPressed;
+            inkPresenter.UnprocessedInput.PointerMoved += UnprocessedInput_PointerMoved;
+            inkPresenter.UnprocessedInput.PointerReleased += UnprocessedInput_PointerReleased;
+        }
+
+        public void EndLassoSelectionConfig()
+        {
+            inkPresenter.UnprocessedInput.PointerPressed -= UnprocessedInput_PointerPressed;
+            inkPresenter.UnprocessedInput.PointerMoved -= UnprocessedInput_PointerMoved;
+            inkPresenter.UnprocessedInput.PointerReleased -= UnprocessedInput_PointerReleased;
+        }        
+
+        private void MoveSelectedNode(Point position)
         {
             var x = (float)(position.X - dragStartPosition.X);
             var y = (float)(position.Y - dragStartPosition.Y);
@@ -231,7 +247,7 @@ namespace InkPoc.Helpers.Ink
 
             if (!matrix.IsIdentity)
             {
-                var strokeIds = InkHelper.GetNodeStrokeIds(selectedNode);
+                var strokeIds = GetNodeStrokeIds(selectedNode);
                 foreach (var id in strokeIds)
                 {
                     var stroke = strokeContainer.GetStrokeById(id);
@@ -239,6 +255,16 @@ namespace InkPoc.Helpers.Ink
                     analyzer.InkAnalyzer.ReplaceDataForStroke(strokeContainer.GetStrokeById(id));
                 }
             }
+        }
+
+        private IReadOnlyList<uint> GetNodeStrokeIds(IInkAnalysisNode node)
+        {
+            var strokeIds = node.GetStrokeIds();
+            if (node.Kind == InkAnalysisNodeKind.Paragraph && node.Children[0].Kind == InkAnalysisNodeKind.ListItem)
+            {
+                strokeIds = new HashSet<uint>(strokeIds).ToList();
+            }
+            return strokeIds;
         }
 
         private void ExpandSelection()
@@ -263,13 +289,14 @@ namespace InkPoc.Helpers.Ink
 
         private void ShowOrHideSelection(IInkAnalysisNode node)
         {
-            if (node == null)
+            if (node != null)
+            {
+                UpdateSelection(node.BoundingRect);
+            }
+            else
             {
                 ClearSelection();
-                return;
             }
-
-            UpdateSelection(node.BoundingRect);
         }        
 
         private void UpdateSelection(Rect rect)
@@ -311,28 +338,6 @@ namespace InkPoc.Helpers.Ink
             }
             
             return selectionRectange;
-        }
-
-        public void ClearSelection()
-        {
-            selectionCanvas.Children.Clear();
-            selectedNode = null;
-        }
-
-        public void StartLassoSelectionConfig()
-        {
-            inkPresenter.InputProcessingConfiguration.RightDragAction = InkInputRightDragAction.LeaveUnprocessed;
-
-            inkPresenter.UnprocessedInput.PointerPressed += UnprocessedInput_PointerPressed;
-            inkPresenter.UnprocessedInput.PointerMoved += UnprocessedInput_PointerMoved;
-            inkPresenter.UnprocessedInput.PointerReleased += UnprocessedInput_PointerReleased;
-        }
-
-        public void EndLassoSelectionConfig()
-        {
-            inkPresenter.UnprocessedInput.PointerPressed -= UnprocessedInput_PointerPressed;
-            inkPresenter.UnprocessedInput.PointerMoved -= UnprocessedInput_PointerMoved;
-            inkPresenter.UnprocessedInput.PointerReleased -= UnprocessedInput_PointerReleased;
         }
     }
 }
