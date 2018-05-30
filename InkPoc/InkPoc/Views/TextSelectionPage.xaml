@@ -44,10 +44,8 @@
             <Grid Grid.Row="1">
                 <ScrollViewer Margin="10,0,10,0">
                     <Grid BorderBrush="Lime" BorderThickness="2" Background="White">
-                        <Canvas x:Name="selectionCanvas">
-                            <Rectangle x:Name="selectionRect" Stroke="Gray" StrokeThickness="2" StrokeDashArray="2,2" StrokeDashCap="Round" Visibility="Collapsed" />
-                        </Canvas>
                         <InkCanvas x:Name="inkCanvas"/>
+                        <Canvas x:Name="selectionCanvas" />                        
                     </Grid>
                 </ScrollViewer>
             </Grid>

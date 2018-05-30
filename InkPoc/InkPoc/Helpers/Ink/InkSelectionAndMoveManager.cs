@@ -36,15 +36,14 @@ namespace InkPoc.Helpers.Ink
         DateTime lastDoubleTapTime;
         Point dragStartPosition;
 
-        public InkSelectionAndMoveManager(InkCanvas _inkCanvas, Canvas _selectionCanvas)
+        public InkSelectionAndMoveManager(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkAsyncAnalyzer _analyzer)
         {
             // Initialize properties
             inkCanvas = _inkCanvas;
             selectionCanvas = _selectionCanvas;
             inkPresenter = inkCanvas.InkPresenter;
             strokeContainer = inkPresenter.StrokeContainer;
-            analyzer = new InkAsyncAnalyzer(strokeContainer);
-            inkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen | CoreInputDeviceTypes.Touch;
+            analyzer = _analyzer;
 
             // selection on tap
             this.inkCanvas.Tapped += InkCanvas_Tapped;
@@ -161,10 +160,7 @@ namespace InkPoc.Helpers.Ink
             analyzer.StopTimer();
 
             // Quit lasso selection state
-            //lassoSelectionToggleButton.IsChecked = false;
-            inkPresenter.UnprocessedInput.PointerPressed -= UnprocessedInput_PointerPressed;
-            inkPresenter.UnprocessedInput.PointerMoved -= UnprocessedInput_PointerMoved;
-            inkPresenter.UnprocessedInput.PointerReleased -= UnprocessedInput_PointerReleased;
+            EndLassoSelectionConfig();
         }
 
         private void InkPresenter_StrokesErased(InkPresenter sender, InkStrokesErasedEventArgs args)
@@ -178,10 +174,7 @@ namespace InkPoc.Helpers.Ink
             analyzer.StartTimer();
 
             // Quit lasso selection state
-            //lassoSelectionToggleButton.IsChecked = false;
-            inkPresenter.UnprocessedInput.PointerPressed -= UnprocessedInput_PointerPressed;
-            inkPresenter.UnprocessedInput.PointerMoved -= UnprocessedInput_PointerMoved;
-            inkPresenter.UnprocessedInput.PointerReleased -= UnprocessedInput_PointerReleased;
+            EndLassoSelectionConfig();
         }
 
         private void InkPresenter_StrokesCollected(InkPresenter sender, InkStrokesCollectedEventArgs args)
@@ -320,6 +313,26 @@ namespace InkPoc.Helpers.Ink
             return selectionRectange;
         }
 
-        private void ClearSelection() => selectionCanvas.Children.Clear();
+        public void ClearSelection()
+        {
+            selectionCanvas.Children.Clear();
+            selectedNode = null;
+        }
+
+        public void StartLassoSelectionConfig()
+        {
+            inkPresenter.InputProcessingConfiguration.RightDragAction = InkInputRightDragAction.LeaveUnprocessed;
+
+            inkPresenter.UnprocessedInput.PointerPressed += UnprocessedInput_PointerPressed;
+            inkPresenter.UnprocessedInput.PointerMoved += UnprocessedInput_PointerMoved;
+            inkPresenter.UnprocessedInput.PointerReleased += UnprocessedInput_PointerReleased;
+        }
+
+        public void EndLassoSelectionConfig()
+        {
+            inkPresenter.UnprocessedInput.PointerPressed -= UnprocessedInput_PointerPressed;
+            inkPresenter.UnprocessedInput.PointerMoved -= UnprocessedInput_PointerMoved;
+            inkPresenter.UnprocessedInput.PointerReleased -= UnprocessedInput_PointerReleased;
+        }
     }
 }
