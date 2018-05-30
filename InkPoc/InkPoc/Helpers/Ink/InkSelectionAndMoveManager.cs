@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Input.Inking;
 using Windows.UI.Input.Inking.Analysis;
 using Windows.UI.Xaml;
@@ -26,20 +27,24 @@ namespace InkPoc.Helpers.Ink
         private readonly InkStrokeContainer strokeContainer;
         private InkAsyncAnalyzer analyzer;
 
+        private bool enableLasso;
+        private Polyline lasso;
+
         IInkAnalysisNode selectedNode;
         private readonly Canvas selectionCanvas;
 
         DateTime lastDoubleTapTime;
         Point dragStartPosition;
 
-        public InkSelectionAndMoveManager(InkCanvas inkCanvas, Canvas selectionCanvas)
+        public InkSelectionAndMoveManager(InkCanvas _inkCanvas, Canvas _selectionCanvas)
         {
             // Initialize properties
-            this.inkCanvas = inkCanvas;
-            this.selectionCanvas = selectionCanvas;
+            inkCanvas = _inkCanvas;
+            selectionCanvas = _selectionCanvas;
             inkPresenter = inkCanvas.InkPresenter;
             strokeContainer = inkPresenter.StrokeContainer;
             analyzer = new InkAsyncAnalyzer(strokeContainer);
+            inkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen | CoreInputDeviceTypes.Touch;
 
             // selection on tap
             this.inkCanvas.Tapped += InkCanvas_Tapped;
@@ -51,7 +56,14 @@ namespace InkPoc.Helpers.Ink
             inkCanvas.ManipulationStarted += InkCanvas_ManipulationStarted;
             inkCanvas.ManipulationDelta += InkCanvas_ManipulationDelta;
             inkCanvas.ManipulationCompleted += InkCanvas_ManipulationCompleted;
+
+            // lasso selection
+            inkPresenter.StrokesCollected += InkPresenter_StrokesCollected;
+            inkPresenter.StrokeInput.StrokeStarted += StrokeInput_StrokeStarted;
+            inkPresenter.StrokesErased += InkPresenter_StrokesErased;
         }
+
+
 
         private void InkCanvas_Tapped(object sender, TappedRoutedEventArgs e)
         {
@@ -142,6 +154,80 @@ namespace InkPoc.Helpers.Ink
 
 
 
+
+        private void StrokeInput_StrokeStarted(InkStrokeInput sender, PointerEventArgs args)
+        {
+            // Don't perform analysis while user is inking
+            analyzer.StopTimer();
+
+            // Quit lasso selection state
+            //lassoSelectionToggleButton.IsChecked = false;
+            inkPresenter.UnprocessedInput.PointerPressed -= UnprocessedInput_PointerPressed;
+            inkPresenter.UnprocessedInput.PointerMoved -= UnprocessedInput_PointerMoved;
+            inkPresenter.UnprocessedInput.PointerReleased -= UnprocessedInput_PointerReleased;
+        }
+
+        private void InkPresenter_StrokesErased(InkPresenter sender, InkStrokesErasedEventArgs args)
+        {
+            analyzer.StopTimer();
+            foreach (var stroke in args.Strokes)
+            {
+                // Remove strokes from InkAnalyzer
+                analyzer.InkAnalyzer.RemoveDataForStroke(stroke.Id);
+            }
+            analyzer.StartTimer();
+
+            // Quit lasso selection state
+            //lassoSelectionToggleButton.IsChecked = false;
+            inkPresenter.UnprocessedInput.PointerPressed -= UnprocessedInput_PointerPressed;
+            inkPresenter.UnprocessedInput.PointerMoved -= UnprocessedInput_PointerMoved;
+            inkPresenter.UnprocessedInput.PointerReleased -= UnprocessedInput_PointerReleased;
+        }
+
+        private void InkPresenter_StrokesCollected(InkPresenter sender, InkStrokesCollectedEventArgs args)
+        {
+            analyzer.StopTimer();
+            analyzer.InkAnalyzer.AddDataForStrokes(args.Strokes);
+            analyzer.StartTimer();
+        }
+
+        private void UnprocessedInput_PointerPressed(InkUnprocessedInput sender, PointerEventArgs args)
+        {
+            lasso = new Polyline()
+            {
+                Stroke = new SolidColorBrush(Colors.Blue),
+                StrokeThickness = 1,
+                StrokeDashArray = new DoubleCollection() { 5, 2 },
+            };
+
+            lasso.Points.Add(args.CurrentPoint.RawPosition);
+            selectionCanvas.Children.Add(lasso);
+            enableLasso = true;
+        }
+
+        private void UnprocessedInput_PointerMoved(InkUnprocessedInput sender, PointerEventArgs args)
+        {
+            if (enableLasso)
+            {
+                lasso.Points.Add(args.CurrentPoint.RawPosition);
+            }
+        }
+
+        private void UnprocessedInput_PointerReleased(InkUnprocessedInput sender, PointerEventArgs args)
+        {
+            lasso.Points.Add(args.CurrentPoint.RawPosition);
+
+            var rect = strokeContainer.SelectWithPolyLine(lasso.Points);
+            enableLasso = false;
+
+            selectionCanvas.Children.Remove(lasso);
+            UpdateSelection(rect);
+        }
+
+
+
+
+        
 
         private void MoveInk(Point position)
         {
