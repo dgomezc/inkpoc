@@ -38,6 +38,9 @@
                         </InkToolbarCustomToggleButton>
                     </InkToolbar>
                 </CommandBar.Content>
+                <AppBarSeparator Visibility="{Binding ShowUndoRedo, ElementName=inkControl}" />
+                <AppBarButton Click="Undo_Click" Label="Undo" Icon="Undo" ToolTipService.ToolTip="Undo" />
+                <AppBarButton Click="Redo_Click" Label="Redo" Icon="Redo" ToolTipService.ToolTip="Redo" />
                 <AppBarSeparator Visibility="{Binding ShowClearAll, ElementName=inkControl}" />
                 <AppBarButton Name="ClearButton" Click="ClearButton_Click" Label="Clear all" Icon="Delete" ToolTipService.ToolTip="Clear all" />
             </CommandBar>            

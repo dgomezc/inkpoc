@@ -120,6 +120,7 @@
     <Compile Include="Helpers\Ink\InkSimpleUndoRedoManager.cs" />
     <Compile Include="Helpers\Ink\UndoRedoElement.cs" />
     <Compile Include="Helpers\Ink\UndoRedoOperation.cs" />
+    <Compile Include="Helpers\Ink\UndoRedo\InkUndoRedoWithAnalyzerManager.cs" />
     <Compile Include="Helpers\NavHelper.cs" />
     <Compile Include="Helpers\Observable.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
