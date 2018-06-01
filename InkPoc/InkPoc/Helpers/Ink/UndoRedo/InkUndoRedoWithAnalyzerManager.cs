@@ -25,7 +25,7 @@ namespace InkPoc.Helpers.Ink.UndoRedo
             strokeService = new InkStrokeService(inkCanvas.InkPresenter.StrokeContainer);
 
             inkCanvas.InkPresenter.StrokesCollected += (s, e) => AddOperation(new AddStrokeUndoRedoOperation(e.Strokes, strokeService));
-            inkCanvas.InkPresenter.StrokesErased += (s, e) => AddOperation(new AddStrokeUndoRedoOperation(e.Strokes, strokeService), clearRedoStack: false);
+            inkCanvas.InkPresenter.StrokesErased += (s, e) => AddOperation(new RemoveStrokeUndoRedoOperation(e.Strokes, strokeService), clearRedoStack: false);
         }
 
         public void Reset()
@@ -82,71 +82,72 @@ namespace InkPoc.Helpers.Ink.UndoRedo
 
     public class AddStrokeUndoRedoOperation : IUndoRedoOperation
     {
-        private IReadOnlyList<InkStroke> strokes;
+        private List<InkStroke> strokes;
         private readonly InkStrokeService strokeService;
 
-        public AddStrokeUndoRedoOperation(IReadOnlyList<InkStroke> _strokes, InkStrokeService _strokeService)
+        public AddStrokeUndoRedoOperation(IEnumerable<InkStroke> _strokes, InkStrokeService _strokeService)
         {
-            strokes = _strokes;
+            strokes = new List<InkStroke>(_strokes);
             strokeService = _strokeService;
-        }
 
-        public void ExecuteUndo()
-        {
-            foreach (var stroke in strokes)
-            {
-                strokeService.RemoveStrokeToContainer(stroke);
-            }
+            strokeService.AddStrokeEvent += StrokeService_AddStrokeEvent;
         }
+        
+        public void ExecuteUndo() => strokes.ForEach(s => strokeService.RemoveStrokeToContainer(s));
 
-        public void ExecuteRedo()
+        public void ExecuteRedo() => strokes.ToList().ForEach(s => strokeService.AddStrokeToContainer(s));
+
+        private void StrokeService_AddStrokeEvent(object sender, AddStrokeToContainerEventArgs e)
         {
-            var newStrokes = new List<InkStroke>();
-            foreach (var stroke in strokes)
+            if (e.NewStroke == null)
             {
-                var newStroke = strokeService.AddStrokeToContainer(stroke);
-                newStrokes.Add(newStroke);
+                return;
             }
 
-            strokes = newStrokes;
+            var removedStrokes = strokes.RemoveAll(s => s.Id == e.OldStroke?.Id);
+            if (removedStrokes > 0)
+            {
+                strokes.Add(e.NewStroke);
+            }
         }
     }
 
     public class RemoveStrokeUndoRedoOperation : IUndoRedoOperation
     {
-        private IReadOnlyList<InkStroke> strokes;
+        private List<InkStroke> strokes;
         private readonly InkStrokeService strokeService;
 
-        public RemoveStrokeUndoRedoOperation(IReadOnlyList<InkStroke> _strokes, InkStrokeService _strokeService)
+        public RemoveStrokeUndoRedoOperation(IEnumerable<InkStroke> _strokes, InkStrokeService _strokeService)
         {
-            strokes = _strokes;
+            strokes = new List<InkStroke>(_strokes);
             strokeService = _strokeService;
+
+            strokeService.AddStrokeEvent += StrokeService_AddStrokeEvent;
         }
 
-        public void ExecuteRedo()
-        {
-            foreach (var stroke in strokes)
-            {
-                strokeService.RemoveStrokeToContainer(stroke);
-            }
-        }
+        public void ExecuteRedo() => strokes.ForEach(s => strokeService.RemoveStrokeToContainer(s));
 
-        public void ExecuteUndo()
+        public void ExecuteUndo() => strokes.ToList().ForEach(s => strokeService.AddStrokeToContainer(s));
+
+        private void StrokeService_AddStrokeEvent(object sender, AddStrokeToContainerEventArgs e)
         {
-            var newStrokes = new List<InkStroke>();
-            foreach (var stroke in strokes)
+            if (e.NewStroke == null)
             {
-                var newStroke = strokeService.AddStrokeToContainer(stroke);
-                newStrokes.Add(newStroke);
+                return;
             }
 
-            strokes = newStrokes;
+            var changes = strokes.RemoveAll(s => s.Id == e.OldStroke?.Id);
+            if (changes > 0)
+            {
+                strokes.Add(e.NewStroke);
+            }
         }
     }
-
-
+    
     public class InkStrokeService
     {
+        public event EventHandler<AddStrokeToContainerEventArgs> AddStrokeEvent;
+
         private readonly InkStrokeContainer strokeContainer;
 
         public InkStrokeService(InkStrokeContainer _strokeContainer)
@@ -159,16 +160,7 @@ namespace InkPoc.Helpers.Ink.UndoRedo
             var newStroke = stroke.Clone();
             strokeContainer.AddStroke(newStroke);
 
-            ////// Update old strokes in stacks with new Stroke Id
-            ////_undoStack
-            ////   .Where(e => e.Stroke.Id == stroke.Id)
-            ////   .ToList()
-            ////   .ForEach(e => e.Stroke = newStroke);
-
-            ////_redoStack
-            ////    .Where(e => e.Stroke.Id == stroke.Id)
-            ////    .ToList()
-            ////    .ForEach(e => e.Stroke = newStroke);
+            AddStrokeEvent?.Invoke(this, new AddStrokeToContainerEventArgs(newStroke, stroke));
 
             return newStroke;
         }
@@ -193,6 +185,18 @@ namespace InkPoc.Helpers.Ink.UndoRedo
             {
                 stroke.Selected = false;
             }
+        }
+    }
+
+    public class AddStrokeToContainerEventArgs : EventArgs
+    {
+        public InkStroke OldStroke { get; set; }
+        public InkStroke NewStroke { get; set; }
+
+        public AddStrokeToContainerEventArgs(InkStroke newStroke, InkStroke oldStroke = null)
+        {
+            NewStroke = newStroke;
+            OldStroke = oldStroke;
         }
     }
 }
