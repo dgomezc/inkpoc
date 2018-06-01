@@ -1,4 +1,5 @@
 ﻿using InkPoc.Helpers.Ink;
+using InkPoc.Helpers.Ink.UndoRedo;
 using InkPoc.Services;
 using System;
 using Windows.Devices.Input;
@@ -66,9 +67,11 @@ namespace InkPoc.Controls
                 inkCanvas.InkPresenter.InputDeviceTypes =
                 CoreInputDeviceTypes.Mouse |
                 CoreInputDeviceTypes.Pen |
-                CoreInputDeviceTypes.Touch;                
+                CoreInputDeviceTypes.Touch;
 
-                UndoRedoManager = new InkSimpleUndoRedoManager(inkCanvas.InkPresenter);
+                var analyzer = new InkAsyncAnalyzer(inkCanvas.InkPresenter.StrokeContainer);
+
+                UndoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer);
                 SelectionManager = new InkSelectionManager(inkCanvas.InkPresenter, selectionCanvas);
                 RecognizeManager = new InkRecognizeManager(inkCanvas.InkPresenter, drawingCanvas);
                 CopyPasteManager = new InkCopyPasteManager(inkCanvas.InkPresenter);
@@ -88,7 +91,7 @@ namespace InkPoc.Controls
             };
         }
 
-        public InkSimpleUndoRedoManager UndoRedoManager { get; set; }
+        public InkUndoRedoManager UndoRedoManager { get; set; }
 
         public InkSelectionManager SelectionManager { get; set; }
 

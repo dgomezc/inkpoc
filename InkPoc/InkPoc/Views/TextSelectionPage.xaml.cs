@@ -22,14 +22,14 @@ namespace InkPoc.Views
 
         private InkAsyncAnalyzer analyzer;
         private InkSelectionAndMoveManager selectionManager;
-        private InkUndoRedoWithAnalyzerManager undoRedoManager;
+        private InkUndoRedoManager undoRedoManager;
 
         public TextSelectionPage()
         {
             InitializeComponent();
             analyzer = new InkAsyncAnalyzer(inkCanvas.InkPresenter.StrokeContainer);
             selectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer);
-            undoRedoManager = new InkUndoRedoWithAnalyzerManager(inkCanvas, analyzer);
+            undoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer);
 
             MouseInkButton.IsChecked = true;
         }
