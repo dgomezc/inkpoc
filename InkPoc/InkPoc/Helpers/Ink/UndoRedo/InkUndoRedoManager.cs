@@ -22,7 +22,7 @@ namespace InkPoc.Helpers.Ink.UndoRedo
             strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
 
             inkCanvas.InkPresenter.StrokesCollected += (s, e) => AddOperation(new AddStrokeUndoRedoOperation(e.Strokes, strokeService));
-            inkCanvas.InkPresenter.StrokesErased += (s, e) => AddOperation(new RemoveStrokeUndoRedoOperation(e.Strokes, strokeService), clearRedoStack: false);
+            inkCanvas.InkPresenter.StrokesErased += (s, e) => AddOperation(new RemoveStrokeUndoRedoOperation(e.Strokes, strokeService));
         }
 
         public void Reset()
