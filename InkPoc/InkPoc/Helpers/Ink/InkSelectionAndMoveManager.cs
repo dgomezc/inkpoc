@@ -32,6 +32,7 @@ namespace InkPoc.Helpers.Ink
 
         IInkAnalysisNode selectedNode;
         private readonly Canvas selectionCanvas;
+        Rect selectionStrokesRect = Rect.Empty;
 
         DateTime lastDoubleTapTime;
         Point dragStartPosition;
@@ -106,9 +107,9 @@ namespace InkPoc.Helpers.Ink
                 await Task.Delay(TimeSpan.FromMilliseconds(BUSY_WAITING_TIME));
             }
 
-            if (selectedNode != null && RectHelper.Contains(selectedNode.BoundingRect, position))
+            if(!selectionStrokesRect.IsEmpty && RectHelper.Contains(selectionStrokesRect, position))
             {
-                // Pressed on the selected node, do nothing
+                // Pressed on the selected rect, do nothing
                 return;
             }
 
@@ -118,7 +119,7 @@ namespace InkPoc.Helpers.Ink
 
         private void InkCanvas_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
-            if (selectedNode != null)
+            if (!selectionStrokesRect.IsEmpty)
             {
                 dragStartPosition = e.Position;
             }
@@ -126,7 +127,7 @@ namespace InkPoc.Helpers.Ink
 
         private void InkCanvas_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            if (selectedNode != null)
+            if (!selectionStrokesRect.IsEmpty)
             {
                 Point offset;
                 offset.X = e.Delta.Translation.X;
@@ -137,12 +138,12 @@ namespace InkPoc.Helpers.Ink
 
         private async void InkCanvas_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
-            if (selectedNode != null)
+            if (!selectionStrokesRect.IsEmpty)
             {
-                MoveSelectedNode(e.Position);
+                MoveSelectedStrokes(e.Position);
 
                 // Strokes are moved and the analysis result is not valid anymore.
-                await analyzer.AnalyzeAsync();
+                await analyzer.AnalyzeAsync(); // set true???
             }
         }
 
@@ -206,11 +207,11 @@ namespace InkPoc.Helpers.Ink
         {
             lasso.Points.Add(args.CurrentPoint.RawPosition);
 
-            var rect = strokeContainer.SelectWithPolyLine(lasso.Points);
+            selectionStrokesRect = strokeContainer.SelectWithPolyLine(lasso.Points);
             enableLasso = false;
 
             selectionCanvas.Children.Remove(lasso);
-            UpdateSelection(rect);
+            UpdateSelection(selectionStrokesRect);
         }
 
 
@@ -220,6 +221,7 @@ namespace InkPoc.Helpers.Ink
         {
             selectionCanvas.Children.Clear();
             selectedNode = null;
+            selectionStrokesRect = Rect.Empty;
         }
 
         public void StartLassoSelectionConfig()
@@ -236,9 +238,9 @@ namespace InkPoc.Helpers.Ink
             inkPresenter.UnprocessedInput.PointerPressed -= UnprocessedInput_PointerPressed;
             inkPresenter.UnprocessedInput.PointerMoved -= UnprocessedInput_PointerMoved;
             inkPresenter.UnprocessedInput.PointerReleased -= UnprocessedInput_PointerReleased;
-        }        
-
-        private void MoveSelectedNode(Point position)
+        }
+                
+        private void MoveSelectedStrokes(Point position)
         {
             var x = (float)(position.X - dragStartPosition.X);
             var y = (float)(position.Y - dragStartPosition.Y);
@@ -247,12 +249,10 @@ namespace InkPoc.Helpers.Ink
 
             if (!matrix.IsIdentity)
             {
-                var strokeIds = GetNodeStrokeIds(selectedNode);
-                foreach (var id in strokeIds)
+                foreach (var stroke in strokeContainer.GetStrokes().Where(s => s.Selected))
                 {
-                    var stroke = strokeContainer.GetStrokeById(id);
                     stroke.PointTransform *= matrix;
-                    analyzer.InkAnalyzer.ReplaceDataForStroke(strokeContainer.GetStrokeById(id));
+                    analyzer.InkAnalyzer.ReplaceDataForStroke(stroke);
                 }
             }
         }
@@ -291,13 +291,14 @@ namespace InkPoc.Helpers.Ink
         {
             if (node != null)
             {
-                UpdateSelection(node.BoundingRect);
+                SelectStrokesByNode(node);
+                UpdateSelection(selectionStrokesRect);
             }
             else
             {
                 ClearSelection();
             }
-        }        
+        }
 
         private void UpdateSelection(Rect rect)
         {
@@ -317,13 +318,16 @@ namespace InkPoc.Helpers.Ink
             var top = Canvas.GetTop(selectionRect);
             Canvas.SetLeft(selectionRect, left + offset.X);
             Canvas.SetTop(selectionRect, top + offset.Y);
+
+            selectionStrokesRect.X = left + offset.X;
+            selectionStrokesRect.Y = top + offset.Y;
         }
 
         private Rectangle GetSelectionRectangle()
         {
             var selectionRectange = selectionCanvas.Children.FirstOrDefault(f => f is Rectangle r && r.Name == "selectionRectangle") as Rectangle;
 
-            if(selectionRectange == null)
+            if (selectionRectange == null)
             {
                 selectionRectange = new Rectangle()
                 {
@@ -336,8 +340,33 @@ namespace InkPoc.Helpers.Ink
 
                 selectionCanvas.Children.Add(selectionRectange);
             }
-            
+
             return selectionRectange;
         }
+
+        private void SelectStrokesByNode(IInkAnalysisNode node)
+        {
+            ClearStrokesSelection();
+            var rect = node.BoundingRect;
+
+            var strokeIds = GetNodeStrokeIds(node);
+            foreach (var id in strokeIds)
+            {
+                var stroke = strokeContainer.GetStrokeById(id);
+                stroke.Selected = true;
+                rect.Union(stroke.BoundingRect);
+            }
+
+            selectionStrokesRect = rect;
+        }
+
+        public void ClearStrokesSelection()
+        {
+            var strokes = strokeContainer.GetStrokes();
+            foreach (var stroke in strokes)
+            {
+                stroke.Selected = false;
+            }
+        }        
     }
 }
