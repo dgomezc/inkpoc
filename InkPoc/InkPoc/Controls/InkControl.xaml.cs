@@ -1,6 +1,7 @@
 ﻿using InkPoc.Helpers.Ink;
 using InkPoc.Helpers.Ink.UndoRedo;
 using InkPoc.Services;
+using InkPoc.Services.Ink;
 using System;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -70,9 +71,10 @@ namespace InkPoc.Controls
                 CoreInputDeviceTypes.Touch;
 
                 var analyzer = new InkAsyncAnalyzer(inkCanvas.InkPresenter.StrokeContainer);
+                var strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
 
-                UndoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer);
-                SelectionManager = new InkSelectionManager(inkCanvas.InkPresenter, selectionCanvas);
+                UndoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer, strokeService);
+                SelectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer, strokeService);
                 RecognizeManager = new InkRecognizeManager(inkCanvas.InkPresenter, drawingCanvas);
                 CopyPasteManager = new InkCopyPasteManager(inkCanvas.InkPresenter);
 
@@ -93,7 +95,7 @@ namespace InkPoc.Controls
 
         public InkUndoRedoManager UndoRedoManager { get; set; }
 
-        public InkSelectionManager SelectionManager { get; set; }
+        public InkSelectionAndMoveManager SelectionManager { get; set; }
 
         public InkRecognizeManager RecognizeManager { get; set; }
 
@@ -254,9 +256,9 @@ namespace InkPoc.Controls
 
         private async void SaveFile_Click(object sender, RoutedEventArgs e) => await InkService.SaveInkAsync(inkCanvas.InkPresenter.StrokeContainer);
 
-        private void SelectionButton_Checked(object sender, RoutedEventArgs e) => SelectionManager.StartSelection();
+        private void SelectionButton_Checked(object sender, RoutedEventArgs e) => SelectionManager.StartLassoSelectionConfig();
 
-        private void SelectionButton_Unchecked(object sender, RoutedEventArgs e) => SelectionManager.EndSelection();
+        private void SelectionButton_Unchecked(object sender, RoutedEventArgs e) => SelectionManager.EndLassoSelectionConfig();
 
         private void Cut_Click(object sender, RoutedEventArgs e)
         {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InkPoc.Services.Ink;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -24,8 +25,9 @@ namespace InkPoc.Helpers.Ink
 
         private readonly InkCanvas inkCanvas;
         private readonly InkPresenter inkPresenter;
-        private readonly InkStrokeContainer strokeContainer;
         private readonly InkAsyncAnalyzer analyzer;
+
+        private readonly InkStrokesService strokeService;
 
         private bool enableLasso;
         private Polyline lasso;
@@ -37,14 +39,14 @@ namespace InkPoc.Helpers.Ink
         DateTime lastDoubleTapTime;
         Point dragStartPosition;
 
-        public InkSelectionAndMoveManager(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkAsyncAnalyzer _analyzer)
+        public InkSelectionAndMoveManager(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkAsyncAnalyzer _analyzer, InkStrokesService _strokeService)
         {
             // Initialize properties
             inkCanvas = _inkCanvas;
             selectionCanvas = _selectionCanvas;
             inkPresenter = inkCanvas.InkPresenter;
-            strokeContainer = inkPresenter.StrokeContainer;
             analyzer = _analyzer;
+            strokeService = _strokeService;
 
             // selection on tap
             this.inkCanvas.Tapped += InkCanvas_Tapped;
@@ -207,7 +209,7 @@ namespace InkPoc.Helpers.Ink
         {
             lasso.Points.Add(args.CurrentPoint.RawPosition);
 
-            selectionStrokesRect = strokeContainer.SelectWithPolyLine(lasso.Points);
+            selectionStrokesRect = strokeService.SelectStrokesByPoints(lasso.Points);
             enableLasso = false;
 
             selectionCanvas.Children.Remove(lasso);
@@ -249,7 +251,7 @@ namespace InkPoc.Helpers.Ink
 
             if (!matrix.IsIdentity)
             {
-                foreach (var stroke in strokeContainer.GetStrokes().Where(s => s.Selected))
+                foreach (var stroke in strokeService.GetSelectedStrokes())
                 {
                     stroke.PointTransform *= matrix;
                     analyzer.InkAnalyzer.ReplaceDataForStroke(stroke);
@@ -257,15 +259,7 @@ namespace InkPoc.Helpers.Ink
             }
         }
 
-        private IReadOnlyList<uint> GetNodeStrokeIds(IInkAnalysisNode node)
-        {
-            var strokeIds = node.GetStrokeIds();
-            if (node.Kind == InkAnalysisNodeKind.Paragraph && node.Children[0].Kind == InkAnalysisNodeKind.ListItem)
-            {
-                strokeIds = new HashSet<uint>(strokeIds).ToList();
-            }
-            return strokeIds;
-        }
+        
 
         private void ExpandSelection()
         {
@@ -291,7 +285,7 @@ namespace InkPoc.Helpers.Ink
         {
             if (node != null)
             {
-                SelectStrokesByNode(node);
+                selectionStrokesRect = strokeService.SelectStrokesByNode(node);
                 UpdateSelection(selectionStrokesRect);
             }
             else
@@ -342,31 +336,6 @@ namespace InkPoc.Helpers.Ink
             }
 
             return selectionRectange;
-        }
-
-        private void SelectStrokesByNode(IInkAnalysisNode node)
-        {
-            ClearStrokesSelection();
-            var rect = node.BoundingRect;
-
-            var strokeIds = GetNodeStrokeIds(node);
-            foreach (var id in strokeIds)
-            {
-                var stroke = strokeContainer.GetStrokeById(id);
-                stroke.Selected = true;
-                rect.Union(stroke.BoundingRect);
-            }
-
-            selectionStrokesRect = rect;
-        }
-
-        public void ClearStrokesSelection()
-        {
-            var strokes = strokeContainer.GetStrokes();
-            foreach (var stroke in strokes)
-            {
-                stroke.Selected = false;
-            }
         }        
     }
 }

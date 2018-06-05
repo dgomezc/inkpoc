@@ -7,22 +7,19 @@ namespace InkPoc.Helpers.Ink.UndoRedo
 {
     public class InkUndoRedoManager
     {
-        private readonly InkCanvas inkCanvas;
         private readonly InkAsyncAnalyzer analyzer;
         private readonly InkStrokesService strokeService;
 
         private Stack<IUndoRedoOperation> undoStack = new Stack<IUndoRedoOperation>();
         private Stack<IUndoRedoOperation> redoStack = new Stack<IUndoRedoOperation>();
 
-        public InkUndoRedoManager(InkCanvas _inkCanvas, InkAsyncAnalyzer _analyzer)
+        public InkUndoRedoManager(InkCanvas _inkCanvas, InkAsyncAnalyzer _analyzer, InkStrokesService _strokeService)
         {
-            inkCanvas = _inkCanvas;
             analyzer = _analyzer;
+            strokeService = _strokeService;
 
-            strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
-
-            inkCanvas.InkPresenter.StrokesCollected += (s, e) => AddOperation(new AddStrokeUndoRedoOperation(e.Strokes, strokeService));
-            inkCanvas.InkPresenter.StrokesErased += (s, e) => AddOperation(new RemoveStrokeUndoRedoOperation(e.Strokes, strokeService));
+            _inkCanvas.InkPresenter.StrokesCollected += (s, e) => AddOperation(new AddStrokeUndoRedoOperation(e.Strokes, strokeService));
+            _inkCanvas.InkPresenter.StrokesErased += (s, e) => AddOperation(new RemoveStrokeUndoRedoOperation(e.Strokes, strokeService));
         }
 
         public void Reset()

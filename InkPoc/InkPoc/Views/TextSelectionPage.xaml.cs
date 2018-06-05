@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using InkPoc.Helpers.Ink;
 using InkPoc.Helpers.Ink.UndoRedo;
+using InkPoc.Services.Ink;
 using InkPoc.ViewModels;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -20,16 +21,19 @@ namespace InkPoc.Views
     {
         public TextSelectionViewModel ViewModel { get; } = new TextSelectionViewModel();
 
+        private readonly InkStrokesService strokeService;
         private InkAsyncAnalyzer analyzer;
+
         private InkSelectionAndMoveManager selectionManager;
         private InkUndoRedoManager undoRedoManager;
 
         public TextSelectionPage()
         {
             InitializeComponent();
+            strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
             analyzer = new InkAsyncAnalyzer(inkCanvas.InkPresenter.StrokeContainer);
-            selectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer);
-            undoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer);
+            selectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer, strokeService);
+            undoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer, strokeService);
 
             MouseInkButton.IsChecked = true;
         }
@@ -38,7 +42,7 @@ namespace InkPoc.Views
         {
             analyzer.StopTimer();
 
-            inkCanvas.InkPresenter.StrokeContainer.Clear();
+            strokeService.ClearStrokes();
             analyzer.InkAnalyzer.ClearDataForAllStrokes();
             selectionManager.ClearSelection();
             undoRedoManager.Reset();
