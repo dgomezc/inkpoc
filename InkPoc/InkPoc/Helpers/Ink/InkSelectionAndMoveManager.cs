@@ -38,7 +38,7 @@ namespace InkPoc.Helpers.Ink
 
         DateTime lastDoubleTapTime;
         Point dragStartPosition;
-
+        
         public InkSelectionAndMoveManager(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkAsyncAnalyzer _analyzer, InkStrokesService _strokeService)
         {
             // Initialize properties
@@ -138,14 +138,11 @@ namespace InkPoc.Helpers.Ink
             }
         }
 
-        private async void InkCanvas_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+        private void InkCanvas_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
             if (!selectionStrokesRect.IsEmpty)
             {
-                MoveSelectedStrokes(e.Position);
-
-                // Strokes are moved and the analysis result is not valid anymore.
-                await analyzer.AnalyzeAsync(); // set true???
+                strokeService.MoveSelectedStrokes(dragStartPosition, e.Position);
             }
         }
 
@@ -163,14 +160,7 @@ namespace InkPoc.Helpers.Ink
 
         private void InkPresenter_StrokesErased(InkPresenter sender, InkStrokesErasedEventArgs args)
         {
-            analyzer.StopTimer();
-
-            foreach (var stroke in args.Strokes)
-            {
-                // Remove strokes from InkAnalyzer
-                analyzer.InkAnalyzer.RemoveDataForStroke(stroke.Id);
-            }
-            analyzer.StartTimer();
+            analyzer.RemoveStrokes(args.Strokes);
 
             // Quit lasso selection state
             EndLassoSelectionConfig();
@@ -178,9 +168,7 @@ namespace InkPoc.Helpers.Ink
 
         private void InkPresenter_StrokesCollected(InkPresenter sender, InkStrokesCollectedEventArgs args)
         {
-            analyzer.StopTimer();
-            analyzer.InkAnalyzer.AddDataForStrokes(args.Strokes);
-            analyzer.StartTimer();
+            analyzer.AddStrokes(args.Strokes);
         }
 
         private void UnprocessedInput_PointerPressed(InkUnprocessedInput sender, PointerEventArgs args)
@@ -241,25 +229,6 @@ namespace InkPoc.Helpers.Ink
             inkPresenter.UnprocessedInput.PointerMoved -= UnprocessedInput_PointerMoved;
             inkPresenter.UnprocessedInput.PointerReleased -= UnprocessedInput_PointerReleased;
         }
-                
-        private void MoveSelectedStrokes(Point position)
-        {
-            var x = (float)(position.X - dragStartPosition.X);
-            var y = (float)(position.Y - dragStartPosition.Y);
-
-            var matrix = Matrix3x2.CreateTranslation(x, y);
-
-            if (!matrix.IsIdentity)
-            {
-                foreach (var stroke in strokeService.GetSelectedStrokes())
-                {
-                    stroke.PointTransform *= matrix;
-                    analyzer.InkAnalyzer.ReplaceDataForStroke(stroke);
-                }
-            }
-        }
-
-        
 
         private void ExpandSelection()
         {

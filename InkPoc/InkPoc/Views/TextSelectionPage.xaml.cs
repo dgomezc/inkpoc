@@ -30,20 +30,19 @@ namespace InkPoc.Views
         public TextSelectionPage()
         {
             InitializeComponent();
+
             strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
-            analyzer = new InkAsyncAnalyzer(inkCanvas.InkPresenter.StrokeContainer);
+            analyzer = new InkAsyncAnalyzer(strokeService);
             selectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer, strokeService);
             undoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer, strokeService);
 
             MouseInkButton.IsChecked = true;
-        }
+        }        
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
-            analyzer.StopTimer();
-
-            strokeService.ClearStrokes();
-            analyzer.InkAnalyzer.ClearDataForAllStrokes();
+            analyzer.ClearAnalysis();
+            strokeService.ClearStrokes();            
             selectionManager.ClearSelection();
             undoRedoManager.Reset();
         }
@@ -56,8 +55,16 @@ namespace InkPoc.Views
 
         private void MouseInkButton_Unchecked(object sender, RoutedEventArgs e) => inkCanvas.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Pen;
 
-        private void Undo_Click(object sender, RoutedEventArgs e) => undoRedoManager.Undo();
+        private void Undo_Click(object sender, RoutedEventArgs e)
+        {
+            selectionManager.ClearSelection();
+            undoRedoManager.Undo();
+        }
 
-        private void Redo_Click(object sender, RoutedEventArgs e) => undoRedoManager.Redo();
+        private void Redo_Click(object sender, RoutedEventArgs e)
+        {
+            selectionManager.ClearSelection();
+            undoRedoManager.Redo();
+        }
     }
 }

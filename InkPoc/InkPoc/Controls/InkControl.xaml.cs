@@ -70,8 +70,8 @@ namespace InkPoc.Controls
                 CoreInputDeviceTypes.Pen |
                 CoreInputDeviceTypes.Touch;
 
-                var analyzer = new InkAsyncAnalyzer(inkCanvas.InkPresenter.StrokeContainer);
                 var strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
+                var analyzer = new InkAsyncAnalyzer(strokeService);
 
                 UndoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer, strokeService);
                 SelectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer, strokeService);
