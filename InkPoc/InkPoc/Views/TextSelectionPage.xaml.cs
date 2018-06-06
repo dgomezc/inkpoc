@@ -2,6 +2,7 @@
 using InkPoc.Helpers.Ink.UndoRedo;
 using InkPoc.Services.Ink;
 using InkPoc.ViewModels;
+using System.Linq;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -63,8 +64,13 @@ namespace InkPoc.Views
 
         private async void TransformTextAndShapes_Click(object sender, RoutedEventArgs e)
         {
-            await transformManager.TransformTextAndShapesAsync();
-            selectionManager.ClearSelection();
+            var result = await transformManager.TransformTextAndShapesAsync();
+
+            if(result.TextAndShapes.Any())
+            {
+                selectionManager.ClearSelection();
+                undoRedoManager.AddOperation(new TransformUndoRedoOperation(result, drawingCanvas, strokeService));
+            }
         }
     }
 }

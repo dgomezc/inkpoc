@@ -7,6 +7,7 @@ using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Input.Inking;
 using Windows.UI.Input.Inking.Analysis;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
@@ -26,40 +27,49 @@ namespace InkPoc.Helpers.Ink
             inkAnalyzer = new InkAnalyzer();
         }
 
-        public async Task TransformTextAndShapesAsync()
+        public async Task<InkTransformResult> TransformTextAndShapesAsync()
         {
+            var result = new InkTransformResult();
             var inkStrokes = GetStrokesToConvert();
 
-            if (!inkStrokes.Any())
+            if (inkStrokes.Any())
             {
-                return;
-            }
+                inkAnalyzer.ClearDataForAllStrokes();
+                inkAnalyzer.AddDataForStrokes(inkStrokes);
+                var inkAnalysisResults = await inkAnalyzer.AnalyzeAsync();
 
-            inkAnalyzer.ClearDataForAllStrokes();
-            inkAnalyzer.AddDataForStrokes(inkStrokes);
-            var inkAnalysisResults = await inkAnalyzer.AnalyzeAsync();
+                if (inkAnalysisResults.Status == InkAnalysisStatus.Updated)
+                {
+                    var words = AnalyzeWords();
+                    var shapes = AnalyzeShapes();
 
-            if (inkAnalysisResults.Status == InkAnalysisStatus.Updated)
-            {
-                AnalyzeWords();
-                AnalyzeShapes();
-            }
+                    //Generate result
+                    result.Strokes.AddRange(inkStrokes);
+                    result.TextAndShapes.AddRange(words);
+                    result.TextAndShapes.AddRange(shapes);
+                }
+            }           
+
+            return result;
         }
 
-        private void AnalyzeWords()
+        private IEnumerable<UIElement> AnalyzeWords()
         {
             var inkwordNodes = inkAnalyzer.AnalysisRoot.FindNodes(InkAnalysisNodeKind.InkWord);
+
             foreach (InkAnalysisInkWord node in inkwordNodes)
             {
-                DrawText(node.RecognizedText, node.BoundingRect);
+                var textblock = DrawText(node.RecognizedText, node.BoundingRect);
 
                 var strokesIds = node.GetStrokeIds();
                 strokeService.RemoveStrokesByStrokeIds(strokesIds);
                 inkAnalyzer.RemoveDataForStrokes(strokesIds);
+
+                yield return textblock;
             }
         }
 
-        private void AnalyzeShapes()
+        private IEnumerable<UIElement> AnalyzeShapes()
         {
             var inkdrawingNodes = inkAnalyzer.AnalysisRoot.FindNodes(InkAnalysisNodeKind.InkDrawing);
             foreach (InkAnalysisInkDrawing node in inkdrawingNodes)
@@ -74,11 +84,11 @@ namespace InkPoc.Helpers.Ink
                 {
                     if (node.DrawingKind == InkAnalysisDrawingKind.Circle || node.DrawingKind == InkAnalysisDrawingKind.Ellipse)
                     {
-                        DrawEllipse(node);
+                        yield return DrawEllipse(node);
                     }
                     else
                     {
-                        DrawPolygon(node);
+                        yield return DrawPolygon(node);
                     }
 
                     strokeService.RemoveStrokesByStrokeIds(strokesIds);
@@ -87,7 +97,7 @@ namespace InkPoc.Helpers.Ink
             }
         }
 
-        private void DrawText(string recognizedText, Rect boundingRect)
+        private UIElement DrawText(string recognizedText, Rect boundingRect)
         {
             TextBlock text = new TextBlock();
             Canvas.SetTop(text, boundingRect.Top);
@@ -97,9 +107,10 @@ namespace InkPoc.Helpers.Ink
             text.FontSize = boundingRect.Height;
 
             drawingCanvas.Children.Add(text);
+            return text;
         }
 
-        private void DrawEllipse(InkAnalysisInkDrawing shape)
+        private UIElement DrawEllipse(InkAnalysisInkDrawing shape)
         {
             var points = shape.Points;
             Ellipse ellipse = new Ellipse();
@@ -127,9 +138,11 @@ namespace InkPoc.Helpers.Ink
             ellipse.Stroke = brush;
             ellipse.StrokeThickness = 2;
             drawingCanvas.Children.Add(ellipse);
+
+            return ellipse;
         }
 
-        private void DrawPolygon(InkAnalysisInkDrawing shape)
+        private UIElement DrawPolygon(InkAnalysisInkDrawing shape)
         {
             var points = shape.Points;
             Polygon polygon = new Polygon();
@@ -143,18 +156,20 @@ namespace InkPoc.Helpers.Ink
             polygon.Stroke = brush;
             polygon.StrokeThickness = 2;
             drawingCanvas.Children.Add(polygon);
+
+            return polygon;
         }
-        
+
         private IEnumerable<InkStroke> GetStrokesToConvert()
         {
             var selectedStrokes = strokeService.GetSelectedStrokes();
 
-            if(selectedStrokes.Any())
+            if (selectedStrokes.Any())
             {
                 return selectedStrokes;
             }
 
             return strokeService.GetStrokes();
         }
-    }
+    }    
 }
