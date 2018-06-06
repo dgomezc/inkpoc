@@ -115,10 +115,10 @@
     <Compile Include="Helpers\Ink\InkCopyPasteManager.cs" />
     <Compile Include="Helpers\Ink\InkRecognizeManager.cs" />
     <Compile Include="Helpers\Ink\InkSelectionAndMoveManager.cs" />
-    <Compile Include="Helpers\Ink\InkSelectionManager.cs" />
     <Compile Include="Helpers\Ink\UndoRedo\AddStrokeUndoRedoOperation.cs" />
     <Compile Include="Helpers\Ink\UndoRedo\InkUndoRedoManager.cs" />
     <Compile Include="Helpers\Ink\UndoRedo\IUndoRedoOperation.cs" />
+    <Compile Include="Helpers\Ink\UndoRedo\MoveStrokesUndoRedoOperation.cs" />
     <Compile Include="Helpers\Ink\UndoRedo\RemoveStrokeUndoRedoOperation.cs" />
     <Compile Include="Helpers\NavHelper.cs" />
     <Compile Include="Helpers\Observable.cs" />
@@ -128,6 +128,8 @@
     <Compile Include="Services\InkService.cs" />
     <Compile Include="Services\Ink\AddStrokeToContainerEventArgs.cs" />
     <Compile Include="Services\Ink\InkStrokesService.cs" />
+    <Compile Include="Services\Ink\MoveStrokesEventArgs.cs" />
+    <Compile Include="Services\Ink\RemoveStrokeToContainerEventArgs.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="ViewModels\DrawViewModel.cs" />
     <Compile Include="ViewModels\PaintImageViewModel.cs" />

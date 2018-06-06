@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using InkPoc.Helpers.Ink;
 using InkPoc.Helpers.Ink.UndoRedo;
+using InkPoc.Services.Ink;
 using InkPoc.ViewModels;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -20,26 +21,28 @@ namespace InkPoc.Views
     {
         public TextSelectionViewModel ViewModel { get; } = new TextSelectionViewModel();
 
+        private readonly InkStrokesService strokeService;
         private InkAsyncAnalyzer analyzer;
+
         private InkSelectionAndMoveManager selectionManager;
         private InkUndoRedoManager undoRedoManager;
 
         public TextSelectionPage()
         {
             InitializeComponent();
-            analyzer = new InkAsyncAnalyzer(inkCanvas.InkPresenter.StrokeContainer);
-            selectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer);
-            undoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer);
+
+            strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
+            analyzer = new InkAsyncAnalyzer(strokeService);
+            selectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer, strokeService);
+            undoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer, strokeService);
 
             MouseInkButton.IsChecked = true;
-        }
+        }        
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
-            analyzer.StopTimer();
-
-            inkCanvas.InkPresenter.StrokeContainer.Clear();
-            analyzer.InkAnalyzer.ClearDataForAllStrokes();
+            analyzer.ClearAnalysis();
+            strokeService.ClearStrokes();            
             selectionManager.ClearSelection();
             undoRedoManager.Reset();
         }
@@ -52,8 +55,16 @@ namespace InkPoc.Views
 
         private void MouseInkButton_Unchecked(object sender, RoutedEventArgs e) => inkCanvas.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Pen;
 
-        private void Undo_Click(object sender, RoutedEventArgs e) => undoRedoManager.Undo();
+        private void Undo_Click(object sender, RoutedEventArgs e)
+        {
+            selectionManager.ClearSelection();
+            undoRedoManager.Undo();
+        }
 
-        private void Redo_Click(object sender, RoutedEventArgs e) => undoRedoManager.Redo();
+        private void Redo_Click(object sender, RoutedEventArgs e)
+        {
+            selectionManager.ClearSelection();
+            undoRedoManager.Redo();
+        }
     }
 }

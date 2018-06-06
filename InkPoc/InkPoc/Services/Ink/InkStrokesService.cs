@@ -1,12 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using Windows.Foundation;
 using Windows.UI.Input.Inking;
+using Windows.UI.Input.Inking.Analysis;
+using Windows.UI.Xaml.Media;
 
 namespace InkPoc.Services.Ink
 {
     public class InkStrokesService
     {
         public event EventHandler<AddStrokeToContainerEventArgs> AddStrokeEvent;
+        public event EventHandler<RemoveStrokeToContainerEventArgs> RemoveStrokeEvent;
+        public event EventHandler<MoveStrokesEventArgs> MoveStrokesEvent;
+        public event EventHandler<EventArgs> ClearStrokesEvent;
 
         private readonly InkStrokeContainer strokeContainer;
 
@@ -25,27 +33,104 @@ namespace InkPoc.Services.Ink
             return newStroke;
         }
 
-        public void RemoveStrokeToContainer(InkStroke stroke)
+        public bool RemoveStrokeToContainer(InkStroke stroke)
         {
-            var deleteStroke = strokeContainer
-                .GetStrokes()
-                .FirstOrDefault(s => s.Id == stroke.Id);
-
-            if (deleteStroke != null)
+            var deleteStroke = GetStrokes().FirstOrDefault(s => s.Id == stroke.Id);
+            if (deleteStroke == null)
             {
-                ClearStrokesSelection();
-                deleteStroke.Selected = true;
-                strokeContainer.DeleteSelected();
+                return false;
             }
+
+            ClearStrokesSelection();
+            deleteStroke.Selected = true;
+            strokeContainer.DeleteSelected();
+
+            RemoveStrokeEvent?.Invoke(this, new RemoveStrokeToContainerEventArgs(stroke));
+            return true;
+        }
+
+        public IEnumerable<InkStroke> GetStrokes() => strokeContainer.GetStrokes();
+
+        public IEnumerable<InkStroke> GetSelectedStrokes() => GetStrokes().Where(s => s.Selected);
+
+        public void ClearStrokes()
+        {
+            strokeContainer.Clear();
+            ClearStrokesEvent?.Invoke(this, null);
         }
 
         public void ClearStrokesSelection()
         {
-            foreach (var stroke in strokeContainer.GetStrokes())
+            foreach (var stroke in GetStrokes())
             {
                 stroke.Selected = false;
             }
         }
-    }
 
+        public Rect SelectStrokes(IEnumerable<InkStroke> strokes)
+        {
+            ClearStrokesSelection();
+            var rect = Rect.Empty;
+
+            var strokeIds = strokes.Select(s => s.Id);
+            foreach (var id in strokeIds)
+            {
+                var stroke = strokeContainer.GetStrokeById(id);
+                stroke.Selected = true;
+                rect.Union(stroke.BoundingRect);
+            }
+
+            return rect;
+        }
+
+        public Rect SelectStrokesByNode(IInkAnalysisNode node)
+        {
+            ClearStrokesSelection();
+            var rect = node.BoundingRect;
+
+            var strokeIds = GetNodeStrokeIds(node);
+            foreach (var id in strokeIds)
+            {
+                var stroke = strokeContainer.GetStrokeById(id);
+                stroke.Selected = true;
+                rect.Union(stroke.BoundingRect);
+            }
+
+            return rect;
+        }
+
+        public Rect SelectStrokesByPoints(PointCollection points)
+        {
+            return strokeContainer.SelectWithPolyLine(points);
+        }
+
+        private IReadOnlyList<uint> GetNodeStrokeIds(IInkAnalysisNode node)
+        {
+            var strokeIds = node.GetStrokeIds();
+            if (node.Kind == InkAnalysisNodeKind.Paragraph && node.Children[0].Kind == InkAnalysisNodeKind.ListItem)
+            {
+                strokeIds = new HashSet<uint>(strokeIds).ToList();
+            }
+            return strokeIds;
+        }
+
+        public void MoveSelectedStrokes(Point startPosition, Point endPosition)
+        {
+            var x = (float)(endPosition.X - startPosition.X);
+            var y = (float)(endPosition.Y - startPosition.Y);
+
+            var matrix = Matrix3x2.CreateTranslation(x, y);
+
+            if (!matrix.IsIdentity)
+            {
+                var selectedStrokes = GetSelectedStrokes();
+                foreach (var stroke in selectedStrokes)
+                {
+                    stroke.PointTransform *= matrix;
+                }
+
+                MoveStrokesEvent?.Invoke(this, new MoveStrokesEventArgs(selectedStrokes, startPosition, endPosition));
+            }
+        }
+    }
 }

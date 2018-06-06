@@ -7,22 +7,21 @@ namespace InkPoc.Helpers.Ink.UndoRedo
 {
     public class InkUndoRedoManager
     {
-        private readonly InkCanvas inkCanvas;
         private readonly InkAsyncAnalyzer analyzer;
         private readonly InkStrokesService strokeService;
 
         private Stack<IUndoRedoOperation> undoStack = new Stack<IUndoRedoOperation>();
         private Stack<IUndoRedoOperation> redoStack = new Stack<IUndoRedoOperation>();
 
-        public InkUndoRedoManager(InkCanvas _inkCanvas, InkAsyncAnalyzer _analyzer)
+        public InkUndoRedoManager(InkCanvas _inkCanvas, InkAsyncAnalyzer _analyzer, InkStrokesService _strokeService)
         {
-            inkCanvas = _inkCanvas;
             analyzer = _analyzer;
 
-            strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
+            strokeService = _strokeService;
+            strokeService.MoveStrokesEvent += StrokeService_MoveStrokesEvent;
 
-            inkCanvas.InkPresenter.StrokesCollected += (s, e) => AddOperation(new AddStrokeUndoRedoOperation(e.Strokes, strokeService));
-            inkCanvas.InkPresenter.StrokesErased += (s, e) => AddOperation(new RemoveStrokeUndoRedoOperation(e.Strokes, strokeService));
+            _inkCanvas.InkPresenter.StrokesCollected += (s, e) => AddOperation(new AddStrokeUndoRedoOperation(e.Strokes, strokeService));
+            _inkCanvas.InkPresenter.StrokesErased += (s, e) => AddOperation(new RemoveStrokeUndoRedoOperation(e.Strokes, strokeService));
         }
 
         public void Reset()
@@ -40,9 +39,13 @@ namespace InkPoc.Helpers.Ink.UndoRedo
             if (!CanUndo)
                 return;
 
+            strokeService.MoveStrokesEvent -= StrokeService_MoveStrokesEvent;
+
             var element = undoStack.Pop();
             element.ExecuteUndo();
             redoStack.Push(element);
+
+            strokeService.MoveStrokesEvent += StrokeService_MoveStrokesEvent;
         }
 
         public void Redo()
@@ -50,22 +53,28 @@ namespace InkPoc.Helpers.Ink.UndoRedo
             if (!CanRedo)
                 return;
 
+            strokeService.MoveStrokesEvent -= StrokeService_MoveStrokesEvent;
+
             var element = redoStack.Pop();
             element.ExecuteRedo();           
             undoStack.Push(element);
+
+            strokeService.MoveStrokesEvent += StrokeService_MoveStrokesEvent;
         }
 
-        public void AddOperation(IUndoRedoOperation operation, bool clearRedoStack = true)
+        public void AddOperation(IUndoRedoOperation operation)
         {
             if (operation == null)
                 return;
 
             undoStack.Push(operation);
+            redoStack.Clear();
+        }
 
-            if (clearRedoStack)
-            {
-                redoStack.Clear();
-            }
+        private void StrokeService_MoveStrokesEvent(object sender, MoveStrokesEventArgs e)
+        {
+            var operation = new MoveStrokesUndoRedoOperation(e.Strokes, e.StartPosition, e.EndPosition, strokeService);
+            AddOperation(operation);
         }
     }
 }
