@@ -13,20 +13,20 @@ using Windows.UI.Xaml.Shapes;
 
 namespace InkPoc.Helpers.Ink
 {
-    public class InkConversionManager
+    public class InkTransformManager
     {
         private readonly InkAnalyzer inkAnalyzer;
         private readonly Canvas drawingCanvas;
         private readonly InkStrokesService strokeService;
 
-        public InkConversionManager(Canvas _drawingCanvas, InkStrokesService _strokeService)
+        public InkTransformManager(Canvas _drawingCanvas, InkStrokesService _strokeService)
         {
             drawingCanvas = _drawingCanvas;
             strokeService = _strokeService;
             inkAnalyzer = new InkAnalyzer();
         }
 
-        public async Task ConvertTextAndShapesAsync()
+        public async Task TransformTextAndShapesAsync()
         {
             var inkStrokes = GetStrokesToConvert();
 

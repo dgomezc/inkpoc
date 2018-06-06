@@ -16,7 +16,7 @@ namespace InkPoc.Views
         private InkAsyncAnalyzer analyzer;
 
         private InkSelectionAndMoveManager selectionManager;
-        private InkConversionManager conversionManager;
+        private InkTransformManager transformManager;
         private InkUndoRedoManager undoRedoManager;
 
         public TextSelectionPage()
@@ -26,7 +26,7 @@ namespace InkPoc.Views
             strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
             analyzer = new InkAsyncAnalyzer(strokeService);
             selectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer, strokeService);
-            conversionManager = new InkConversionManager(drawingCanvas, strokeService);
+            transformManager = new InkTransformManager(drawingCanvas, strokeService);
             undoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer, strokeService);
 
             MouseInkButton.IsChecked = true;
@@ -61,9 +61,9 @@ namespace InkPoc.Views
             undoRedoManager.Redo();
         }
 
-        private async void ConvertTextAndShapes_Click(object sender, RoutedEventArgs e)
+        private async void TransformTextAndShapes_Click(object sender, RoutedEventArgs e)
         {
-            await conversionManager.ConvertTextAndShapesAsync();
+            await transformManager.TransformTextAndShapesAsync();
             selectionManager.ClearSelection();
         }
     }

@@ -44,7 +44,7 @@
                 <AppBarSeparator />
                 <AppBarButton Click="ClearButton_Click" Label="Clear all" Icon="Delete" ToolTipService.ToolTip="Clear all" />
 
-                <AppBarButton Label="Convert text and shapes" ToolTipService.ToolTip="Convert text and shapes" Click="ConvertTextAndShapes_Click">
+                <AppBarButton Label="Transform text and shapes" ToolTipService.ToolTip="Transform text and shapes" Click="TransformTextAndShapes_Click">
                     <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEA80;" />
                 </AppBarButton>
 

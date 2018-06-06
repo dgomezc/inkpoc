@@ -33,9 +33,9 @@
             </CommandBar.Content>
 
             <AppBarSeparator Visibility="{Binding ShowRecognize, ElementName=inkControl}" />
-            <AppBarButton Label="Recognize shapes"
-                          ToolTipService.ToolTip="Recognize shapes"
-                          Click="RecognizeShapes_Click"
+            <AppBarButton Label="Transform text and shapes"
+                          ToolTipService.ToolTip="Transform text and shapes"
+                          Click="TransformTextAndShapes_Click"
                           Visibility="{Binding ShowRecognize, ElementName=inkControl}">
                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xF156;" />
             </AppBarButton>
