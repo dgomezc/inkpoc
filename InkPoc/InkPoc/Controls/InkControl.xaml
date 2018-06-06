@@ -39,12 +39,6 @@
                           Visibility="{Binding ShowRecognize, ElementName=inkControl}">
                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xF156;" />
             </AppBarButton>
-            <AppBarButton Label="Recognize text"
-                          ToolTipService.ToolTip="Recognize text"
-                          Click="RecognizeText_Click"
-                          Visibility="{Binding ShowRecognize, ElementName=inkControl}">
-                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8D2;" />
-            </AppBarButton>
 
             <AppBarSeparator Visibility="{Binding ShowCopyPaste, ElementName=inkControl}" />
             <AppBarButton Click="Cut_Click" Label="Cut" Icon="Cut" ToolTipService.ToolTip="Cut" Visibility="{Binding ShowCopyPaste, ElementName=inkControl}" />

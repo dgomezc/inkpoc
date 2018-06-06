@@ -1,4 +1,6 @@
-﻿using System;
+﻿using InkPoc.Services.Ink;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -11,36 +13,31 @@ using Windows.UI.Xaml.Shapes;
 
 namespace InkPoc.Helpers.Ink
 {
-    public class InkRecognizeManager
+    public class InkConversionManager
     {
-        private InkStrokeContainer _container;
-        private Canvas _drawingCanvas;
-        private InkAnalyzer _inkAnalyzer;
+        private readonly InkAnalyzer inkAnalyzer;
+        private readonly Canvas drawingCanvas;
+        private readonly InkStrokesService strokeService;
 
-        public InkRecognizeManager(InkPresenter inkPresenter, Canvas drawingCanvas)
+        public InkConversionManager(Canvas _drawingCanvas, InkStrokesService _strokeService)
         {
-            _container = inkPresenter.StrokeContainer;
-            _drawingCanvas = drawingCanvas;
-            _inkAnalyzer = new InkAnalyzer();
+            drawingCanvas = _drawingCanvas;
+            strokeService = _strokeService;
+            inkAnalyzer = new InkAnalyzer();
         }
 
-        public async Task AnalyzeStrokesAsync()
+        public async Task ConvertTextAndShapesAsync()
         {
-            var inkStrokes = _container.GetStrokes();
+            var inkStrokes = GetStrokesToConvert();
 
             if (!inkStrokes.Any())
             {
                 return;
             }
 
-            _inkAnalyzer.AddDataForStrokes(inkStrokes);
-
-            //foreach (var stroke in inkStrokes)
-            //{
-            //    _inkAnalyzer.SetStrokeDataKind(stroke.Id, InkAnalysisStrokeKind.Writing);
-            //}
-
-            var inkAnalysisResults = await _inkAnalyzer.AnalyzeAsync();
+            inkAnalyzer.ClearDataForAllStrokes();
+            inkAnalyzer.AddDataForStrokes(inkStrokes);
+            var inkAnalysisResults = await inkAnalyzer.AnalyzeAsync();
 
             if (inkAnalysisResults.Status == InkAnalysisStatus.Updated)
             {
@@ -49,60 +46,26 @@ namespace InkPoc.Helpers.Ink
             }
         }
 
-        // TODO: Merge with Inkservice -> RecognizeTextAsync
-        public async Task AnalyzeTextAsync()
-        {
-            if (!_container.GetStrokes().Any())
-            {
-                return;
-            }
-
-            var recognizer = new InkRecognizerContainer();
-            var candidates = await recognizer.RecognizeAsync(_container, InkRecognitionTarget.All);
-
-            foreach(var candidate in candidates)
-            {
-                var text = candidate
-                            .GetTextCandidates()
-                            .FirstOrDefault(t => !string.IsNullOrEmpty(t));
-
-                DrawText(text, candidate.BoundingRect);
-
-                foreach (var stroke in candidate.GetStrokes())
-                {
-                    stroke.Selected = true;
-                }
-            }
-            _container.DeleteSelected();
-        }
-
-        public void ClearAnalyzer()
-        {
-            _inkAnalyzer.ClearDataForAllStrokes();
-        }
-
         private void AnalyzeWords()
         {
-            var inkwordNodes = _inkAnalyzer.AnalysisRoot.FindNodes(InkAnalysisNodeKind.InkWord);
+            var inkwordNodes = inkAnalyzer.AnalysisRoot.FindNodes(InkAnalysisNodeKind.InkWord);
             foreach (InkAnalysisInkWord node in inkwordNodes)
             {
                 DrawText(node.RecognizedText, node.BoundingRect);
 
-                foreach (var strokeId in node.GetStrokeIds())
-                {
-                    var stroke = _container.GetStrokeById(strokeId);
-                    stroke.Selected = true;
-                }
-                _inkAnalyzer.RemoveDataForStrokes(node.GetStrokeIds());
+                var strokesIds = node.GetStrokeIds();
+                strokeService.RemoveStrokesByStrokeIds(strokesIds);
+                inkAnalyzer.RemoveDataForStrokes(strokesIds);
             }
-            _container.DeleteSelected();
         }
 
         private void AnalyzeShapes()
         {
-            var inkdrawingNodes = _inkAnalyzer.AnalysisRoot.FindNodes(InkAnalysisNodeKind.InkDrawing);
+            var inkdrawingNodes = inkAnalyzer.AnalysisRoot.FindNodes(InkAnalysisNodeKind.InkDrawing);
             foreach (InkAnalysisInkDrawing node in inkdrawingNodes)
             {
+                var strokesIds = node.GetStrokeIds();
+
                 if (node.DrawingKind == InkAnalysisDrawingKind.Drawing)
                 {
                     // Catch and process unsupported shapes (lines and so on) here.
@@ -118,15 +81,10 @@ namespace InkPoc.Helpers.Ink
                         DrawPolygon(node);
                     }
 
-                    foreach (var strokeId in node.GetStrokeIds())
-                    {
-                        var stroke = _container.GetStrokeById(strokeId);
-                        stroke.Selected = true;
-                    }
+                    strokeService.RemoveStrokesByStrokeIds(strokesIds);
                 }
-                _inkAnalyzer.RemoveDataForStrokes(node.GetStrokeIds());
+                inkAnalyzer.RemoveDataForStrokes(strokesIds);
             }
-            _container.DeleteSelected();
         }
 
         private void DrawText(string recognizedText, Rect boundingRect)
@@ -138,7 +96,7 @@ namespace InkPoc.Helpers.Ink
             text.Text = recognizedText;
             text.FontSize = boundingRect.Height;
 
-            _drawingCanvas.Children.Add(text);
+            drawingCanvas.Children.Add(text);
         }
 
         private void DrawEllipse(InkAnalysisInkDrawing shape)
@@ -168,7 +126,7 @@ namespace InkPoc.Helpers.Ink
             var brush = new SolidColorBrush(ColorHelper.FromArgb(255, 0, 0, 255));
             ellipse.Stroke = brush;
             ellipse.StrokeThickness = 2;
-            _drawingCanvas.Children.Add(ellipse);
+            drawingCanvas.Children.Add(ellipse);
         }
 
         private void DrawPolygon(InkAnalysisInkDrawing shape)
@@ -184,7 +142,19 @@ namespace InkPoc.Helpers.Ink
             var brush = new SolidColorBrush(Windows.UI.ColorHelper.FromArgb(255, 0, 0, 255));
             polygon.Stroke = brush;
             polygon.StrokeThickness = 2;
-            _drawingCanvas.Children.Add(polygon);
+            drawingCanvas.Children.Add(polygon);
+        }
+        
+        private IEnumerable<InkStroke> GetStrokesToConvert()
+        {
+            var selectedStrokes = strokeService.GetSelectedStrokes();
+
+            if(selectedStrokes.Any())
+            {
+                return selectedStrokes;
+            }
+
+            return strokeService.GetStrokes();
         }
     }
 }

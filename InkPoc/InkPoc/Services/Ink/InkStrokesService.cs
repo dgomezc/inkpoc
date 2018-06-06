@@ -49,9 +49,29 @@ namespace InkPoc.Services.Ink
             return true;
         }
 
+        public bool RemoveStrokesByStrokeIds(IEnumerable<uint> strokeIds)
+        {
+            var strokes = GetStrokesByIds(strokeIds);
+
+            foreach(var stroke in strokes)
+            {
+                RemoveStrokeToContainer(stroke);
+            }
+
+            return strokes.Any();
+        }
+
         public IEnumerable<InkStroke> GetStrokes() => strokeContainer.GetStrokes();
 
         public IEnumerable<InkStroke> GetSelectedStrokes() => GetStrokes().Where(s => s.Selected);
+
+        private IEnumerable<InkStroke> GetStrokesByIds(IEnumerable<uint> strokeIds)
+        {
+            foreach (var strokeId in strokeIds)
+            {
+                yield return strokeContainer.GetStrokeById(strokeId);
+            }
+        }
 
         public void ClearStrokes()
         {

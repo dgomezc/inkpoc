@@ -75,7 +75,7 @@ namespace InkPoc.Controls
 
                 UndoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer, strokeService);
                 SelectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer, strokeService);
-                RecognizeManager = new InkRecognizeManager(inkCanvas.InkPresenter, drawingCanvas);
+                ConversionManager = new InkConversionManager(drawingCanvas, strokeService);
                 CopyPasteManager = new InkCopyPasteManager(inkCanvas.InkPresenter);
 
                 if (CanvasSize.Height == 0 && CanvasSize.Width == 0)
@@ -97,7 +97,7 @@ namespace InkPoc.Controls
 
         public InkSelectionAndMoveManager SelectionManager { get; set; }
 
-        public InkRecognizeManager RecognizeManager { get; set; }
+        public InkConversionManager ConversionManager { get; set; }
 
         public InkCopyPasteManager CopyPasteManager { get; set; }
 
@@ -272,17 +272,14 @@ namespace InkPoc.Controls
         
         private async void Export_Click(object sender, RoutedEventArgs e) => await InkService.ExportToImageAsync(inkCanvas.InkPresenter.StrokeContainer, CanvasSize, ImageFile);
 
-        private async void RecognizeShapes_Click(object sender, RoutedEventArgs e) => await RecognizeManager.AnalyzeStrokesAsync();
-
-        private async void RecognizeText_Click(object sender, RoutedEventArgs e) => await RecognizeManager.AnalyzeTextAsync();    
-
+        private async void RecognizeShapes_Click(object sender, RoutedEventArgs e) => await ConversionManager.ConvertTextAndShapesAsync();
+        
         private void Clear()
         {
             inkCanvas.InkPresenter.StrokeContainer.Clear();
             selectionCanvas.Children.Clear();
             drawingCanvas.Children.Clear();
             UndoRedoManager.Reset();
-            RecognizeManager.ClearAnalyzer();
         }
     }
 }

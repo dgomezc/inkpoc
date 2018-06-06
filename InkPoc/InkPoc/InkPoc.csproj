@@ -113,7 +113,7 @@
     </Compile>
     <Compile Include="Helpers\Ink\InkAsyncAnalyzer.cs" />
     <Compile Include="Helpers\Ink\InkCopyPasteManager.cs" />
-    <Compile Include="Helpers\Ink\InkRecognizeManager.cs" />
+    <Compile Include="Helpers\Ink\InkConversionManager.cs" />
     <Compile Include="Helpers\Ink\InkSelectionAndMoveManager.cs" />
     <Compile Include="Helpers\Ink\UndoRedo\AddStrokeUndoRedoOperation.cs" />
     <Compile Include="Helpers\Ink\UndoRedo\InkUndoRedoManager.cs" />
