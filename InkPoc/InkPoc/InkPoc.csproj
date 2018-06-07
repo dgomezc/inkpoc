@@ -131,6 +131,7 @@
     <Compile Include="Services\Ink\AddStrokeToContainerEventArgs.cs" />
     <Compile Include="Services\Ink\InkStrokesService.cs" />
     <Compile Include="Services\Ink\MoveStrokesEventArgs.cs" />
+    <Compile Include="Services\Ink\CopyPasteStrokesEventArgs.cs" />
     <Compile Include="Services\Ink\RemoveStrokeToContainerEventArgs.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="ViewModels\DrawViewModel.cs" />

@@ -76,7 +76,7 @@ namespace InkPoc.Controls
                 UndoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer, strokeService);
                 SelectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer, strokeService);
                 TransformManager = new InkTransformManager(drawingCanvas, strokeService);
-                CopyPasteManager = new InkCopyPasteManager(inkCanvas.InkPresenter);
+                CopyPasteManager = new InkCopyPasteManager(strokeService);
 
                 if (CanvasSize.Height == 0 && CanvasSize.Width == 0)
                 {
@@ -262,13 +262,26 @@ namespace InkPoc.Controls
 
         private void Cut_Click(object sender, RoutedEventArgs e)
         {
-            CopyPasteManager.Cut();
+            copyPosition = CopyPasteManager.Cut();
             SelectionManager.ClearSelection();
         }
 
-        private void Copy_Click(object sender, RoutedEventArgs e) => CopyPasteManager.Copy();
+        private Point copyPosition;
 
-        private void Paste_Click(object sender, RoutedEventArgs e) => CopyPasteManager.Paste();
+        private void Copy_Click(object sender, RoutedEventArgs e)
+        {
+            copyPosition = CopyPasteManager.Copy();
+            SelectionManager.ClearSelection();
+        }
+
+        private void Paste_Click(object sender, RoutedEventArgs e)
+        {
+            copyPosition.X += 20;
+            copyPosition.Y += 20;
+            
+            CopyPasteManager.Paste(copyPosition);
+            SelectionManager.ClearSelection();
+        }
         
         private async void Export_Click(object sender, RoutedEventArgs e) => await InkService.ExportToImageAsync(inkCanvas.InkPresenter.StrokeContainer, CanvasSize, ImageFile);
 

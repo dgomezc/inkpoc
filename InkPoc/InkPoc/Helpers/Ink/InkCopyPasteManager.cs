@@ -1,32 +1,53 @@
-﻿using Windows.Foundation;
+﻿using InkPoc.Services.Ink;
+using System.Linq;
+using Windows.Foundation;
 using Windows.UI.Input.Inking;
 
 namespace InkPoc.Helpers.Ink
 {
     public class InkCopyPasteManager
     {
-        private InkStrokeContainer _container;
-            
-        public InkCopyPasteManager(InkPresenter inkPresenter)
+        private Point pastePosition;
+        private const int PASTE_DISTANCE = 20;
+        private readonly InkStrokesService strokesService;
+
+        public InkCopyPasteManager(InkStrokesService _strokesService)
         {
-            _container = inkPresenter.StrokeContainer;
+            strokesService = _strokesService;
         }
 
-        public void Cut()
+        public Point Copy()
         {
-            Copy();
-            _container.DeleteSelected();
+            var rect = strokesService.CopySelectedStrokes();
+
+            pastePosition = new Point(rect.X, rect.Y);
+            return pastePosition;
         }
 
-        public void Copy() => _container.CopySelectedToClipboard();
-
-        public void Paste(int xPosition = 0, int yPosition = 0)
+        public Point Cut()
         {
-            if (_container.CanPasteFromClipboard())
-            {
-                var position = new Point(xPosition, yPosition);
-                _container.PasteFromClipboard(position);
-            }
+            var rect = strokesService.CutSelectedStrokes();
+
+            pastePosition = new Point(rect.X, rect.Y);
+            return pastePosition;
         }
+
+
+        public Rect Paste()
+        {
+            pastePosition.X += PASTE_DISTANCE;
+            pastePosition.Y += PASTE_DISTANCE;
+
+            return Paste(pastePosition);
+        }
+
+        public Rect Paste(Point position) => strokesService.PasteSelectedStrokes(position);
+
+        public bool CanCopy => strokesService.GetSelectedStrokes().Any();
+
+        public bool CanCut => strokesService.GetSelectedStrokes().Any();
+
+        public bool CanPaste => strokesService.CanPaste;
+
     }
 }

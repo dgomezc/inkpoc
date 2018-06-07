@@ -3,6 +3,7 @@ using InkPoc.Helpers.Ink.UndoRedo;
 using InkPoc.Services.Ink;
 using InkPoc.ViewModels;
 using System.Linq;
+using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -19,7 +20,8 @@ namespace InkPoc.Views
         private InkSelectionAndMoveManager selectionManager;
         private InkTransformManager transformManager;
         private InkUndoRedoManager undoRedoManager;
-
+        private InkCopyPasteManager copyPasteManager;
+        
         public TextSelectionPage()
         {
             InitializeComponent();
@@ -29,6 +31,7 @@ namespace InkPoc.Views
             selectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer, strokeService);
             transformManager = new InkTransformManager(drawingCanvas, strokeService);
             undoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer, strokeService);
+            copyPasteManager = new InkCopyPasteManager(strokeService);
 
             MouseInkButton.IsChecked = true;
         }
@@ -71,6 +74,24 @@ namespace InkPoc.Views
                 selectionManager.ClearSelection();
                 undoRedoManager.AddOperation(new TransformUndoRedoOperation(result, drawingCanvas, strokeService));
             }
+        }
+
+        private void Cut_Click(object sender, RoutedEventArgs e)
+        {
+            copyPasteManager.Cut();
+            selectionManager.ClearSelection();
+        }
+
+        private void Copy_Click(object sender, RoutedEventArgs e)
+        {
+            copyPasteManager.Copy();
+            selectionManager.ClearSelection();
+        }
+
+        private void Paste_Click(object sender, RoutedEventArgs e)
+        {
+            copyPasteManager.Paste();
+            selectionManager.ClearSelection();
         }
     }
 }

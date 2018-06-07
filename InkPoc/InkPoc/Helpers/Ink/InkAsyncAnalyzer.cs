@@ -21,12 +21,13 @@ namespace InkPoc.Helpers.Ink
             strokesService.AddStrokeEvent += StrokesService_AddStrokeEvent;
             strokesService.RemoveStrokeEvent += StrokesService_RemoveStrokeEvent;
             strokesService.MoveStrokesEvent += StrokesService_MoveStrokesEvent;
+            strokesService.PasteStrokesEvent += StrokesService_PasteStrokesEvent;
 
 
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += DispatcherTimer_Tick;
             dispatcherTimer.Interval = TimeSpan.FromMilliseconds(IDLE_WAITING_TIME);
-        }
+        }        
 
         public InkAnalyzer InkAnalyzer { get; set; } = new InkAnalyzer();
 
@@ -149,7 +150,13 @@ namespace InkPoc.Helpers.Ink
             }
 
             // Strokes are moved and the analysis result is not valid anymore.
-            await AnalyzeAsync(true); // set true???
+            await AnalyzeAsync(true);
+        }
+
+        private async void StrokesService_PasteStrokesEvent(object sender, CopyPasteStrokesEventArgs e)
+        {
+            //Strokes are paste and the analysis result is not valid anymore.
+            await AnalyzeAsync(true);
         }
     }
 }

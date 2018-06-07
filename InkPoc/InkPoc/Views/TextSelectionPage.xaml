@@ -38,19 +38,24 @@
                         </InkToolbarCustomToggleButton>
                     </InkToolbar>
                 </CommandBar.Content>
+                
                 <AppBarSeparator />
                 <AppBarButton Click="Undo_Click" Label="Undo" Icon="Undo" ToolTipService.ToolTip="Undo" />
                 <AppBarButton Click="Redo_Click" Label="Redo" Icon="Redo" ToolTipService.ToolTip="Redo" />
-                <AppBarSeparator />
-                <AppBarButton Click="ClearButton_Click" Label="Clear all" Icon="Delete" ToolTipService.ToolTip="Clear all" />
 
+                <AppBarSeparator />
+                <AppBarButton Click="Cut_Click" Label="Cut" Icon="Cut" ToolTipService.ToolTip="Cut" />
+                <AppBarButton Click="Copy_Click" Label="Copy" Icon="Copy" ToolTipService.ToolTip="Copy" />
+                <AppBarButton Click="Paste_Click" Label="Paste" Icon="Paste" ToolTipService.ToolTip="Paste" />
+
+                <AppBarSeparator />
                 <AppBarButton Label="Transform text and shapes" ToolTipService.ToolTip="Transform text and shapes" Click="TransformTextAndShapes_Click">
                     <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEA80;" />
                 </AppBarButton>
 
-
-
-
+                <AppBarSeparator />
+                <AppBarButton Click="ClearButton_Click" Label="Clear all" Icon="Delete" ToolTipService.ToolTip="Clear all" />
+                
             </CommandBar>            
             <Grid Grid.Row="1">
                 <ScrollViewer Margin="10,0,10,0">
