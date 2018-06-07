@@ -21,6 +21,7 @@ namespace InkPoc.Helpers.Ink
             strokesService.AddStrokeEvent += StrokesService_AddStrokeEvent;
             strokesService.RemoveStrokeEvent += StrokesService_RemoveStrokeEvent;
             strokesService.MoveStrokesEvent += StrokesService_MoveStrokesEvent;
+            strokesService.CutStrokesEvent += StrokesService_CutStrokesEvent;
             strokesService.PasteStrokesEvent += StrokesService_PasteStrokesEvent;
 
 
@@ -153,10 +154,20 @@ namespace InkPoc.Helpers.Ink
             await AnalyzeAsync(true);
         }
 
-        private async void StrokesService_PasteStrokesEvent(object sender, CopyPasteStrokesEventArgs e)
+        private void StrokesService_PasteStrokesEvent(object sender, CopyPasteStrokesEventArgs e)
         {
-            //Strokes are paste and the analysis result is not valid anymore.
-            await AnalyzeAsync(true);
+            foreach (var stroke in e.Strokes)
+            {
+                AddStroke(stroke);
+            }
+        }
+
+        private void StrokesService_CutStrokesEvent(object sender, CopyPasteStrokesEventArgs e)
+        {
+            foreach(var stroke in e.Strokes)
+            {
+                RemoveStroke(stroke);
+            }
         }
     }
 }

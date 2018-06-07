@@ -177,7 +177,7 @@ namespace InkPoc.Services.Ink
 
             if (CanPaste)
             {
-                var ids = strokeContainer.GetStrokes().Select(s => s.Id);
+                var ids = GetStrokes().Select(s => s.Id).ToList();
 
                 rect = strokeContainer.PasteFromClipboard(position);
 
