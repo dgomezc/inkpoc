@@ -73,7 +73,7 @@ namespace InkPoc.Controls
                 var strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
                 var analyzer = new InkAsyncAnalyzer(inkCanvas, strokeService);
 
-                UndoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer, strokeService);
+                UndoRedoManager = new InkUndoRedoManager(inkCanvas, strokeService);
                 var selectionRectangleManager = new SelectionRectangleManager(inkCanvas, selectionCanvas, strokeService);
                 LassoSelectionManager = new InkLassoSelectionManager(inkCanvas, selectionCanvas, strokeService, selectionRectangleManager);
                 NodeSelectionManager = new InkNodeSelectionManager(inkCanvas, selectionCanvas, analyzer, strokeService, selectionRectangleManager);

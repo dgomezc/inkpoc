@@ -7,16 +7,13 @@ namespace InkPoc.Helpers.Ink.UndoRedo
 {
     public class InkUndoRedoManager
     {
-        private readonly InkAsyncAnalyzer analyzer;
         private readonly InkStrokesService strokeService;
 
         private Stack<IUndoRedoOperation> undoStack = new Stack<IUndoRedoOperation>();
         private Stack<IUndoRedoOperation> redoStack = new Stack<IUndoRedoOperation>();
 
-        public InkUndoRedoManager(InkCanvas _inkCanvas, InkAsyncAnalyzer _analyzer, InkStrokesService _strokeService)
+        public InkUndoRedoManager(InkCanvas _inkCanvas, InkStrokesService _strokeService)
         {
-            analyzer = _analyzer;
-
             strokeService = _strokeService;
             strokeService.MoveStrokesEvent += StrokeService_MoveStrokesEvent;
             strokeService.CutStrokesEvent += StrokeService_CutStrokesEvent;
@@ -81,13 +78,13 @@ namespace InkPoc.Helpers.Ink.UndoRedo
 
         private void StrokeService_CutStrokesEvent(object sender, CopyPasteStrokesEventArgs e)
         {
-            var operation = new CutStrokesUndoRedoOperation(e.Strokes, strokeService);
+            var operation = new RemoveStrokeUndoRedoOperation(e.Strokes, strokeService);
             AddOperation(operation);
         }
 
         private void StrokeService_PasteStrokesEvent(object sender, CopyPasteStrokesEventArgs e)
         {
-            var operation = new PasteStrokesUndoRedoOperation(e.Strokes, strokeService);
+            var operation = new AddStrokeUndoRedoOperation(e.Strokes, strokeService);
             AddOperation(operation);
         }        
     }

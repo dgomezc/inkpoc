@@ -31,7 +31,7 @@ namespace InkPoc.Views
             strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
             analyzer = new InkAsyncAnalyzer(inkCanvas, strokeService);
             transformManager = new InkTransformManager(drawingCanvas, strokeService);
-            undoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer, strokeService);
+            undoRedoManager = new InkUndoRedoManager(inkCanvas, strokeService);
             copyPasteManager = new InkCopyPasteManager(strokeService);
 
             var selectionRectangleManager = new SelectionRectangleManager(inkCanvas, selectionCanvas, strokeService);
@@ -44,7 +44,7 @@ namespace InkPoc.Views
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             analyzer.ClearAnalysis();
-            strokeService.ClearStrokes();            
+            strokeService.ClearStrokes();
             ClearSelection();
             undoRedoManager.Reset();
             drawingCanvas.Children.Clear();
