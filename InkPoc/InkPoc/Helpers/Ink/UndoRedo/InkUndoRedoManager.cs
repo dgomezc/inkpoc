@@ -19,10 +19,12 @@ namespace InkPoc.Helpers.Ink.UndoRedo
 
             strokeService = _strokeService;
             strokeService.MoveStrokesEvent += StrokeService_MoveStrokesEvent;
+            strokeService.CutStrokesEvent += StrokeService_CutStrokesEvent;
+            strokeService.PasteStrokesEvent += StrokeService_PasteStrokesEvent;
 
             _inkCanvas.InkPresenter.StrokesCollected += (s, e) => AddOperation(new AddStrokeUndoRedoOperation(e.Strokes, strokeService));
             _inkCanvas.InkPresenter.StrokesErased += (s, e) => AddOperation(new RemoveStrokeUndoRedoOperation(e.Strokes, strokeService));
-        }
+        }       
 
         public void Reset()
         {
@@ -76,5 +78,17 @@ namespace InkPoc.Helpers.Ink.UndoRedo
             var operation = new MoveStrokesUndoRedoOperation(e.Strokes, e.StartPosition, e.EndPosition, strokeService);
             AddOperation(operation);
         }
+
+        private void StrokeService_CutStrokesEvent(object sender, CopyPasteStrokesEventArgs e)
+        {
+            var operation = new CutStrokesUndoRedoOperation(e.Strokes, strokeService);
+            AddOperation(operation);
+        }
+
+        private void StrokeService_PasteStrokesEvent(object sender, CopyPasteStrokesEventArgs e)
+        {
+            var operation = new PasteStrokesUndoRedoOperation(e.Strokes, strokeService);
+            AddOperation(operation);
+        }        
     }
 }

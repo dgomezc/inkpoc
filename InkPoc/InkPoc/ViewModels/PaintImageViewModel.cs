@@ -47,7 +47,8 @@ namespace InkPoc.ViewModels
         
         private async Task OnSaveImageAsync()
         {
-            await InkService.ExportToImageAsync(strokes, CanvasSize, ImageFile);
+            await Task.CompletedTask;
+            //await InkService.ExportToImageAsync(strokes, CanvasSize, ImageFile);
         }
 
         public Size CanvasSize { get; set; }

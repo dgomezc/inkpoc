@@ -46,24 +46,13 @@
             <AppBarButton
                 BorderBrush="Transparent"
                 BorderThickness="0,0,0,0"
-                Label="Recognize shapes"
-                ToolTipService.ToolTip="Recognize shapes"
-                Click="RecognizeShapes_Click"
+                Label="Transform text and shapes"
+                ToolTipService.ToolTip="Transform text and shapes"
+                Click="TransformTextAndShapes_Click"
                 Visibility="{Binding ShowRecognize, ElementName=inkControl}">
                 <FontIcon
                         FontFamily="{ThemeResource SymbolThemeFontFamily}"
                         Glyph="&#xF156;" />
-            </AppBarButton>
-            <AppBarButton
-                BorderBrush="Transparent"
-                BorderThickness="0,0,0,0"
-                Label="Recognize text"
-                ToolTipService.ToolTip="Recognize text"
-                Click="RecognizeText_Click"
-                Visibility="{Binding ShowRecognize, ElementName=inkControl}">
-                <FontIcon
-                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                        Glyph="&#xE8D2;" />
             </AppBarButton>
             <AppBarSeparator Visibility="{Binding ShowCopyPaste, ElementName=inkControl}" />
             <AppBarButton

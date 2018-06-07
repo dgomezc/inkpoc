@@ -1,19 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using InkPoc.Helpers.Ink;
+﻿using InkPoc.Helpers.Ink;
 using InkPoc.Helpers.Ink.UndoRedo;
 using InkPoc.Services.Ink;
 using InkPoc.ViewModels;
+using System.Linq;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Input.Inking;
-using Windows.UI.Input.Inking.Analysis;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
 
 namespace InkPoc.Views
 {
@@ -25,8 +18,10 @@ namespace InkPoc.Views
         private InkAsyncAnalyzer analyzer;
 
         private InkSelectionAndMoveManager selectionManager;
+        private InkTransformManager transformManager;
         private InkUndoRedoManager undoRedoManager;
-
+        private InkCopyPasteManager copyPasteManager;
+        
         public TextSelectionPage()
         {
             InitializeComponent();
@@ -34,10 +29,12 @@ namespace InkPoc.Views
             strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
             analyzer = new InkAsyncAnalyzer(strokeService);
             selectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer, strokeService);
+            transformManager = new InkTransformManager(drawingCanvas, strokeService);
             undoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer, strokeService);
+            copyPasteManager = new InkCopyPasteManager(strokeService);
 
             MouseInkButton.IsChecked = true;
-        }        
+        }
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
@@ -45,6 +42,7 @@ namespace InkPoc.Views
             strokeService.ClearStrokes();            
             selectionManager.ClearSelection();
             undoRedoManager.Reset();
+            drawingCanvas.Children.Clear();
         }
 
         private void SelectionButton_Checked(object sender, RoutedEventArgs e) => selectionManager.StartLassoSelectionConfig();
@@ -65,6 +63,35 @@ namespace InkPoc.Views
         {
             selectionManager.ClearSelection();
             undoRedoManager.Redo();
+        }
+
+        private async void TransformTextAndShapes_Click(object sender, RoutedEventArgs e)
+        {
+            var result = await transformManager.TransformTextAndShapesAsync();
+
+            if(result.TextAndShapes.Any())
+            {
+                selectionManager.ClearSelection();
+                undoRedoManager.AddOperation(new TransformUndoRedoOperation(result, drawingCanvas, strokeService));
+            }
+        }
+
+        private void Cut_Click(object sender, RoutedEventArgs e)
+        {
+            copyPasteManager.Cut();
+            selectionManager.ClearSelection();
+        }
+
+        private void Copy_Click(object sender, RoutedEventArgs e)
+        {
+            copyPasteManager.Copy();
+            selectionManager.ClearSelection();
+        }
+
+        private void Paste_Click(object sender, RoutedEventArgs e)
+        {
+            copyPasteManager.Paste();
+            selectionManager.ClearSelection();
         }
     }
 }

@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Storage;
+using Windows.Storage.Provider;
 using Windows.UI.Input.Inking;
 using Windows.UI.Input.Inking.Analysis;
 using Windows.UI.Xaml.Media;
@@ -15,6 +18,8 @@ namespace InkPoc.Services.Ink
         public event EventHandler<RemoveStrokeToContainerEventArgs> RemoveStrokeEvent;
         public event EventHandler<MoveStrokesEventArgs> MoveStrokesEvent;
         public event EventHandler<EventArgs> ClearStrokesEvent;
+        public event EventHandler<CopyPasteStrokesEventArgs> CutStrokesEvent;
+        public event EventHandler<CopyPasteStrokesEventArgs> PasteStrokesEvent;
 
         private readonly InkStrokeContainer strokeContainer;
 
@@ -49,9 +54,29 @@ namespace InkPoc.Services.Ink
             return true;
         }
 
+        public bool RemoveStrokesByStrokeIds(IEnumerable<uint> strokeIds)
+        {
+            var strokes = GetStrokesByIds(strokeIds);
+
+            foreach(var stroke in strokes)
+            {
+                RemoveStrokeToContainer(stroke);
+            }
+
+            return strokes.Any();
+        }
+
         public IEnumerable<InkStroke> GetStrokes() => strokeContainer.GetStrokes();
 
         public IEnumerable<InkStroke> GetSelectedStrokes() => GetStrokes().Where(s => s.Selected);
+
+        private IEnumerable<InkStroke> GetStrokesByIds(IEnumerable<uint> strokeIds)
+        {
+            foreach (var strokeId in strokeIds)
+            {
+                yield return strokeContainer.GetStrokeById(strokeId);
+            }
+        }
 
         public void ClearStrokes()
         {
@@ -70,33 +95,27 @@ namespace InkPoc.Services.Ink
         public Rect SelectStrokes(IEnumerable<InkStroke> strokes)
         {
             ClearStrokesSelection();
-            var rect = Rect.Empty;
 
-            var strokeIds = strokes.Select(s => s.Id);
-            foreach (var id in strokeIds)
+            foreach (var stroke in strokes)
             {
-                var stroke = strokeContainer.GetStrokeById(id);
                 stroke.Selected = true;
-                rect.Union(stroke.BoundingRect);
             }
 
-            return rect;
+            return GetRectBySelectedStrokes();
         }
 
         public Rect SelectStrokesByNode(IInkAnalysisNode node)
         {
             ClearStrokesSelection();
-            var rect = node.BoundingRect;
 
             var strokeIds = GetNodeStrokeIds(node);
             foreach (var id in strokeIds)
             {
                 var stroke = strokeContainer.GetStrokeById(id);
                 stroke.Selected = true;
-                rect.Union(stroke.BoundingRect);
             }
 
-            return rect;
+            return GetRectBySelectedStrokes();
         }
 
         public Rect SelectStrokesByPoints(PointCollection points)
@@ -131,6 +150,89 @@ namespace InkPoc.Services.Ink
 
                 MoveStrokesEvent?.Invoke(this, new MoveStrokesEventArgs(selectedStrokes, startPosition, endPosition));
             }
+        }
+
+        public Rect CopySelectedStrokes()
+        {
+            strokeContainer.CopySelectedToClipboard();
+            return GetRectBySelectedStrokes();
+        }
+
+        public Rect CutSelectedStrokes()
+        {
+            var rect = CopySelectedStrokes();
+
+            var selectedStrokes = GetSelectedStrokes().ToList();
+
+            foreach (var stroke in selectedStrokes)
+            {
+                RemoveStrokeToContainer(stroke);
+            }
+
+            CutStrokesEvent?.Invoke(this, new CopyPasteStrokesEventArgs(selectedStrokes));
+
+            return rect;
+        }
+
+        public Rect PasteSelectedStrokes(Point position)
+        {
+            var rect = Rect.Empty;
+
+            if (CanPaste)
+            {
+                var ids = GetStrokes().Select(s => s.Id).ToList();
+
+                rect = strokeContainer.PasteFromClipboard(position);
+
+                var pastedStrokes = strokeContainer.GetStrokes().Where(s => !ids.Contains(s.Id));
+
+                PasteStrokesEvent?.Invoke(this, new CopyPasteStrokesEventArgs(pastedStrokes));
+            }
+
+            return rect;
+        }
+
+        public bool CanPaste => strokeContainer.CanPasteFromClipboard();
+
+        private Rect GetRectBySelectedStrokes()
+        {
+            var rect = Rect.Empty;
+            foreach (var stroke in GetSelectedStrokes())
+            {
+                rect.Union(stroke.BoundingRect);
+            }
+
+            return rect;
+        }
+
+        public async Task LoadInkFileAsync(StorageFile file)
+        {
+            if(file != null)
+            {
+                using (var stream = await file.OpenSequentialReadAsync())
+                {
+                    await strokeContainer.LoadAsync(stream);
+                }
+            }            
+        }
+
+        public async Task<FileUpdateStatus> SaveInkFileAsync(StorageFile file)
+        {
+            if (file != null)
+            {
+                // Prevent updates to the file until updates are finalized with call to CompleteUpdatesAsync.
+                CachedFileManager.DeferUpdates(file);
+
+                using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite))
+                {
+                    await strokeContainer.SaveAsync(stream);
+                }
+
+                // Finalize write so other apps can update file.
+                return await CachedFileManager.CompleteUpdatesAsync(file);
+            }
+
+            return FileUpdateStatus.Failed;
         }
     }
 }

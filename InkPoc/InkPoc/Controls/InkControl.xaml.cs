@@ -75,8 +75,9 @@ namespace InkPoc.Controls
 
                 UndoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer, strokeService);
                 SelectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer, strokeService);
-                RecognizeManager = new InkRecognizeManager(inkCanvas.InkPresenter, drawingCanvas);
-                CopyPasteManager = new InkCopyPasteManager(inkCanvas.InkPresenter);
+                TransformManager = new InkTransformManager(drawingCanvas, strokeService);
+                CopyPasteManager = new InkCopyPasteManager(strokeService);
+                FileManager = new InkFileManager(inkCanvas, strokeService);
 
                 if (CanvasSize.Height == 0 && CanvasSize.Width == 0)
                 {
@@ -97,9 +98,11 @@ namespace InkPoc.Controls
 
         public InkSelectionAndMoveManager SelectionManager { get; set; }
 
-        public InkRecognizeManager RecognizeManager { get; set; }
+        public InkTransformManager TransformManager { get; set; }
 
         public InkCopyPasteManager CopyPasteManager { get; set; }
+
+        public InkFileManager FileManager { get; set; }
 
         public bool ShowToolbar
         {
@@ -252,9 +255,9 @@ namespace InkPoc.Controls
 
         private void ZoomOut_Click(object sender, RoutedEventArgs e) => canvasScroll.ChangeView(canvasScroll.HorizontalOffset, canvasScroll.VerticalOffset, canvasScroll.ZoomFactor - 0.2f);
 
-        private async void openFile_Click(object sender, RoutedEventArgs e) => await InkService.LoadInkAsync(inkCanvas.InkPresenter.StrokeContainer);
+        private async void openFile_Click(object sender, RoutedEventArgs e) => await FileManager.LoadInkAsync();
 
-        private async void SaveFile_Click(object sender, RoutedEventArgs e) => await InkService.SaveInkAsync(inkCanvas.InkPresenter.StrokeContainer);
+        private async void SaveFile_Click(object sender, RoutedEventArgs e) => await FileManager.SaveInkAsync();
 
         private void SelectionButton_Checked(object sender, RoutedEventArgs e) => SelectionManager.StartLassoSelectionConfig();
 
@@ -262,27 +265,37 @@ namespace InkPoc.Controls
 
         private void Cut_Click(object sender, RoutedEventArgs e)
         {
-            CopyPasteManager.Cut();
+            copyPosition = CopyPasteManager.Cut();
             SelectionManager.ClearSelection();
         }
 
-        private void Copy_Click(object sender, RoutedEventArgs e) => CopyPasteManager.Copy();
+        private Point copyPosition;
 
-        private void Paste_Click(object sender, RoutedEventArgs e) => CopyPasteManager.Paste();
+        private void Copy_Click(object sender, RoutedEventArgs e)
+        {
+            copyPosition = CopyPasteManager.Copy();
+            SelectionManager.ClearSelection();
+        }
+
+        private void Paste_Click(object sender, RoutedEventArgs e)
+        {
+            copyPosition.X += 20;
+            copyPosition.Y += 20;
+            
+            CopyPasteManager.Paste(copyPosition);
+            SelectionManager.ClearSelection();
+        }
         
-        private async void Export_Click(object sender, RoutedEventArgs e) => await InkService.ExportToImageAsync(inkCanvas.InkPresenter.StrokeContainer, CanvasSize, ImageFile);
+        private async void Export_Click(object sender, RoutedEventArgs e) => await FileManager.ExportToImageAsync(ImageFile);
 
-        private async void RecognizeShapes_Click(object sender, RoutedEventArgs e) => await RecognizeManager.AnalyzeStrokesAsync();
-
-        private async void RecognizeText_Click(object sender, RoutedEventArgs e) => await RecognizeManager.AnalyzeTextAsync();    
-
+        private async void TransformTextAndShapes_Click(object sender, RoutedEventArgs e) => await TransformManager.TransformTextAndShapesAsync();
+        
         private void Clear()
         {
             inkCanvas.InkPresenter.StrokeContainer.Clear();
             selectionCanvas.Children.Clear();
             drawingCanvas.Children.Clear();
             UndoRedoManager.Reset();
-            RecognizeManager.ClearAnalyzer();
         }
     }
 }

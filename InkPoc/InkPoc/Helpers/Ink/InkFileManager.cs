@@ -1,55 +1,43 @@
-﻿using Microsoft.Graphics.Canvas;
+﻿using InkPoc.Services.Ink;
+using Microsoft.Graphics.Canvas;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Provider;
 using Windows.UI;
-using Windows.UI.Input.Inking;
+using Windows.UI.Xaml.Controls;
 
-namespace InkPoc.Services
+namespace InkPoc.Helpers.Ink
 {
-    public static class InkService
+    public class InkFileManager
     {
-        public static async Task<string> RecognizeTextAsync(InkStrokeContainer container)
+        private readonly InkStrokesService strokesService;
+        private readonly InkCanvas inkCanvas;
+
+        public InkFileManager(InkCanvas _inkCanvas, InkStrokesService _strokesService)
         {
-            if (!container.GetStrokes().Any())
-            {
-                return string.Empty;
-            }
-
-            var recognizer = new InkRecognizerContainer();
-            var candidates = await recognizer.RecognizeAsync(container, InkRecognitionTarget.All);
-
-            var result = candidates.Select(x => x.GetTextCandidates().FirstOrDefault())
-                .Where(x => !string.IsNullOrEmpty(x));
-
-            return string.Join(" ", result);
+            inkCanvas = _inkCanvas;
+            strokesService = _strokesService;
         }
-                
-        public static async Task LoadInkAsync(InkStrokeContainer container)
+
+        public async Task LoadInkAsync()
         {
             var openPicker = new FileOpenPicker();
             openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
             openPicker.FileTypeFilter.Add(".gif");
 
             var file = await openPicker.PickSingleFileAsync();
-
-            if (file != null)
-            {
-                using (var stream = await file.OpenSequentialReadAsync())
-                {
-                    await container.LoadAsync(stream);
-                }
-            }            
+            await strokesService.LoadInkFileAsync(file);
         }
 
-        public static async Task SaveInkAsync(InkStrokeContainer container)
+        public async Task SaveInkAsync()
         {
-            if (!container.GetStrokes().Any())
+            if (!strokesService.GetStrokes().Any())
             {
                 return;
             }
@@ -59,49 +47,27 @@ namespace InkPoc.Services
             savePicker.FileTypeChoices.Add("Gif with embedded ISF", new List<string> { ".gif" });
 
             var file = await savePicker.PickSaveFileAsync();
-
-            if (file != null)
-            {
-                // Prevent updates to the file until updates are finalized with call to CompleteUpdatesAsync.
-                CachedFileManager.DeferUpdates(file);
-
-                using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite))
-                {
-                    await container.SaveAsync(stream);
-                }
-
-                // Finalize write so other apps can update file.
-                var status = await CachedFileManager.CompleteUpdatesAsync(file);
-            }
+            await strokesService.SaveInkFileAsync(file);
         }
 
-        public static async Task ExportToImageAsync(InkStrokeContainer container, Size canvasSize, StorageFile imageFile = null)
+        public async Task ExportToImageAsync(StorageFile imageFile = null)
         {
-            if(!container.GetStrokes().Any())
+            if (!strokesService.GetStrokes().Any())
             {
                 return;
             }
 
             if (imageFile != null)
             {
-                await ExportCanvasAndImageAsync(container, canvasSize, imageFile);
+                await ExportCanvasAndImageAsync(imageFile);
             }
             else
             {
-                await ExportCanvasAsync(container, canvasSize);
+                await ExportCanvasAsync();
             }
         }
 
-        public static void ClearStrokesSelection(InkStrokeContainer container)
-        {
-            var strokes = container.GetStrokes();
-            foreach (var stroke in strokes)
-            {
-                stroke.Selected = false;
-            }
-        }
-
-        private static async Task ExportCanvasAndImageAsync(InkStrokeContainer container, Size canvasSize, StorageFile imageFile)
+        private  async Task ExportCanvasAndImageAsync(StorageFile imageFile)
         {
             var saveFile = await GetImageToSaveAsync();
 
@@ -116,21 +82,21 @@ namespace InkPoc.Services
             using (var outStream = await saveFile.OpenAsync(FileAccessMode.ReadWrite))
             {
                 var device = CanvasDevice.GetSharedDevice();
-                
+
                 CanvasBitmap canvasbitmap;
                 using (var stream = await imageFile.OpenAsync(FileAccessMode.Read))
                 {
                     canvasbitmap = await CanvasBitmap.LoadAsync(device, stream);
                 }
 
-                using (var renderTarget = new CanvasRenderTarget(device, (int)canvasSize.Width, (int)canvasSize.Height, canvasbitmap.Dpi))
+                using (var renderTarget = new CanvasRenderTarget(device, (int)inkCanvas.Width, (int)inkCanvas.Height, canvasbitmap.Dpi))
                 {
                     using (CanvasDrawingSession ds = renderTarget.CreateDrawingSession())
                     {
                         ds.Clear(Colors.White);
 
-                        ds.DrawImage(canvasbitmap, new Rect(0, 0, (int)canvasSize.Width, (int)canvasSize.Height));
-                        ds.DrawInk(container.GetStrokes());
+                        ds.DrawImage(canvasbitmap, new Rect(0, 0, (int)inkCanvas.Width, (int)inkCanvas.Height));
+                        ds.DrawInk(strokesService.GetStrokes());
                     }
 
                     await renderTarget.SaveAsync(outStream, CanvasBitmapFileFormat.Png);
@@ -141,21 +107,21 @@ namespace InkPoc.Services
             FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(saveFile);
         }
 
-        private static async Task ExportCanvasAsync(InkStrokeContainer container, Size canvasSize)
+        private async Task ExportCanvasAsync()
         {
             var file = await GetImageToSaveAsync();
-            if(file == null)
+            if (file == null)
             {
                 return;
             }
 
             CanvasDevice device = CanvasDevice.GetSharedDevice();
-            CanvasRenderTarget renderTarget = new CanvasRenderTarget(device, (int)canvasSize.Width, (int)canvasSize.Height, 96);
+            CanvasRenderTarget renderTarget = new CanvasRenderTarget(device, (int)inkCanvas.Width, (int)inkCanvas.Height, 96);
 
             using (var ds = renderTarget.CreateDrawingSession())
             {
                 ds.Clear(Colors.White);
-                ds.DrawInk(container.GetStrokes());
+                ds.DrawInk(strokesService.GetStrokes());
             }
 
             using (var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite))
@@ -164,7 +130,7 @@ namespace InkPoc.Services
             }
         }
 
-        private static async Task<StorageFile> GetImageToSaveAsync()
+        private async Task<StorageFile> GetImageToSaveAsync()
         {
             var savePicker = new FileSavePicker();
             savePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
