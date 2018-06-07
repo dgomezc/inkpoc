@@ -77,6 +77,7 @@ namespace InkPoc.Controls
                 SelectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer, strokeService);
                 TransformManager = new InkTransformManager(drawingCanvas, strokeService);
                 CopyPasteManager = new InkCopyPasteManager(strokeService);
+                FileManager = new InkFileManager(inkCanvas, strokeService);
 
                 if (CanvasSize.Height == 0 && CanvasSize.Width == 0)
                 {
@@ -100,6 +101,8 @@ namespace InkPoc.Controls
         public InkTransformManager TransformManager { get; set; }
 
         public InkCopyPasteManager CopyPasteManager { get; set; }
+
+        public InkFileManager FileManager { get; set; }
 
         public bool ShowToolbar
         {
@@ -252,9 +255,9 @@ namespace InkPoc.Controls
 
         private void ZoomOut_Click(object sender, RoutedEventArgs e) => canvasScroll.ChangeView(canvasScroll.HorizontalOffset, canvasScroll.VerticalOffset, canvasScroll.ZoomFactor - 0.2f);
 
-        private async void openFile_Click(object sender, RoutedEventArgs e) => await InkService.LoadInkAsync(inkCanvas.InkPresenter.StrokeContainer);
+        private async void openFile_Click(object sender, RoutedEventArgs e) => await FileManager.LoadInkAsync();
 
-        private async void SaveFile_Click(object sender, RoutedEventArgs e) => await InkService.SaveInkAsync(inkCanvas.InkPresenter.StrokeContainer);
+        private async void SaveFile_Click(object sender, RoutedEventArgs e) => await FileManager.SaveInkAsync();
 
         private void SelectionButton_Checked(object sender, RoutedEventArgs e) => SelectionManager.StartLassoSelectionConfig();
 
@@ -283,7 +286,7 @@ namespace InkPoc.Controls
             SelectionManager.ClearSelection();
         }
         
-        private async void Export_Click(object sender, RoutedEventArgs e) => await InkService.ExportToImageAsync(inkCanvas.InkPresenter.StrokeContainer, CanvasSize, ImageFile);
+        private async void Export_Click(object sender, RoutedEventArgs e) => await FileManager.ExportToImageAsync(ImageFile);
 
         private async void TransformTextAndShapes_Click(object sender, RoutedEventArgs e) => await TransformManager.TransformTextAndShapesAsync();
         

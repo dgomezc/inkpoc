@@ -113,6 +113,7 @@
     </Compile>
     <Compile Include="Helpers\Ink\InkAsyncAnalyzer.cs" />
     <Compile Include="Helpers\Ink\InkCopyPasteManager.cs" />
+    <Compile Include="Helpers\Ink\InkFileManager.cs" />
     <Compile Include="Helpers\Ink\InkTransformManager.cs" />
     <Compile Include="Helpers\Ink\InkSelectionAndMoveManager.cs" />
     <Compile Include="Helpers\Ink\InkTransformResult.cs" />
@@ -129,7 +130,6 @@
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Services\ActivationService.cs" />
     <Compile Include="Activation\DefaultLaunchActivationHandler.cs" />
-    <Compile Include="Services\InkService.cs" />
     <Compile Include="Services\Ink\AddStrokeToContainerEventArgs.cs" />
     <Compile Include="Services\Ink\InkStrokesService.cs" />
     <Compile Include="Services\Ink\MoveStrokesEventArgs.cs" />

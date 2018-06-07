@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Storage;
+using Windows.Storage.Provider;
 using Windows.UI.Input.Inking;
 using Windows.UI.Input.Inking.Analysis;
 using Windows.UI.Xaml.Media;
@@ -200,6 +203,36 @@ namespace InkPoc.Services.Ink
             }
 
             return rect;
+        }
+
+        public async Task LoadInkFileAsync(StorageFile file)
+        {
+            if(file != null)
+            {
+                using (var stream = await file.OpenSequentialReadAsync())
+                {
+                    await strokeContainer.LoadAsync(stream);
+                }
+            }            
+        }
+
+        public async Task<FileUpdateStatus> SaveInkFileAsync(StorageFile file)
+        {
+            if (file != null)
+            {
+                // Prevent updates to the file until updates are finalized with call to CompleteUpdatesAsync.
+                CachedFileManager.DeferUpdates(file);
+
+                using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite))
+                {
+                    await strokeContainer.SaveAsync(stream);
+                }
+
+                // Finalize write so other apps can update file.
+                return await CachedFileManager.CompleteUpdatesAsync(file);
+            }
+
+            return FileUpdateStatus.Failed;
         }
     }
 }
