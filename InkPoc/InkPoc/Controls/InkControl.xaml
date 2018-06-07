@@ -7,63 +7,159 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     x:Name="inkControl"
-    d:DesignWidth="400">    
-    <Grid>
+    d:DesignWidth="400">
+
+    <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <CommandBar DefaultLabelPosition="Collapsed" HorizontalAlignment="Left">
+        <CommandBar
+                DefaultLabelPosition="Collapsed"
+                HorizontalAlignment="Left"
+                HorizontalContentAlignment="Left">
             <CommandBar.Content>
-                <InkToolbar x:Name="toolbar" TargetInkCanvas="{x:Bind inkCanvas}">
+                <InkToolbar
+                    x:Name="toolbar"
+                    TargetInkCanvas="{x:Bind inkCanvas}">
                     <InkToolbarCustomToolButton
                         Checked="SelectionButton_Checked"
                         Unchecked="SelectionButton_Unchecked"
                         Visibility="{Binding ShowSelectionTool, ElementName=inkControl}"
                         ToolTipService.ToolTip="Selection tool">
-                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEF20;" />
+                        <FontIcon
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            Glyph="&#xEF20;" />
                     </InkToolbarCustomToolButton>
                     <InkToolbarCustomToggleButton
-                            ToolTipService.ToolTip="Touch Inking"
-                            IsChecked="{Binding EnableTouch, ElementName=inkControl, Mode=TwoWay}"
-                            Visibility="{Binding ShowEnableTouchInking, ElementName=inkControl}">
-                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xED5F;" />
+                        ToolTipService.ToolTip="Touch Inking"
+                        IsChecked="{Binding EnableTouch, ElementName=inkControl, Mode=TwoWay}"
+                        Visibility="{Binding ShowEnableTouchInking, ElementName=inkControl}">
+                        <FontIcon
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            Glyph="&#xED5F;" />
                     </InkToolbarCustomToggleButton>
                 </InkToolbar>
             </CommandBar.Content>
 
             <AppBarSeparator Visibility="{Binding ShowRecognize, ElementName=inkControl}" />
-            <AppBarButton Label="Transform text and shapes"
-                          ToolTipService.ToolTip="Transform text and shapes"
-                          Click="TransformTextAndShapes_Click"
-                          Visibility="{Binding ShowRecognize, ElementName=inkControl}">
-                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xF156;" />
+            <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Label="Transform text and shapes"
+                ToolTipService.ToolTip="Transform text and shapes"
+                Click="TransformTextAndShapes_Click"
+                Visibility="{Binding ShowRecognize, ElementName=inkControl}">
+                <FontIcon
+                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                        Glyph="&#xF156;" />
             </AppBarButton>
-
             <AppBarSeparator Visibility="{Binding ShowCopyPaste, ElementName=inkControl}" />
-            <AppBarButton Click="Cut_Click" Label="Cut" Icon="Cut" ToolTipService.ToolTip="Cut" Visibility="{Binding ShowCopyPaste, ElementName=inkControl}" />
-            <AppBarButton Click="Copy_Click" Label="Copy" Icon="Copy" ToolTipService.ToolTip="Copy" Visibility="{Binding ShowCopyPaste, ElementName=inkControl}" />
-            <AppBarButton Click="Paste_Click" Label="Paste" Icon="Paste" ToolTipService.ToolTip="Paste" Visibility="{Binding ShowCopyPaste, ElementName=inkControl}" />
-
+            <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Click="Cut_Click"
+                Label="Cut"
+                Icon="Cut"
+                ToolTipService.ToolTip="Cut"
+                Visibility="{Binding ShowCopyPaste, ElementName=inkControl}" />
+            <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Click="Copy_Click"
+                Label="Copy"
+                Icon="Copy"
+                ToolTipService.ToolTip="Copy"
+                Visibility="{Binding ShowCopyPaste, ElementName=inkControl}" />
+            <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Click="Paste_Click"
+                Label="Paste"
+                Icon="Paste"
+                ToolTipService.ToolTip="Paste"
+                Visibility="{Binding ShowCopyPaste, ElementName=inkControl}" />
             <AppBarSeparator Visibility="{Binding ShowUndoRedo, ElementName=inkControl}" />
-            <AppBarButton Click="Undo_Click" Label="Undo" Icon="Undo" ToolTipService.ToolTip="Undo" Visibility="{Binding ShowUndoRedo, ElementName=inkControl}" />
-            <AppBarButton Click="Redo_Click" Label="Redo" Icon="Redo" ToolTipService.ToolTip="Redo" Visibility="{Binding ShowUndoRedo, ElementName=inkControl}" />
-
+            <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Click="Undo_Click"
+                Label="Undo"
+                Icon="Undo"
+                ToolTipService.ToolTip="Undo"
+                Visibility="{Binding ShowUndoRedo, ElementName=inkControl}" />
+            <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Click="Redo_Click"
+                Label="Redo"
+                Icon="Redo"
+                ToolTipService.ToolTip="Redo"
+                Visibility="{Binding ShowUndoRedo, ElementName=inkControl}" />
+            
             <AppBarSeparator Visibility="{Binding ShowZoom, ElementName=inkControl}" />
-            <AppBarButton Click="ZoomIn_Click" Label="Zoom in" Icon="ZoomIn" ToolTipService.ToolTip="Zoom in" Visibility="{Binding ShowZoom, ElementName=inkControl}" />
-            <AppBarButton Click="ZoomOut_Click" Label="Zoom out" Icon="ZoomOut" ToolTipService.ToolTip="Zoom out" Visibility="{Binding ShowZoom, ElementName=inkControl}" />
+            <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Click="ZoomIn_Click"
+                Label="Zoom in"                
+                Icon="ZoomIn"
+                ToolTipService.ToolTip="Zoom in"
+                Visibility="{Binding ShowZoom, ElementName=inkControl}" />
+            <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Click="ZoomOut_Click"
+                Label="Zoom out"
+                Icon="ZoomOut"
+                ToolTipService.ToolTip="Zoom out"
+                Visibility="{Binding ShowZoom, ElementName=inkControl}" />
 
             <AppBarSeparator Visibility="{Binding ShowOpenSaveFile, ElementName=inkControl}" />
-            <AppBarButton Click="openFile_Click" Label="Open file" Icon="OpenFile" ToolTipService.ToolTip="Open file" Visibility="{Binding ShowOpenSaveFile, ElementName=inkControl}" />
-            <AppBarButton Click="SaveFile_Click" Label="Save file" Icon="Save" ToolTipService.ToolTip="Save file" Visibility="{Binding ShowOpenSaveFile, ElementName=inkControl}" />
-            <AppBarButton Click="Export_Click" Label="Export as image" Icon="Download" ToolTipService.ToolTip="Export as image" Visibility="{Binding ShowExportFile, ElementName=inkControl}" />
+            <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Click="openFile_Click"
+                Label="Open file"
+                Icon="OpenFile"
+                ToolTipService.ToolTip="Open file"
+                Visibility="{Binding ShowOpenSaveFile, ElementName=inkControl}" />
+            <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Click="SaveFile_Click"
+                Label="Save file"
+                Icon="Save"
+                ToolTipService.ToolTip="Save file"
+                Visibility="{Binding ShowOpenSaveFile, ElementName=inkControl}" />
+            <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Click="Export_Click"
+                Label="Export as image"
+                Icon="Download"
+                ToolTipService.ToolTip="Export as image"
+                Visibility="{Binding ShowExportFile, ElementName=inkControl}" />
 
             <AppBarSeparator Visibility="{Binding ShowClearAll, ElementName=inkControl}" />
-            <AppBarButton Click="Clear_Click" Label="Clear all" Icon="Delete" ToolTipService.ToolTip="Clear all" Visibility="{Binding ShowClearAll, ElementName=inkControl}" />
+            <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Click="Clear_Click"
+                Label="Clear all"
+                Icon="Delete"
+                ToolTipService.ToolTip="Clear all"
+                Visibility="{Binding ShowClearAll, ElementName=inkControl}" />
         </CommandBar>
 
-        <ScrollViewer Name="canvasScroll" Grid.Row="1" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" ZoomMode="Enabled">
-            <Grid Background="#ffffff">
+        <ScrollViewer
+            Name="canvasScroll"
+            Grid.Row="1"
+            Margin="8,0,8,0"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            ZoomMode="Enabled">
+            <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
                 <!-- Canvas for displaying selection UI. -->
                 <Canvas x:Name="selectionCanvas"/>
