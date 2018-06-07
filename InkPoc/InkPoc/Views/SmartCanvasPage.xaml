@@ -20,11 +20,7 @@
                 Strokes="{x:Bind ViewModel.Strokes}"
                  ShowRecognize="True"
                  ShowEnableTouchInking="True"
-                 ShowClearAll="True"/>
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10">
-                <Button Content="Recognize Text" Command="{x:Bind ViewModel.RecognizeTextCommand}" />
-                <TextBlock VerticalAlignment="Center" Margin="10,0" Text="{x:Bind ViewModel.RecognizeText, Mode=TwoWay}" />
-            </StackPanel>
+                 ShowClearAll="True"/>           
         </Grid>
     </Grid>
 </Page>

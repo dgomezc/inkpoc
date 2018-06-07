@@ -9,7 +9,6 @@ namespace InkPoc.ViewModels
     public class SmartCanvasViewModel : Observable
     {
         private string _recognizeText;
-        private RelayCommand _recognizeTextCommand;
         private InkStrokeContainer _strokes;
 
         public SmartCanvasViewModel()
@@ -28,13 +27,6 @@ namespace InkPoc.ViewModels
             get => _strokes;
             set => Set(ref _strokes, value);
         }
-
-        public RelayCommand RecognizeTextCommand => _recognizeTextCommand
-            ?? (_recognizeTextCommand = new RelayCommand(async () => await OnRecognizeText()));
-
-        private async Task OnRecognizeText()
-        {
-            RecognizeText = await InkService.RecognizeTextAsync(Strokes);
-        }
+        
     }
 }
