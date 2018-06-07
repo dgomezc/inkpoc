@@ -114,9 +114,11 @@
     <Compile Include="Helpers\Ink\InkAsyncAnalyzer.cs" />
     <Compile Include="Helpers\Ink\InkCopyPasteManager.cs" />
     <Compile Include="Helpers\Ink\InkFileManager.cs" />
+    <Compile Include="Helpers\Ink\InkLassoSelectionManager.cs" />
+    <Compile Include="Helpers\Ink\InkNodeSelectionManager.cs" />
     <Compile Include="Helpers\Ink\InkTransformManager.cs" />
-    <Compile Include="Helpers\Ink\InkSelectionAndMoveManager.cs" />
     <Compile Include="Helpers\Ink\InkTransformResult.cs" />
+    <Compile Include="Helpers\Ink\SelectionRectangleManager.cs" />
     <Compile Include="Helpers\Ink\UndoRedo\AddStrokeUndoRedoOperation.cs" />
     <Compile Include="Helpers\Ink\UndoRedo\CutStrokesUndoRedoOperation.cs" />
     <Compile Include="Helpers\Ink\UndoRedo\InkUndoRedoManager.cs" />

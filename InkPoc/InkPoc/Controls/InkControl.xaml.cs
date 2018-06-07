@@ -71,10 +71,12 @@ namespace InkPoc.Controls
                 CoreInputDeviceTypes.Touch;
 
                 var strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
-                var analyzer = new InkAsyncAnalyzer(strokeService);
+                var analyzer = new InkAsyncAnalyzer(inkCanvas, strokeService);
 
                 UndoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer, strokeService);
-                SelectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer, strokeService);
+                var selectionRectangleManager = new SelectionRectangleManager(inkCanvas, selectionCanvas, strokeService);
+                LassoSelectionManager = new InkLassoSelectionManager(inkCanvas, selectionCanvas, strokeService, selectionRectangleManager);
+                NodeSelectionManager = new InkNodeSelectionManager(inkCanvas, selectionCanvas, analyzer, strokeService, selectionRectangleManager);
                 TransformManager = new InkTransformManager(drawingCanvas, strokeService);
                 CopyPasteManager = new InkCopyPasteManager(strokeService);
                 FileManager = new InkFileManager(inkCanvas, strokeService);
@@ -95,14 +97,16 @@ namespace InkPoc.Controls
         }
 
         public InkUndoRedoManager UndoRedoManager { get; set; }
-
-        public InkSelectionAndMoveManager SelectionManager { get; set; }
-
+        
         public InkTransformManager TransformManager { get; set; }
 
         public InkCopyPasteManager CopyPasteManager { get; set; }
 
         public InkFileManager FileManager { get; set; }
+
+        public InkLassoSelectionManager LassoSelectionManager { get; set; }
+
+        public InkNodeSelectionManager NodeSelectionManager { get; set; }
 
         public bool ShowToolbar
         {
@@ -259,14 +263,14 @@ namespace InkPoc.Controls
 
         private async void SaveFile_Click(object sender, RoutedEventArgs e) => await FileManager.SaveInkAsync();
 
-        private void SelectionButton_Checked(object sender, RoutedEventArgs e) => SelectionManager.StartLassoSelectionConfig();
+        private void SelectionButton_Checked(object sender, RoutedEventArgs e) => LassoSelectionManager.StartLassoSelectionConfig();
 
-        private void SelectionButton_Unchecked(object sender, RoutedEventArgs e) => SelectionManager.EndLassoSelectionConfig();
+        private void SelectionButton_Unchecked(object sender, RoutedEventArgs e) => LassoSelectionManager.EndLassoSelectionConfig();
 
         private void Cut_Click(object sender, RoutedEventArgs e)
         {
             copyPosition = CopyPasteManager.Cut();
-            SelectionManager.ClearSelection();
+            ClearSelection();
         }
 
         private Point copyPosition;
@@ -274,7 +278,7 @@ namespace InkPoc.Controls
         private void Copy_Click(object sender, RoutedEventArgs e)
         {
             copyPosition = CopyPasteManager.Copy();
-            SelectionManager.ClearSelection();
+            ClearSelection();
         }
 
         private void Paste_Click(object sender, RoutedEventArgs e)
@@ -283,7 +287,7 @@ namespace InkPoc.Controls
             copyPosition.Y += 20;
             
             CopyPasteManager.Paste(copyPosition);
-            SelectionManager.ClearSelection();
+            ClearSelection();
         }
         
         private async void Export_Click(object sender, RoutedEventArgs e) => await FileManager.ExportToImageAsync(ImageFile);
@@ -296,6 +300,12 @@ namespace InkPoc.Controls
             selectionCanvas.Children.Clear();
             drawingCanvas.Children.Clear();
             UndoRedoManager.Reset();
+        }
+
+        private void ClearSelection()
+        {
+            NodeSelectionManager.ClearSelection();
+            LassoSelectionManager.ClearSelection();
         }
     }
 }

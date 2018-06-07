@@ -6,17 +6,24 @@ using Windows.Foundation;
 using Windows.UI.Input.Inking;
 using Windows.UI.Input.Inking.Analysis;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace InkPoc.Helpers.Ink
 {
     public class InkAsyncAnalyzer
     {
+        private readonly InkCanvas inkCanvas;
         private readonly InkStrokesService strokesService;
         private readonly DispatcherTimer dispatcherTimer;
         const double IDLE_WAITING_TIME = 400;
         
-        public InkAsyncAnalyzer(InkStrokesService _strokesService)
+        public InkAsyncAnalyzer(InkCanvas _inkCanvas, InkStrokesService _strokesService)
         {
+            inkCanvas = _inkCanvas;
+            inkCanvas.InkPresenter.StrokeInput.StrokeStarted += (s,e) => StopTimer();
+            inkCanvas.InkPresenter.StrokesErased += (s,e) => RemoveStrokes(e.Strokes);
+            inkCanvas.InkPresenter.StrokesCollected += (s, e) => AddStrokes(e.Strokes);
+
             strokesService = _strokesService;
             strokesService.AddStrokeEvent += StrokesService_AddStrokeEvent;
             strokesService.RemoveStrokeEvent += StrokesService_RemoveStrokeEvent;

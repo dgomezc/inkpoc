@@ -17,21 +17,26 @@ namespace InkPoc.Views
         private readonly InkStrokesService strokeService;
         private InkAsyncAnalyzer analyzer;
 
-        private InkSelectionAndMoveManager selectionManager;
         private InkTransformManager transformManager;
         private InkUndoRedoManager undoRedoManager;
         private InkCopyPasteManager copyPasteManager;
+
+        private InkLassoSelectionManager lassoSelectionManager;
+        private InkNodeSelectionManager nodeSelectionManager;
         
         public TextSelectionPage()
         {
             InitializeComponent();
 
             strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
-            analyzer = new InkAsyncAnalyzer(strokeService);
-            selectionManager = new InkSelectionAndMoveManager(inkCanvas, selectionCanvas, analyzer, strokeService);
+            analyzer = new InkAsyncAnalyzer(inkCanvas, strokeService);
             transformManager = new InkTransformManager(drawingCanvas, strokeService);
             undoRedoManager = new InkUndoRedoManager(inkCanvas, analyzer, strokeService);
             copyPasteManager = new InkCopyPasteManager(strokeService);
+
+            var selectionRectangleManager = new SelectionRectangleManager(inkCanvas, selectionCanvas, strokeService);
+            lassoSelectionManager = new InkLassoSelectionManager(inkCanvas, selectionCanvas,strokeService, selectionRectangleManager);
+            nodeSelectionManager = new InkNodeSelectionManager(inkCanvas, selectionCanvas, analyzer, strokeService, selectionRectangleManager);
 
             MouseInkButton.IsChecked = true;
         }
@@ -40,14 +45,14 @@ namespace InkPoc.Views
         {
             analyzer.ClearAnalysis();
             strokeService.ClearStrokes();            
-            selectionManager.ClearSelection();
+            ClearSelection();
             undoRedoManager.Reset();
             drawingCanvas.Children.Clear();
         }
 
-        private void SelectionButton_Checked(object sender, RoutedEventArgs e) => selectionManager.StartLassoSelectionConfig();
+        private void SelectionButton_Checked(object sender, RoutedEventArgs e) => lassoSelectionManager.StartLassoSelectionConfig();
 
-        private void SelectionButton_Unchecked(object sender, RoutedEventArgs e) => selectionManager.EndLassoSelectionConfig();
+        private void SelectionButton_Unchecked(object sender, RoutedEventArgs e) => lassoSelectionManager.EndLassoSelectionConfig();
 
         private void MouseInkButton_Checked(object sender, RoutedEventArgs e) => inkCanvas.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Pen | CoreInputDeviceTypes.Mouse;
 
@@ -55,13 +60,13 @@ namespace InkPoc.Views
 
         private void Undo_Click(object sender, RoutedEventArgs e)
         {
-            selectionManager.ClearSelection();
+            ClearSelection();
             undoRedoManager.Undo();
         }
 
         private void Redo_Click(object sender, RoutedEventArgs e)
         {
-            selectionManager.ClearSelection();
+            ClearSelection();
             undoRedoManager.Redo();
         }
 
@@ -71,7 +76,7 @@ namespace InkPoc.Views
 
             if(result.TextAndShapes.Any())
             {
-                selectionManager.ClearSelection();
+                ClearSelection();
                 undoRedoManager.AddOperation(new TransformUndoRedoOperation(result, drawingCanvas, strokeService));
             }
         }
@@ -79,19 +84,26 @@ namespace InkPoc.Views
         private void Cut_Click(object sender, RoutedEventArgs e)
         {
             copyPasteManager.Cut();
-            selectionManager.ClearSelection();
+            ClearSelection();
         }
 
         private void Copy_Click(object sender, RoutedEventArgs e)
         {
             copyPasteManager.Copy();
-            selectionManager.ClearSelection();
+            ClearSelection();
         }
 
         private void Paste_Click(object sender, RoutedEventArgs e)
         {
             copyPasteManager.Paste();
-            selectionManager.ClearSelection();
+            ClearSelection();
+        }
+
+        private void ClearSelection()
+        {
+            nodeSelectionManager.ClearSelection();
+            lassoSelectionManager.ClearSelection();
+
         }
     }
 }
