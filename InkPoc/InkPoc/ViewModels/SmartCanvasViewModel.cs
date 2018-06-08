@@ -24,6 +24,7 @@ namespace InkPoc.ViewModels
         private RelayCommand loadInkFileCommand;
         private RelayCommand saveInkFileCommand;
         private RelayCommand transformTextAndShapesCommand;
+        private RelayCommand clearAllCommand;
 
         private bool enableTouch;
         private bool enableMouse;
@@ -33,13 +34,14 @@ namespace InkPoc.ViewModels
         {
         }
 
-        public SmartCanvasViewModel(InkStrokesService _strokeService,
+        public SmartCanvasViewModel(
+            InkStrokesService _strokeService,
             InkLassoSelectionService _lassoSelectionService,
-                InkNodeSelectionService _nodeSelectionService,
-                InkPointerDeviceService _pointerDeviceService,
-                InkUndoRedoService _undoRedoService,
-                InkTransformService _transformService,
-                InkFileService _fileService)
+            InkNodeSelectionService _nodeSelectionService,
+            InkPointerDeviceService _pointerDeviceService,
+            InkUndoRedoService _undoRedoService,
+            InkTransformService _transformService,
+            InkFileService _fileService)
         {
             strokeService = _strokeService;
             lassoSelectionService = _lassoSelectionService;
@@ -52,7 +54,6 @@ namespace InkPoc.ViewModels
             EnableTouch = true;
             EnableMouse = true;
         }
-
 
         public RelayCommand UndoCommand => undoCommand
            ?? (undoCommand = new RelayCommand(() =>
@@ -98,6 +99,9 @@ namespace InkPoc.ViewModels
                    undoRedoService.AddOperation(new TransformUndoRedoOperation(result, strokeService));
                }
            }));
+
+        public RelayCommand ClearAllCommand => clearAllCommand
+           ?? (clearAllCommand = new RelayCommand(ClearAll));
 
         public bool EnableTouch
         {
@@ -147,5 +151,13 @@ namespace InkPoc.ViewModels
             lassoSelectionService.ClearSelection();
         }
 
+        private void ClearAll()
+        {
+            strokeService.ClearStrokes();
+            lassoSelectionService.ClearSelection();
+            nodeSelectionService.ClearSelection();
+            transformService.ClearTextAndShapes();
+            undoRedoService.Reset();
+        }
     }
 }

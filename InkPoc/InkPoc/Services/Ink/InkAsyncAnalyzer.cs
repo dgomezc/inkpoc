@@ -30,6 +30,7 @@ namespace InkPoc.Services.Ink
             strokesService.MoveStrokesEvent += StrokesService_MoveStrokesEvent;
             strokesService.CutStrokesEvent += StrokesService_CutStrokesEvent;
             strokesService.PasteStrokesEvent += StrokesService_PasteStrokesEvent;
+            strokesService.ClearStrokesEvent += StrokesService_ClearStrokesEvent;
 
 
             dispatcherTimer = new DispatcherTimer();
@@ -175,6 +176,11 @@ namespace InkPoc.Services.Ink
             {
                 RemoveStroke(stroke);
             }
+        }
+
+        private void StrokesService_ClearStrokesEvent(object sender, EventArgs e)
+        {
+            ClearAnalysis();
         }
     }
 }

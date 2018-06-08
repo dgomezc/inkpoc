@@ -20,6 +20,7 @@ namespace InkPoc.Views
             var selectionRectangleService = new InkSelectionRectangleService(inkCanvas, selectionCanvas, strokeService);
             
             ViewModel = new DrawViewModel(
+                strokeService,
                 new InkLassoSelectionService(inkCanvas, selectionCanvas, strokeService, selectionRectangleService),
                 new InkPointerDeviceService(inkCanvas),
                 new InkCopyPasteService(strokeService),

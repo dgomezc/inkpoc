@@ -9,6 +9,7 @@ namespace InkPoc.ViewModels
 {
     public class DrawViewModel : Observable
     {
+        private readonly InkStrokesService strokeService;
         private readonly InkLassoSelectionService lassoSelectionService;
         private readonly InkPointerDeviceService pointerDeviceService;
         private readonly InkCopyPasteService copyPasteService;
@@ -23,6 +24,7 @@ namespace InkPoc.ViewModels
         private RelayCommand loadInkFileCommand;
         private RelayCommand saveInkFileCommand;
         private RelayCommand exportInkFileCommand;
+        private RelayCommand clearAllCommand;
 
         private bool enableTouch;
         private bool enableMouse;
@@ -33,12 +35,14 @@ namespace InkPoc.ViewModels
         }
 
         public DrawViewModel(
+            InkStrokesService _strokeService,
             InkLassoSelectionService _lassoSelectionService,
             InkPointerDeviceService _pointerDeviceService,
             InkCopyPasteService _copyPasteService,
             InkUndoRedoService _undoRedoService,
             InkFileService _fileService)
         {
+            strokeService = _strokeService;
             lassoSelectionService = _lassoSelectionService;
             pointerDeviceService = _pointerDeviceService;
             copyPasteService = _copyPasteService;
@@ -109,7 +113,10 @@ namespace InkPoc.ViewModels
                lassoSelectionService.ClearSelection();
                await fileService.ExportToImageAsync();
            }));
-        
+
+        public RelayCommand ClearAllCommand => clearAllCommand
+           ?? (clearAllCommand = new RelayCommand(ClearAll));
+
         public bool EnableTouch
         {
             get => enableTouch;
@@ -150,6 +157,13 @@ namespace InkPoc.ViewModels
             {
                 lassoSelectionService.EndLassoSelectionConfig();
             }
+        }
+
+        private void ClearAll()
+        {
+            lassoSelectionService.ClearSelection();
+            strokeService.ClearStrokes();
+            undoRedoService.Reset();
         }
     }
 }

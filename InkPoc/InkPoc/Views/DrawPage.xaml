@@ -160,6 +160,19 @@
                         </ic:EventTriggerBehavior>
                     </i:Interaction.Behaviors>
                 </AppBarButton>
+                <AppBarSeparator/>
+                <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Label="Clear all"
+                Icon="Delete"
+                ToolTipService.ToolTip="Clear all">
+                    <i:Interaction.Behaviors>
+                        <ic:EventTriggerBehavior EventName="Click">
+                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.ClearAllCommand}"/>
+                        </ic:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                </AppBarButton>
             </CommandBar>
             <ScrollViewer
                 Name="canvasScroll"
