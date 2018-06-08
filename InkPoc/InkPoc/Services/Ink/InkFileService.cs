@@ -1,9 +1,7 @@
-﻿using InkPoc.Services.Ink;
-using Microsoft.Graphics.Canvas;
+﻿using Microsoft.Graphics.Canvas;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
@@ -12,14 +10,14 @@ using Windows.Storage.Provider;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
 
-namespace InkPoc.Helpers.Ink
+namespace InkPoc.Services.Ink
 {
-    public class InkFileManager
+    public class InkFileService
     {
         private readonly InkStrokesService strokesService;
         private readonly InkCanvas inkCanvas;
 
-        public InkFileManager(InkCanvas _inkCanvas, InkStrokesService _strokesService)
+        public InkFileService(InkCanvas _inkCanvas, InkStrokesService _strokesService)
         {
             inkCanvas = _inkCanvas;
             strokesService = _strokesService;

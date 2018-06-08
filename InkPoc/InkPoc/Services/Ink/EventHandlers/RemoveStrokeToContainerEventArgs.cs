@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI.Input.Inking;
+﻿using Windows.UI.Input.Inking;
 
-namespace InkPoc.Services.Ink
+namespace InkPoc.Services.Ink.EventHandlers
 {
     public class RemoveStrokeToContainerEventArgs
     {

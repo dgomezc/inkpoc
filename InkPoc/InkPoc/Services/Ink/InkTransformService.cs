@@ -1,5 +1,4 @@
-﻿using InkPoc.Services.Ink;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,15 +11,15 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 
-namespace InkPoc.Helpers.Ink
+namespace InkPoc.Services.Ink
 {
-    public class InkTransformManager
+    public class InkTransformService
     {
         private readonly InkAnalyzer inkAnalyzer;
         private readonly Canvas drawingCanvas;
         private readonly InkStrokesService strokeService;
 
-        public InkTransformManager(Canvas _drawingCanvas, InkStrokesService _strokeService)
+        public InkTransformService(Canvas _drawingCanvas, InkStrokesService _strokeService)
         {
             drawingCanvas = _drawingCanvas;
             strokeService = _strokeService;

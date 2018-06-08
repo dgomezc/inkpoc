@@ -1,5 +1,5 @@
-﻿using InkPoc.Helpers.Ink;
-using InkPoc.Helpers.Ink.UndoRedo;
+﻿using InkPoc.Services.Ink;
+using InkPoc.Services.Ink.UndoRedo;
 using InkPoc.Services.Ink;
 using InkPoc.ViewModels;
 using System.Linq;
@@ -17,12 +17,12 @@ namespace InkPoc.Views
         private readonly InkStrokesService strokeService;
         private InkAsyncAnalyzer analyzer;
 
-        private InkTransformManager transformManager;
-        private InkUndoRedoManager undoRedoManager;
-        private InkCopyPasteManager copyPasteManager;
+        private InkTransformService transformService;
+        private InkUndoRedoService undoRedoService;
+        private InkCopyPasteService copyPasteService;
 
-        private InkLassoSelectionManager lassoSelectionManager;
-        private InkNodeSelectionManager nodeSelectionManager;
+        private InkLassoSelectionService lassoSelectionService;
+        private InkNodeSelectionService nodeSelectionService;
         
         public TextSelectionPage()
         {
@@ -30,13 +30,13 @@ namespace InkPoc.Views
 
             strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
             analyzer = new InkAsyncAnalyzer(inkCanvas, strokeService);
-            transformManager = new InkTransformManager(drawingCanvas, strokeService);
-            undoRedoManager = new InkUndoRedoManager(inkCanvas, strokeService);
-            copyPasteManager = new InkCopyPasteManager(strokeService);
+            transformService = new InkTransformService(drawingCanvas, strokeService);
+            undoRedoService = new InkUndoRedoService(inkCanvas, strokeService);
+            copyPasteService = new InkCopyPasteService(strokeService);
 
-            var selectionRectangleManager = new InkSelectionRectangleManager(inkCanvas, selectionCanvas, strokeService);
-            lassoSelectionManager = new InkLassoSelectionManager(inkCanvas, selectionCanvas,strokeService, selectionRectangleManager);
-            nodeSelectionManager = new InkNodeSelectionManager(inkCanvas, selectionCanvas, analyzer, strokeService, selectionRectangleManager);
+            var selectionRectangleService = new InkSelectionRectangleService(inkCanvas, selectionCanvas, strokeService);
+            lassoSelectionService = new InkLassoSelectionService(inkCanvas, selectionCanvas,strokeService, selectionRectangleService);
+            nodeSelectionService = new InkNodeSelectionService(inkCanvas, selectionCanvas, analyzer, strokeService, selectionRectangleService);
 
             MouseInkButton.IsChecked = true;
         }
@@ -46,13 +46,13 @@ namespace InkPoc.Views
             analyzer.ClearAnalysis();
             strokeService.ClearStrokes();
             ClearSelection();
-            undoRedoManager.Reset();
+            undoRedoService.Reset();
             drawingCanvas.Children.Clear();
         }
 
-        private void SelectionButton_Checked(object sender, RoutedEventArgs e) => lassoSelectionManager.StartLassoSelectionConfig();
+        private void SelectionButton_Checked(object sender, RoutedEventArgs e) => lassoSelectionService.StartLassoSelectionConfig();
 
-        private void SelectionButton_Unchecked(object sender, RoutedEventArgs e) => lassoSelectionManager.EndLassoSelectionConfig();
+        private void SelectionButton_Unchecked(object sender, RoutedEventArgs e) => lassoSelectionService.EndLassoSelectionConfig();
 
         private void MouseInkButton_Checked(object sender, RoutedEventArgs e) => inkCanvas.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Pen | CoreInputDeviceTypes.Mouse;
 
@@ -61,48 +61,48 @@ namespace InkPoc.Views
         private void Undo_Click(object sender, RoutedEventArgs e)
         {
             ClearSelection();
-            undoRedoManager.Undo();
+            undoRedoService.Undo();
         }
 
         private void Redo_Click(object sender, RoutedEventArgs e)
         {
             ClearSelection();
-            undoRedoManager.Redo();
+            undoRedoService.Redo();
         }
 
         private async void TransformTextAndShapes_Click(object sender, RoutedEventArgs e)
         {
-            var result = await transformManager.TransformTextAndShapesAsync();
+            var result = await transformService.TransformTextAndShapesAsync();
 
             if(result.TextAndShapes.Any())
             {
                 ClearSelection();
-                undoRedoManager.AddOperation(new TransformUndoRedoOperation(result, drawingCanvas, strokeService));
+                undoRedoService.AddOperation(new TransformUndoRedoOperation(result, drawingCanvas, strokeService));
             }
         }
 
         private void Cut_Click(object sender, RoutedEventArgs e)
         {
-            copyPasteManager.Cut();
+            copyPasteService.Cut();
             ClearSelection();
         }
 
         private void Copy_Click(object sender, RoutedEventArgs e)
         {
-            copyPasteManager.Copy();
+            copyPasteService.Copy();
             ClearSelection();
         }
 
         private void Paste_Click(object sender, RoutedEventArgs e)
         {
-            copyPasteManager.Paste();
+            copyPasteService.Paste();
             ClearSelection();
         }
 
         private void ClearSelection()
         {
-            nodeSelectionManager.ClearSelection();
-            lassoSelectionManager.ClearSelection();
+            nodeSelectionService.ClearSelection();
+            lassoSelectionService.ClearSelection();
 
         }
     }

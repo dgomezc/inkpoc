@@ -1,16 +1,16 @@
-﻿using InkPoc.Services.Ink;
+﻿using InkPoc.Services.Ink.EventHandlers;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Input.Inking;
 
-namespace InkPoc.Helpers.Ink.UndoRedo
+namespace InkPoc.Services.Ink.UndoRedo
 {
-    public class AddStrokeUndoRedoOperation : IUndoRedoOperation
+    public class RemoveStrokeUndoRedoOperation : IUndoRedoOperation
     {
         private List<InkStroke> strokes;
         private readonly InkStrokesService strokeService;
 
-        public AddStrokeUndoRedoOperation(IEnumerable<InkStroke> _strokes, InkStrokesService _strokeService)
+        public RemoveStrokeUndoRedoOperation(IEnumerable<InkStroke> _strokes, InkStrokesService _strokeService)
         {
             strokes = new List<InkStroke>(_strokes);
             strokeService = _strokeService;
@@ -18,9 +18,9 @@ namespace InkPoc.Helpers.Ink.UndoRedo
             strokeService.AddStrokeEvent += StrokeService_AddStrokeEvent;
         }
 
-        public void ExecuteUndo() => strokes.ForEach(s => strokeService.RemoveStrokeToContainer(s));
+        public void ExecuteRedo() => strokes.ForEach(s => strokeService.RemoveStrokeToContainer(s));
 
-        public void ExecuteRedo() => strokes.ToList().ForEach(s => strokeService.AddStrokeToContainer(s));
+        public void ExecuteUndo() => strokes.ToList().ForEach(s => strokeService.AddStrokeToContainer(s));
 
         private void StrokeService_AddStrokeEvent(object sender, AddStrokeToContainerEventArgs e)
         {
@@ -29,8 +29,8 @@ namespace InkPoc.Helpers.Ink.UndoRedo
                 return;
             }
 
-            var removedStrokes = strokes.RemoveAll(s => s.Id == e.OldStroke?.Id);
-            if (removedStrokes > 0)
+            var changes = strokes.RemoveAll(s => s.Id == e.OldStroke?.Id);
+            if (changes > 0)
             {
                 strokes.Add(e.NewStroke);
             }

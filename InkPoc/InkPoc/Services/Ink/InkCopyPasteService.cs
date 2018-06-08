@@ -1,17 +1,15 @@
-﻿using InkPoc.Services.Ink;
-using System.Linq;
+﻿using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Input.Inking;
 
-namespace InkPoc.Helpers.Ink
+namespace InkPoc.Services.Ink
 {
-    public class InkCopyPasteManager
+    public class InkCopyPasteService
     {
         private Point pastePosition;
         private const int PASTE_DISTANCE = 20;
         private readonly InkStrokesService strokesService;
 
-        public InkCopyPasteManager(InkStrokesService _strokesService)
+        public InkCopyPasteService(InkStrokesService _strokesService)
         {
             strokesService = _strokesService;
         }

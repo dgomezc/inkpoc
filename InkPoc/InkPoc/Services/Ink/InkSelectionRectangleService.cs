@@ -1,26 +1,18 @@
-﻿using InkPoc.Services.Ink;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Core;
-using Windows.UI.Input.Inking;
-using Windows.UI.Input.Inking.Analysis;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 
-namespace InkPoc.Helpers.Ink
+namespace InkPoc.Services.Ink
 {
 
 
 
-    public class InkSelectionRectangleManager
+    public class InkSelectionRectangleService
     {
         Point dragStartPosition;
         private readonly Canvas selectionCanvas;
@@ -28,7 +20,7 @@ namespace InkPoc.Helpers.Ink
         Rect selectionStrokesRect = Rect.Empty;
         private readonly InkStrokesService strokeService;
 
-        public InkSelectionRectangleManager(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkStrokesService _strokeService)
+        public InkSelectionRectangleService(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkStrokesService _strokeService)
         {
             selectionCanvas = _selectionCanvas;
             inkCanvas = _inkCanvas;

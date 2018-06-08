@@ -2,7 +2,7 @@
 using Windows.Foundation;
 using Windows.UI.Input.Inking;
 
-namespace InkPoc.Services.Ink
+namespace InkPoc.Services.Ink.EventHandlers
 {
     public class MoveStrokesEventArgs
     {

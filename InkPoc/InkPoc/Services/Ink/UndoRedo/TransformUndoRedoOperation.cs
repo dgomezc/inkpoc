@@ -1,13 +1,9 @@
 ﻿using InkPoc.Services.Ink;
-using System;
-using System.Collections.Generic;
+using InkPoc.Services.Ink.EventHandlers;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI.Input.Inking;
 using Windows.UI.Xaml.Controls;
 
-namespace InkPoc.Helpers.Ink.UndoRedo
+namespace InkPoc.Services.Ink.UndoRedo
 {
     public class TransformUndoRedoOperation : IUndoRedoOperation
     {

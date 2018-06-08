@@ -1,39 +1,29 @@
-﻿using InkPoc.Services.Ink;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.UI;
+﻿using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Input.Inking;
-using Windows.UI.Input.Inking.Analysis;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 
-namespace InkPoc.Helpers.Ink
+namespace InkPoc.Services.Ink
 {
-    public class InkLassoSelectionManager
+    public class InkLassoSelectionService
     {
         private readonly InkPresenter inkPresenter;
         private readonly Canvas selectionCanvas;
         private readonly InkStrokesService strokeService;
-        private readonly InkSelectionRectangleManager selectionRectangleManager;
+        private readonly InkSelectionRectangleService selectionRectangleService;
 
         private bool enableLasso;
         private Polyline lasso;        
 
-        public InkLassoSelectionManager(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkStrokesService _strokeService, InkSelectionRectangleManager _selectionRectangleManager)
+        public InkLassoSelectionService(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkStrokesService _strokeService, InkSelectionRectangleService _selectionRectangleService)
         {
             // Initialize properties
             inkPresenter = _inkCanvas.InkPresenter;
             selectionCanvas = _selectionCanvas;
             strokeService = _strokeService;
-            selectionRectangleManager = _selectionRectangleManager;
+            selectionRectangleService = _selectionRectangleService;
 
             // lasso selection
             inkPresenter.StrokeInput.StrokeStarted += StrokeInput_StrokeStarted;
@@ -80,7 +70,7 @@ namespace InkPoc.Helpers.Ink
             enableLasso = false;
 
             selectionCanvas.Children.Remove(lasso);
-            selectionRectangleManager.UpdateSelectionRect(rect);
+            selectionRectangleService.UpdateSelectionRect(rect);
         }
         
         public void StartLassoSelectionConfig()
@@ -101,7 +91,7 @@ namespace InkPoc.Helpers.Ink
 
         public void ClearSelection()
         {
-            selectionRectangleManager.Clear();
+            selectionRectangleService.Clear();
         }
 
     }

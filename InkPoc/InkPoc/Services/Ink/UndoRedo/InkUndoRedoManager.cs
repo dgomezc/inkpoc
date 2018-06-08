@@ -1,18 +1,18 @@
-﻿using InkPoc.Services.Ink;
+﻿using InkPoc.Services.Ink.EventHandlers;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Xaml.Controls;
 
-namespace InkPoc.Helpers.Ink.UndoRedo
+namespace InkPoc.Services.Ink.UndoRedo
 {
-    public class InkUndoRedoManager
+    public class InkUndoRedoService
     {
         private readonly InkStrokesService strokeService;
 
         private Stack<IUndoRedoOperation> undoStack = new Stack<IUndoRedoOperation>();
         private Stack<IUndoRedoOperation> redoStack = new Stack<IUndoRedoOperation>();
 
-        public InkUndoRedoManager(InkCanvas _inkCanvas, InkStrokesService _strokeService)
+        public InkUndoRedoService(InkCanvas _inkCanvas, InkStrokesService _strokeService)
         {
             strokeService = _strokeService;
             strokeService.MoveStrokesEvent += StrokeService_MoveStrokesEvent;

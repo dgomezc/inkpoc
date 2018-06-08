@@ -1,4 +1,4 @@
-﻿using InkPoc.Services.Ink;
+﻿using InkPoc.Services.Ink.EventHandlers;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,7 +8,7 @@ using Windows.UI.Input.Inking.Analysis;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace InkPoc.Helpers.Ink
+namespace InkPoc.Services.Ink
 {
     public class InkAsyncAnalyzer
     {

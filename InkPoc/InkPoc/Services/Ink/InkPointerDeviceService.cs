@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Devices.Input;
+﻿using Windows.Devices.Input;
 using Windows.UI.Core;
 using Windows.UI.Input.Inking;
 using Windows.UI.Xaml.Controls;
 
-namespace InkPoc.Helpers.Ink
+namespace InkPoc.Services.Ink
 {
-    public class InkPointerDeviceManager
+    public class InkPointerDeviceService
     {
         private readonly InkCanvas inkCanvas;
 
@@ -18,7 +13,7 @@ namespace InkPoc.Helpers.Ink
         private bool enablePen;
         private bool enableTouch;
 
-        public InkPointerDeviceManager(InkCanvas _inkCanvas)
+        public InkPointerDeviceService(InkCanvas _inkCanvas)
         {
             inkCanvas = _inkCanvas;
             inkCanvas.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse |

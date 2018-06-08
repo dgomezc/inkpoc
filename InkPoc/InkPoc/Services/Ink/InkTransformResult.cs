@@ -2,7 +2,7 @@
 using Windows.UI.Input.Inking;
 using Windows.UI.Xaml;
 
-namespace InkPoc.Helpers.Ink
+namespace InkPoc.Services.Ink
 {
     public class InkTransformResult
     {

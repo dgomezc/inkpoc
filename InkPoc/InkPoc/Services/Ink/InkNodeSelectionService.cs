@@ -1,24 +1,14 @@
-﻿using InkPoc.Services.Ink;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.UI;
-using Windows.UI.Core;
 using Windows.UI.Input.Inking;
 using Windows.UI.Input.Inking.Analysis;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
 
-
-namespace InkPoc.Helpers.Ink
+namespace InkPoc.Services.Ink
 {
-    public class InkNodeSelectionManager
+    public class InkNodeSelectionService
     {
         const double BUSY_WAITING_TIME = 200;
         const double TRIPLE_TAP_TIME = 400;
@@ -28,14 +18,14 @@ namespace InkPoc.Helpers.Ink
         private readonly InkAsyncAnalyzer analyzer;
 
         private readonly InkStrokesService strokeService;
-        private readonly InkSelectionRectangleManager selectionRectangleManager;
+        private readonly InkSelectionRectangleService selectionRectangleService;
 
         IInkAnalysisNode selectedNode;
         private readonly Canvas selectionCanvas;
 
         DateTime lastDoubleTapTime;
 
-        public InkNodeSelectionManager(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkAsyncAnalyzer _analyzer, InkStrokesService _strokeService, InkSelectionRectangleManager _selectionRectangleManager)
+        public InkNodeSelectionService(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkAsyncAnalyzer _analyzer, InkStrokesService _strokeService, InkSelectionRectangleService _selectionRectangleService)
         {
             // Initialize properties
             inkCanvas = _inkCanvas;
@@ -43,7 +33,7 @@ namespace InkPoc.Helpers.Ink
             inkPresenter = inkCanvas.InkPresenter;
             analyzer = _analyzer;
             strokeService = _strokeService;
-            selectionRectangleManager = _selectionRectangleManager;
+            selectionRectangleService = _selectionRectangleService;
 
             // selection on tap
             inkCanvas.Tapped += InkCanvas_Tapped;
@@ -92,7 +82,7 @@ namespace InkPoc.Helpers.Ink
                 await Task.Delay(TimeSpan.FromMilliseconds(BUSY_WAITING_TIME));
             }
 
-            if (selectionRectangleManager.ContainsPosition(position))
+            if (selectionRectangleService.ContainsPosition(position))
             {
                 // Pressed on the selected rect, do nothing
                 return;
@@ -105,7 +95,7 @@ namespace InkPoc.Helpers.Ink
         public void ClearSelection()
         {
             selectedNode = null;
-            selectionRectangleManager.Clear();
+            selectionRectangleService.Clear();
         }
 
         private void ExpandSelection()
@@ -133,7 +123,7 @@ namespace InkPoc.Helpers.Ink
             if (node != null)
             {
                 var rect = strokeService.SelectStrokesByNode(node);
-                selectionRectangleManager.UpdateSelectionRect(rect);
+                selectionRectangleService.UpdateSelectionRect(rect);
             }
             else
             {
