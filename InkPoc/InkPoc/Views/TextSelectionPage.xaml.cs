@@ -34,7 +34,7 @@ namespace InkPoc.Views
             undoRedoManager = new InkUndoRedoManager(inkCanvas, strokeService);
             copyPasteManager = new InkCopyPasteManager(strokeService);
 
-            var selectionRectangleManager = new SelectionRectangleManager(inkCanvas, selectionCanvas, strokeService);
+            var selectionRectangleManager = new InkSelectionRectangleManager(inkCanvas, selectionCanvas, strokeService);
             lassoSelectionManager = new InkLassoSelectionManager(inkCanvas, selectionCanvas,strokeService, selectionRectangleManager);
             nodeSelectionManager = new InkNodeSelectionManager(inkCanvas, selectionCanvas, analyzer, strokeService, selectionRectangleManager);
 

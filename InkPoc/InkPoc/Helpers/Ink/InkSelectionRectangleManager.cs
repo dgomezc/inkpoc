@@ -20,7 +20,7 @@ namespace InkPoc.Helpers.Ink
 
 
 
-    public class SelectionRectangleManager
+    public class InkSelectionRectangleManager
     {
         Point dragStartPosition;
         private readonly Canvas selectionCanvas;
@@ -28,7 +28,7 @@ namespace InkPoc.Helpers.Ink
         Rect selectionStrokesRect = Rect.Empty;
         private readonly InkStrokesService strokeService;
 
-        public SelectionRectangleManager(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkStrokesService _strokeService)
+        public InkSelectionRectangleManager(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkStrokesService _strokeService)
         {
             selectionCanvas = _selectionCanvas;
             inkCanvas = _inkCanvas;

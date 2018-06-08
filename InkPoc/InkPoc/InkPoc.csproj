@@ -119,7 +119,7 @@
     <Compile Include="Helpers\Ink\InkPointerDeviceManager.cs" />
     <Compile Include="Helpers\Ink\InkTransformManager.cs" />
     <Compile Include="Helpers\Ink\InkTransformResult.cs" />
-    <Compile Include="Helpers\Ink\SelectionRectangleManager.cs" />
+    <Compile Include="Helpers\Ink\InkSelectionRectangleManager.cs" />
     <Compile Include="Helpers\Ink\UndoRedo\AddStrokeUndoRedoOperation.cs" />
     <Compile Include="Helpers\Ink\UndoRedo\InkUndoRedoManager.cs" />
     <Compile Include="Helpers\Ink\UndoRedo\IUndoRedoOperation.cs" />

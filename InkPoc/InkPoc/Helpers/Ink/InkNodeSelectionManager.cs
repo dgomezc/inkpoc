@@ -28,14 +28,14 @@ namespace InkPoc.Helpers.Ink
         private readonly InkAsyncAnalyzer analyzer;
 
         private readonly InkStrokesService strokeService;
-        private readonly SelectionRectangleManager selectionRectangleManager;
+        private readonly InkSelectionRectangleManager selectionRectangleManager;
 
         IInkAnalysisNode selectedNode;
         private readonly Canvas selectionCanvas;
 
         DateTime lastDoubleTapTime;
 
-        public InkNodeSelectionManager(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkAsyncAnalyzer _analyzer, InkStrokesService _strokeService, SelectionRectangleManager _selectionRectangleManager)
+        public InkNodeSelectionManager(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkAsyncAnalyzer _analyzer, InkStrokesService _strokeService, InkSelectionRectangleManager _selectionRectangleManager)
         {
             // Initialize properties
             inkCanvas = _inkCanvas;

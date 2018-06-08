@@ -76,7 +76,7 @@ namespace InkPoc.Controls
 
                 PointerDeviceManager = new InkPointerDeviceManager(inkCanvas);
                 UndoRedoManager = new InkUndoRedoManager(inkCanvas, strokeService);
-                var selectionRectangleManager = new SelectionRectangleManager(inkCanvas, selectionCanvas, strokeService);
+                var selectionRectangleManager = new InkSelectionRectangleManager(inkCanvas, selectionCanvas, strokeService);
                 LassoSelectionManager = new InkLassoSelectionManager(inkCanvas, selectionCanvas, strokeService, selectionRectangleManager);
                 NodeSelectionManager = new InkNodeSelectionManager(inkCanvas, selectionCanvas, analyzer, strokeService, selectionRectangleManager);
                 TransformManager = new InkTransformManager(drawingCanvas, strokeService);

@@ -22,12 +22,12 @@ namespace InkPoc.Helpers.Ink
         private readonly InkPresenter inkPresenter;
         private readonly Canvas selectionCanvas;
         private readonly InkStrokesService strokeService;
-        private readonly SelectionRectangleManager selectionRectangleManager;
+        private readonly InkSelectionRectangleManager selectionRectangleManager;
 
         private bool enableLasso;
         private Polyline lasso;        
 
-        public InkLassoSelectionManager(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkStrokesService _strokeService, SelectionRectangleManager _selectionRectangleManager)
+        public InkLassoSelectionManager(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkStrokesService _strokeService, InkSelectionRectangleManager _selectionRectangleManager)
         {
             // Initialize properties
             inkPresenter = _inkCanvas.InkPresenter;
