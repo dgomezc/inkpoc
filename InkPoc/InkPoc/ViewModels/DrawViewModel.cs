@@ -46,7 +46,7 @@ namespace InkPoc.ViewModels
             fileService = _fileService;
 
             EnableTouch = true;
-            enableMouse = true;
+            EnableMouse = true;
         }
 
         public RelayCommand CutCommand => cutCommand

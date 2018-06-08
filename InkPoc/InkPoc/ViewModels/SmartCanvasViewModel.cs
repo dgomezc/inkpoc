@@ -1,6 +1,9 @@
 ﻿
 using InkPoc.Helpers;
 using InkPoc.Services;
+using InkPoc.Services.Ink;
+using InkPoc.Services.Ink.UndoRedo;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Input.Inking;
 
@@ -8,25 +11,141 @@ namespace InkPoc.ViewModels
 {
     public class SmartCanvasViewModel : Observable
     {
-        private string _recognizeText;
-        private InkStrokeContainer _strokes;
+        private readonly InkStrokesService strokeService;
+        private readonly InkLassoSelectionService lassoSelectionService;
+        private readonly InkNodeSelectionService nodeSelectionService;
+        private readonly InkPointerDeviceService pointerDeviceService;
+        private readonly InkUndoRedoService undoRedoService;
+        private readonly InkTransformService transformService;
+        private readonly InkFileService fileService;
+
+        private RelayCommand undoCommand;
+        private RelayCommand redoCommand;
+        private RelayCommand loadInkFileCommand;
+        private RelayCommand saveInkFileCommand;
+        private RelayCommand transformTextAndShapesCommand;
+
+        private bool enableTouch;
+        private bool enableMouse;
+        private bool enableLassoSelection;
 
         public SmartCanvasViewModel()
         {
-            _strokes = new InkStrokeContainer();
         }
 
-        public string RecognizeText
+        public SmartCanvasViewModel(InkStrokesService _strokeService,
+            InkLassoSelectionService _lassoSelectionService,
+                InkNodeSelectionService _nodeSelectionService,
+                InkPointerDeviceService _pointerDeviceService,
+                InkUndoRedoService _undoRedoService,
+                InkTransformService _transformService,
+                InkFileService _fileService)
         {
-            get => _recognizeText;
-            set => Set(ref _recognizeText, value);
+            strokeService = _strokeService;
+            lassoSelectionService = _lassoSelectionService;
+            nodeSelectionService = _nodeSelectionService;
+            pointerDeviceService = _pointerDeviceService;
+            undoRedoService = _undoRedoService;
+            transformService = _transformService;
+            fileService = _fileService;
+
+            EnableTouch = true;
+            EnableMouse = true;
         }
 
-        public InkStrokeContainer Strokes
+
+        public RelayCommand UndoCommand => undoCommand
+           ?? (undoCommand = new RelayCommand(() =>
+           {
+               lassoSelectionService.ClearSelection();
+               undoRedoService.Undo();
+           }));
+
+        public RelayCommand RedoCommand => redoCommand
+           ?? (redoCommand = new RelayCommand(() =>
+           {
+               lassoSelectionService.ClearSelection();
+               undoRedoService.Redo();
+           }));
+
+        public RelayCommand LoadInkFileCommand => loadInkFileCommand
+           ?? (loadInkFileCommand = new RelayCommand(async () =>
+           {
+               lassoSelectionService.ClearSelection();
+               var fileLoaded = await fileService.LoadInkAsync();
+
+               if (fileLoaded)
+               {
+                   transformService.ClearTextAndShapes();
+                   undoRedoService.Reset();
+               }
+           }));
+
+        public RelayCommand SaveInkFileCommand => saveInkFileCommand
+           ?? (saveInkFileCommand = new RelayCommand(async () =>
+           {
+               lassoSelectionService.ClearSelection();
+               await fileService.SaveInkAsync();
+           }));
+
+        public RelayCommand TransformTextAndShapesCommand => transformTextAndShapesCommand
+           ?? (transformTextAndShapesCommand = new RelayCommand(async () =>
+           {
+               var result = await transformService.TransformTextAndShapesAsync();
+               if (result.TextAndShapes.Any())
+               {
+                   ClearSelection();
+                   undoRedoService.AddOperation(new TransformUndoRedoOperation(result, strokeService));
+               }
+           }));
+
+        public bool EnableTouch
         {
-            get => _strokes;
-            set => Set(ref _strokes, value);
+            get => enableTouch;
+            set
+            {
+                Set(ref enableTouch, value);
+                pointerDeviceService.EnableTouch = value;
+            }
         }
-        
+
+        public bool EnableMouse
+        {
+            get => enableMouse;
+            set
+            {
+                Set(ref enableMouse, value);
+                pointerDeviceService.EnableMouse = value;
+            }
+        }
+
+        public bool EnableLassoSelection
+        {
+            get => enableLassoSelection;
+            set
+            {
+                Set(ref enableLassoSelection, value);
+                ConfigLassoSelection(value);
+            }
+        }
+
+        private void ConfigLassoSelection(bool enableLasso)
+        {
+            if (enableLasso)
+            {
+                lassoSelectionService.StartLassoSelectionConfig();
+            }
+            else
+            {
+                lassoSelectionService.EndLassoSelectionConfig();
+            }
+        }
+
+        private void ClearSelection()
+        {
+            nodeSelectionService.ClearSelection();
+            lassoSelectionService.ClearSelection();
+        }
+
     }
 }

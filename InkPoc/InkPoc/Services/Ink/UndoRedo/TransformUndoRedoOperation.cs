@@ -7,14 +7,12 @@ namespace InkPoc.Services.Ink.UndoRedo
 {
     public class TransformUndoRedoOperation : IUndoRedoOperation
     {
-        private Canvas drawingCanvas;
         private InkTransformResult transformResult;
         private readonly InkStrokesService strokeService;
 
-        public TransformUndoRedoOperation(InkTransformResult _transformResult, Canvas _drawingCanvas, InkStrokesService _strokeService)
+        public TransformUndoRedoOperation(InkTransformResult _transformResult, InkStrokesService _strokeService)
         {
             transformResult = _transformResult;
-            drawingCanvas = _drawingCanvas;
             strokeService = _strokeService;
 
             strokeService.AddStrokeEvent += StrokeService_AddStrokeEvent;
@@ -52,7 +50,7 @@ namespace InkPoc.Services.Ink.UndoRedo
         {
             foreach (var uielement in transformResult.TextAndShapes.ToList())
             {
-                drawingCanvas.Children.Add(uielement);
+                transformResult.DrawingCanvas.Children.Add(uielement);
             }
         }
 
@@ -60,9 +58,9 @@ namespace InkPoc.Services.Ink.UndoRedo
         {
             foreach (var uielement in transformResult.TextAndShapes)
             {
-                if (drawingCanvas.Children.Contains(uielement))
+                if (transformResult.DrawingCanvas.Children.Contains(uielement))
                 {
-                    drawingCanvas.Children.Remove(uielement);
+                    transformResult.DrawingCanvas.Children.Remove(uielement);
                 }
             }
         }

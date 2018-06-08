@@ -77,7 +77,7 @@ namespace InkPoc.Views
             if(result.TextAndShapes.Any())
             {
                 ClearSelection();
-                undoRedoService.AddOperation(new TransformUndoRedoOperation(result, drawingCanvas, strokeService));
+                undoRedoService.AddOperation(new TransformUndoRedoOperation(result, strokeService));
             }
         }
 

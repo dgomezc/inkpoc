@@ -28,7 +28,7 @@ namespace InkPoc.Services.Ink
 
         public async Task<InkTransformResult> TransformTextAndShapesAsync()
         {
-            var result = new InkTransformResult();
+            var result = new InkTransformResult(drawingCanvas);
             var inkStrokes = GetStrokesToConvert();
 
             if (inkStrokes.Any())
@@ -169,6 +169,11 @@ namespace InkPoc.Services.Ink
             }
 
             return strokeService.GetStrokes();
+        }
+
+        public void ClearTextAndShapes()
+        {
+            drawingCanvas.Children.Clear();
         }
     }    
 }

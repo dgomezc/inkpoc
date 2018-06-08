@@ -38,9 +38,6 @@ namespace InkPoc.Views
 
             selectionCanvas.Width = inkCanvas.Width;
             selectionCanvas.Height = inkCanvas.Height;
-
-            drawingCanvas.Width = inkCanvas.Width;
-            drawingCanvas.Height = inkCanvas.Height;
         }
     }
 }

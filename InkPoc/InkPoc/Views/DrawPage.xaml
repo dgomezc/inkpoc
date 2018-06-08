@@ -60,8 +60,7 @@
                 Click="ZoomOut_Click"
                 Label="Zoom out"
                 Icon="ZoomOut"
-                ToolTipService.ToolTip="Zoom out"
-                Visibility="{Binding ShowZoom, ElementName=inkControl}" />
+                ToolTipService.ToolTip="Zoom out" />
                 <AppBarSeparator  />
                 <AppBarButton
                 BorderBrush="Transparent"
@@ -171,7 +170,6 @@
                 ZoomMode="Enabled">
                     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
                         <Canvas x:Name="selectionCanvas"/>
-                        <Canvas x:Name="drawingCanvas"/>
                         <InkCanvas x:Name="inkCanvas"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"/>
