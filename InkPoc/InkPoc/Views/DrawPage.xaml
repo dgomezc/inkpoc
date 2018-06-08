@@ -4,22 +4,179 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
     Style="{StaticResource PageStyle}"
-    xmlns:controls="using:InkPoc.Controls"
     mc:Ignorable="d">
     <Grid
         x:Name="ContentArea"
         Margin="{StaticResource MediumLeftRightMargin}">
-        <Grid Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
-            <controls:InkControl
-                ShowSelectionTool="True"
-                ShowEnableTouchInking="True"
-                ShowCopyPaste="True"
-                ShowOpenSaveFile="True"
-                ShowUndoRedo="True"
-                ShowZoom="True"
-                ShowExportFile="True"
-                ShowClearAll="True" />
+        <Grid
+            Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <CommandBar
+                DefaultLabelPosition="Collapsed"
+                HorizontalAlignment="Left"
+                HorizontalContentAlignment="Left">
+                <CommandBar.Content>
+                    <InkToolbar x:Name="toolbar" TargetInkCanvas="{x:Bind inkCanvas}">
+                        <InkToolbarCustomToolButton
+                            IsChecked="{x:Bind ViewModel.EnableLassoSelection, Mode=TwoWay}"
+                            ToolTipService.ToolTip="Selection tool">
+                            <FontIcon
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            Glyph="&#xEF20;" />
+                        </InkToolbarCustomToolButton>
+                        <InkToolbarCustomToggleButton
+                            ToolTipService.ToolTip="Touch Inking"
+                            IsChecked="{x:Bind ViewModel.EnableTouch, Mode=TwoWay}">
+                            <FontIcon
+                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                Glyph="&#xED5F;" />
+                        </InkToolbarCustomToggleButton>
+                        <InkToolbarCustomToggleButton
+                            ToolTipService.ToolTip="Mouse Inking"
+                            IsChecked="{x:Bind ViewModel.EnableMouse, Mode=TwoWay}">
+                            <FontIcon
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            Glyph="&#xE962;" />
+                        </InkToolbarCustomToggleButton>
+                    </InkToolbar>
+                </CommandBar.Content>
+                <AppBarSeparator />
+                <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Click="ZoomIn_Click"
+                Label="Zoom in"                
+                Icon="ZoomIn"
+                ToolTipService.ToolTip="Zoom in" />
+                <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Click="ZoomOut_Click"
+                Label="Zoom out"
+                Icon="ZoomOut"
+                ToolTipService.ToolTip="Zoom out"
+                Visibility="{Binding ShowZoom, ElementName=inkControl}" />
+                <AppBarSeparator  />
+                <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Label="Cut"
+                Icon="Cut"
+                ToolTipService.ToolTip="Cut">
+                    <i:Interaction.Behaviors>
+                        <ic:EventTriggerBehavior EventName="Click">
+                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.CutCommand}"/>
+                        </ic:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                </AppBarButton>
+                <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Label="Copy"
+                Icon="Copy"
+                ToolTipService.ToolTip="Copy" >
+                    <i:Interaction.Behaviors>
+                        <ic:EventTriggerBehavior EventName="Click">
+                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.CopyCommand}"/>
+                        </ic:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                </AppBarButton>
+                <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Label="Paste"
+                Icon="Paste"
+                ToolTipService.ToolTip="Paste" >
+                    <i:Interaction.Behaviors>
+                        <ic:EventTriggerBehavior EventName="Click">
+                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.PasteCommand}"/>
+                        </ic:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                </AppBarButton>
+                <AppBarSeparator/>
+                <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Label="Undo"
+                Icon="Undo"
+                ToolTipService.ToolTip="Undo">
+                    <i:Interaction.Behaviors>
+                        <ic:EventTriggerBehavior EventName="Click">
+                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.UndoCommand}"/>
+                        </ic:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                </AppBarButton>
+                <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Label="Redo"
+                Icon="Redo"
+                ToolTipService.ToolTip="Redo">
+                    <i:Interaction.Behaviors>
+                        <ic:EventTriggerBehavior EventName="Click">
+                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.RedoCommand}"/>
+                        </ic:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                </AppBarButton>
+                <AppBarSeparator/>
+                <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Label="Open file"
+                Icon="OpenFile"
+                ToolTipService.ToolTip="Open file">
+                    <i:Interaction.Behaviors>
+                        <ic:EventTriggerBehavior EventName="Click">
+                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.LoadInkFileCommand}"/>
+                        </ic:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                </AppBarButton>
+                <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Label="Save file"
+                Icon="Save"
+                ToolTipService.ToolTip="Save file">
+                    <i:Interaction.Behaviors>
+                        <ic:EventTriggerBehavior EventName="Click">
+                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.SaveInkFileCommand}"/>
+                        </ic:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                </AppBarButton>
+                <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Label="Export as image"
+                Icon="Download"
+                ToolTipService.ToolTip="Export as image" >
+                    <i:Interaction.Behaviors>
+                        <ic:EventTriggerBehavior EventName="Click">
+                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.ExportInkFileCommand}"/>
+                        </ic:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                </AppBarButton>
+            </CommandBar>
+            <ScrollViewer
+                Name="canvasScroll"
+                Grid.Row="1"
+                Margin="8,0,8,0"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                ZoomMode="Enabled">
+                    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                        <Canvas x:Name="selectionCanvas"/>
+                        <Canvas x:Name="drawingCanvas"/>
+                        <InkCanvas x:Name="inkCanvas"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"/>
+                    </Grid>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </Page>

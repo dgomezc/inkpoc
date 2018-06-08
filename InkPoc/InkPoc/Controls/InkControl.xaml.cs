@@ -69,7 +69,7 @@ namespace InkPoc.Controls
         {
             InitializeComponent();
 
-            Loaded += (s,e) =>
+            Loaded += (s, e) =>
             {
                 var strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
                 var analyzer = new InkAsyncAnalyzer(inkCanvas, strokeService);
@@ -91,7 +91,7 @@ namespace InkPoc.Controls
         }
 
         public InkUndoRedoService UndoRedoService { get; set; }
-        public InkPointerDeviceService PointerDeviceService { get; set; }        
+        public InkPointerDeviceService PointerDeviceService { get; set; }
 
         public InkTransformService TransformService { get; set; }
 
@@ -144,13 +144,13 @@ namespace InkPoc.Controls
             get { return (bool)GetValue(ShowClearAllProperty); }
             set { SetValue(ShowClearAllProperty, value); }
         }
-        
+
         public bool ShowExportFile
         {
             get { return (bool)GetValue(ShowExportFileProperty); }
             set { SetValue(ShowExportFileProperty, value); }
         }
-        
+
         public bool ShowRecognize
         {
             get { return (bool)GetValue(ShowRecognizeProperty); }
@@ -206,7 +206,7 @@ namespace InkPoc.Controls
                 control.inkCanvas.InkPresenter.StrokeContainer = strokes;
             }
         }
-                
+
         private static async void OnImageFileChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as InkControl;
@@ -229,7 +229,7 @@ namespace InkPoc.Controls
                 control.drawingCanvas.Children.Add(image);
             }
         }
-        
+
         private static void OnCanvasSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as InkControl;
@@ -263,9 +263,17 @@ namespace InkPoc.Controls
 
         private void Clear_Click(object sender, RoutedEventArgs e) => Clear();
 
-        private void Undo_Click(object sender, RoutedEventArgs e) => UndoRedoService.Undo();
+        private void Undo_Click(object sender, RoutedEventArgs e)
+        {
+            ClearSelection();
+            UndoRedoService.Undo();
+        }
 
-        private void Redo_Click(object sender, RoutedEventArgs e) => UndoRedoService.Redo();
+        private void Redo_Click(object sender, RoutedEventArgs e)
+        {
+            ClearSelection();
+            UndoRedoService.Redo();
+        }
 
         private void ZoomIn_Click(object sender, RoutedEventArgs e) => canvasScroll.ChangeView(canvasScroll.HorizontalOffset, canvasScroll.VerticalOffset, canvasScroll.ZoomFactor + 0.2f);
 

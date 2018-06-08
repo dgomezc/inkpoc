@@ -159,7 +159,6 @@
                 ToolTipService.ToolTip="Clear all"
                 Visibility="{Binding ShowClearAll, ElementName=inkControl}" />
         </CommandBar>
-
         <ScrollViewer
             Name="canvasScroll"
             Grid.Row="1"

@@ -206,15 +206,22 @@ namespace InkPoc.Services.Ink
             return rect;
         }
 
-        public async Task LoadInkFileAsync(StorageFile file)
+        public async Task<bool> LoadInkFileAsync(StorageFile file)
         {
-            if(file != null)
+            if(file == null)
             {
-                using (var stream = await file.OpenSequentialReadAsync())
-                {
-                    await strokeContainer.LoadAsync(stream);
-                }
-            }            
+                return false;
+            }
+
+            ClearStrokesSelection();
+            ClearStrokes();
+
+            using (var stream = await file.OpenSequentialReadAsync())
+            {
+                await strokeContainer.LoadAsync(stream);
+            }
+
+            return true;
         }
 
         public async Task<FileUpdateStatus> SaveInkFileAsync(StorageFile file)

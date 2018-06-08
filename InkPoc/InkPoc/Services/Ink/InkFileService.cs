@@ -23,14 +23,14 @@ namespace InkPoc.Services.Ink
             strokesService = _strokesService;
         }
 
-        public async Task LoadInkAsync()
+        public async Task<bool> LoadInkAsync()
         {
             var openPicker = new FileOpenPicker();
             openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
             openPicker.FileTypeFilter.Add(".gif");
 
             var file = await openPicker.PickSingleFileAsync();
-            await strokesService.LoadInkFileAsync(file);
+           return await strokesService.LoadInkFileAsync(file);
         }
 
         public async Task SaveInkAsync()
