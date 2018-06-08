@@ -39,6 +39,14 @@
                             FontFamily="{ThemeResource SymbolThemeFontFamily}"
                             Glyph="&#xED5F;" />
                     </InkToolbarCustomToggleButton>
+                    <InkToolbarCustomToggleButton
+                        ToolTipService.ToolTip="Mouse Inking"
+                        IsChecked="{Binding EnableMouse, ElementName=inkControl, Mode=TwoWay}"
+                        Visibility="{Binding ShowEnableMouseInking, ElementName=inkControl}">
+                        <FontIcon
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            Glyph="&#xE962;" />
+                    </InkToolbarCustomToggleButton>
                 </InkToolbar>
             </CommandBar.Content>
 

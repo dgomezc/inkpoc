@@ -47,6 +47,9 @@ namespace InkPoc.Controls
         public static readonly DependencyProperty ShowEnableTouchInkingProperty =
             DependencyProperty.Register("ShowEnableTouchInking", typeof(bool), typeof(InkControl), new PropertyMetadata(false));
 
+        public static readonly DependencyProperty ShowEnableMouseInkingProperty =
+                    DependencyProperty.Register("ShowEnableMouseInking", typeof(bool), typeof(InkControl), new PropertyMetadata(false));
+
         public static readonly DependencyProperty StrokesProperty =
             DependencyProperty.Register("Strokes", typeof(InkStrokeContainer), typeof(InkControl), new PropertyMetadata(null, OnStrokesChanged));
 
@@ -59,20 +62,19 @@ namespace InkPoc.Controls
         public static readonly DependencyProperty EnableTouchProperty =
             DependencyProperty.Register("EnableTouch", typeof(bool), typeof(InkControl), new PropertyMetadata(true, OnEnableTouchChanged));
 
+        public static readonly DependencyProperty EnableMouseProperty =
+                    DependencyProperty.Register("EnableMouse", typeof(bool), typeof(InkControl), new PropertyMetadata(true, OnEnableMouseChanged));
+
         public InkControl()
         {
             InitializeComponent();
 
             Loaded += (s,e) =>
             {
-                inkCanvas.InkPresenter.InputDeviceTypes =
-                CoreInputDeviceTypes.Mouse |
-                CoreInputDeviceTypes.Pen |
-                CoreInputDeviceTypes.Touch;
-
                 var strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
                 var analyzer = new InkAsyncAnalyzer(inkCanvas, strokeService);
 
+                PointerDeviceManager = new InkPointerDeviceManager(inkCanvas);
                 UndoRedoManager = new InkUndoRedoManager(inkCanvas, strokeService);
                 var selectionRectangleManager = new SelectionRectangleManager(inkCanvas, selectionCanvas, strokeService);
                 LassoSelectionManager = new InkLassoSelectionManager(inkCanvas, selectionCanvas, strokeService, selectionRectangleManager);
@@ -86,18 +88,11 @@ namespace InkPoc.Controls
                     CanvasSize = new Size(inkCanvas.ActualWidth, inkCanvas.ActualHeight);
                 }
             };
-
-            inkCanvas.InkPresenter.UnprocessedInput.PointerEntered += (s, e) =>
-            {
-                if (e.CurrentPoint.PointerDevice.PointerDeviceType == PointerDeviceType.Pen)
-                {
-                    EnableTouch = false;
-                }
-            };
         }
 
         public InkUndoRedoManager UndoRedoManager { get; set; }
-        
+        public InkPointerDeviceManager PointerDeviceManager { get; set; }        
+
         public InkTransformManager TransformManager { get; set; }
 
         public InkCopyPasteManager CopyPasteManager { get; set; }
@@ -167,6 +162,11 @@ namespace InkPoc.Controls
             get { return (bool)GetValue(ShowEnableTouchInkingProperty); }
             set { SetValue(ShowEnableTouchInkingProperty, value); }
         }
+        public bool ShowEnableMouseInking
+        {
+            get { return (bool)GetValue(ShowEnableMouseInkingProperty); }
+            set { SetValue(ShowEnableMouseInkingProperty, value); }
+        }
 
         public InkStrokeContainer Strokes
         {
@@ -191,7 +191,13 @@ namespace InkPoc.Controls
             get { return (bool)GetValue(EnableTouchProperty); }
             set { SetValue(EnableTouchProperty, value); }
         }
-        
+
+        public bool EnableMouse
+        {
+            get { return (bool)GetValue(EnableMouseProperty); }
+            set { SetValue(EnableMouseProperty, value); }
+        }
+
         private static void OnStrokesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is InkStrokeContainer strokes)
@@ -238,15 +244,21 @@ namespace InkPoc.Controls
             control.drawingCanvas.Width = newCanvasSize.Width;
             control.drawingCanvas.Height = newCanvasSize.Height;
         }
-        
+
         private static void OnEnableTouchChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as InkControl;
-            var enableTouch = (bool)e.NewValue;
+            var enableTouchValue = (bool)e.NewValue;
 
-            control.inkCanvas.InkPresenter.InputDeviceTypes = enableTouch
-                ? CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen | CoreInputDeviceTypes.Touch
-                : CoreInputDeviceTypes.Pen;
+            control.PointerDeviceManager.EnableTouch = enableTouchValue;
+        }
+
+        private static void OnEnableMouseChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = d as InkControl;
+            var enableMouseValue = (bool)e.NewValue;
+
+            control.PointerDeviceManager.EnableMouse = enableMouseValue;
         }
 
         private void Clear_Click(object sender, RoutedEventArgs e) => Clear();

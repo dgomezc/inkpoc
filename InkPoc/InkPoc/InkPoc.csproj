@@ -116,6 +116,7 @@
     <Compile Include="Helpers\Ink\InkFileManager.cs" />
     <Compile Include="Helpers\Ink\InkLassoSelectionManager.cs" />
     <Compile Include="Helpers\Ink\InkNodeSelectionManager.cs" />
+    <Compile Include="Helpers\Ink\InkPointerDeviceManager.cs" />
     <Compile Include="Helpers\Ink\InkTransformManager.cs" />
     <Compile Include="Helpers\Ink\InkTransformResult.cs" />
     <Compile Include="Helpers\Ink\SelectionRectangleManager.cs" />
