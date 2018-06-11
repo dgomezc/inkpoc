@@ -7,9 +7,9 @@ namespace InkPoc.Services.Ink.EventHandlers
     {
         public IEnumerable<InkStroke> Strokes { get; set; }
 
-        public CopyPasteStrokesEventArgs(IEnumerable<InkStroke> _strokes)
+        public CopyPasteStrokesEventArgs(IEnumerable<InkStroke> strokes)
         {
-            Strokes = _strokes;
+            Strokes = strokes;
         }
     }
 }

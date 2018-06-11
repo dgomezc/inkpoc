@@ -1,6 +1,5 @@
 ﻿using InkPoc.Services.Ink;
 using InkPoc.ViewModels;
-using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 

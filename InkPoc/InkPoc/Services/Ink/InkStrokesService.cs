@@ -15,8 +15,8 @@ namespace InkPoc.Services.Ink
 {
     public class InkStrokesService
     {
-        public event EventHandler<AddStrokeToContainerEventArgs> AddStrokeEvent;
-        public event EventHandler<RemoveStrokeToContainerEventArgs> RemoveStrokeEvent;
+        public event EventHandler<AddStrokeEventArgs> AddStrokeEvent;
+        public event EventHandler<RemoveEventArgs> RemoveStrokeEvent;
         public event EventHandler<MoveStrokesEventArgs> MoveStrokesEvent;
         public event EventHandler<EventArgs> ClearStrokesEvent;
         public event EventHandler<CopyPasteStrokesEventArgs> CutStrokesEvent;
@@ -29,17 +29,17 @@ namespace InkPoc.Services.Ink
             strokeContainer = _strokeContainer;
         }
 
-        public InkStroke AddStrokeToContainer(InkStroke stroke)
+        public InkStroke AddStroke(InkStroke stroke)
         {
             var newStroke = stroke.Clone();
             strokeContainer.AddStroke(newStroke);
 
-            AddStrokeEvent?.Invoke(this, new AddStrokeToContainerEventArgs(newStroke, stroke));
+            AddStrokeEvent?.Invoke(this, new AddStrokeEventArgs(newStroke, stroke));
 
             return newStroke;
         }
 
-        public bool RemoveStrokeToContainer(InkStroke stroke)
+        public bool RemoveStroke(InkStroke stroke)
         {
             var deleteStroke = GetStrokes().FirstOrDefault(s => s.Id == stroke.Id);
             if (deleteStroke == null)
@@ -51,17 +51,17 @@ namespace InkPoc.Services.Ink
             deleteStroke.Selected = true;
             strokeContainer.DeleteSelected();
 
-            RemoveStrokeEvent?.Invoke(this, new RemoveStrokeToContainerEventArgs(stroke));
+            RemoveStrokeEvent?.Invoke(this, new RemoveEventArgs(stroke));
             return true;
         }
 
-        public bool RemoveStrokesByStrokeIds(IEnumerable<uint> strokeIds)
+        public bool RemoveStrokesByIds(IEnumerable<uint> strokeIds)
         {
             var strokes = GetStrokesByIds(strokeIds);
 
             foreach(var stroke in strokes)
             {
-                RemoveStrokeToContainer(stroke);
+                RemoveStroke(stroke);
             }
 
             return strokes.Any();
@@ -70,14 +70,6 @@ namespace InkPoc.Services.Ink
         public IEnumerable<InkStroke> GetStrokes() => strokeContainer.GetStrokes();
 
         public IEnumerable<InkStroke> GetSelectedStrokes() => GetStrokes().Where(s => s.Selected);
-
-        private IEnumerable<InkStroke> GetStrokesByIds(IEnumerable<uint> strokeIds)
-        {
-            foreach (var strokeId in strokeIds)
-            {
-                yield return strokeContainer.GetStrokeById(strokeId);
-            }
-        }
 
         public void ClearStrokes()
         {
@@ -107,33 +99,19 @@ namespace InkPoc.Services.Ink
 
         public Rect SelectStrokesByNode(IInkAnalysisNode node)
         {
-            ClearStrokesSelection();
+            var ids = GetNodeStrokeIds(node);
+            var strokes = GetStrokesByIds(ids);
+            var rect = SelectStrokes(strokes);
 
-            var strokeIds = GetNodeStrokeIds(node);
-            foreach (var id in strokeIds)
-            {
-                var stroke = strokeContainer.GetStrokeById(id);
-                stroke.Selected = true;
-            }
-
-            return GetRectBySelectedStrokes();
+            return rect;
         }
 
         public Rect SelectStrokesByPoints(PointCollection points)
         {
+            ClearStrokesSelection();
             return strokeContainer.SelectWithPolyLine(points);
         }
-
-        private IReadOnlyList<uint> GetNodeStrokeIds(IInkAnalysisNode node)
-        {
-            var strokeIds = node.GetStrokeIds();
-            if (node.Kind == InkAnalysisNodeKind.Paragraph && node.Children[0].Kind == InkAnalysisNodeKind.ListItem)
-            {
-                strokeIds = new HashSet<uint>(strokeIds).ToList();
-            }
-            return strokeIds;
-        }
-
+                
         public void MoveSelectedStrokes(Point startPosition, Point endPosition)
         {
             var x = (float)(endPosition.X - startPosition.X);
@@ -167,7 +145,7 @@ namespace InkPoc.Services.Ink
 
             foreach (var stroke in selectedStrokes)
             {
-                RemoveStrokeToContainer(stroke);
+                RemoveStroke(stroke);
             }
 
             CutStrokesEvent?.Invoke(this, new CopyPasteStrokesEventArgs(selectedStrokes));
@@ -194,18 +172,7 @@ namespace InkPoc.Services.Ink
         }
 
         public bool CanPaste => strokeContainer.CanPasteFromClipboard();
-
-        private Rect GetRectBySelectedStrokes()
-        {
-            var rect = Rect.Empty;
-            foreach (var stroke in GetSelectedStrokes())
-            {
-                rect.Union(stroke.BoundingRect);
-            }
-
-            return rect;
-        }
-
+                
         public async Task<bool> LoadInkFileAsync(StorageFile file)
         {
             if(file == null)
@@ -241,6 +208,35 @@ namespace InkPoc.Services.Ink
             }
 
             return FileUpdateStatus.Failed;
+        }
+
+        private IEnumerable<InkStroke> GetStrokesByIds(IEnumerable<uint> strokeIds)
+        {
+            foreach (var strokeId in strokeIds)
+            {
+                yield return strokeContainer.GetStrokeById(strokeId);
+            }
+        }
+
+        private IReadOnlyList<uint> GetNodeStrokeIds(IInkAnalysisNode node)
+        {
+            var strokeIds = node.GetStrokeIds();
+            if (node.Kind == InkAnalysisNodeKind.Paragraph && node.Children[0].Kind == InkAnalysisNodeKind.ListItem)
+            {
+                strokeIds = new HashSet<uint>(strokeIds).ToList();
+            }
+            return strokeIds;
+        }
+
+        private Rect GetRectBySelectedStrokes()
+        {
+            var rect = Rect.Empty;
+            foreach (var stroke in GetSelectedStrokes())
+            {
+                rect.Union(stroke.BoundingRect);
+            }
+
+            return rect;
         }
     }
 }

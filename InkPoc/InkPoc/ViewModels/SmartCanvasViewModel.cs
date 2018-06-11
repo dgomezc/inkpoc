@@ -1,11 +1,7 @@
-﻿
-using InkPoc.Helpers;
-using InkPoc.Services;
+﻿using InkPoc.Helpers;
 using InkPoc.Services.Ink;
 using InkPoc.Services.Ink.UndoRedo;
 using System.Linq;
-using System.Threading.Tasks;
-using Windows.UI.Input.Inking;
 
 namespace InkPoc.ViewModels
 {
@@ -153,9 +149,8 @@ namespace InkPoc.ViewModels
 
         private void ClearAll()
         {
+            ClearSelection();
             strokeService.ClearStrokes();
-            lassoSelectionService.ClearSelection();
-            nodeSelectionService.ClearSelection();
             transformService.ClearTextAndShapes();
             undoRedoService.Reset();
         }

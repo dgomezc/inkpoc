@@ -38,7 +38,7 @@ namespace InkPoc.Services.Ink
             dispatcherTimer.Interval = TimeSpan.FromMilliseconds(IDLE_WAITING_TIME);
         }        
 
-        public InkAnalyzer InkAnalyzer { get; set; } = new InkAnalyzer();
+        public InkAnalyzer InkAnalyzer { get; private set; } = new InkAnalyzer();
 
         public bool IsAnalyzing => InkAnalyzer.IsAnalyzing;
 
@@ -118,6 +118,7 @@ namespace InkPoc.Services.Ink
                 // Remove strokes from InkAnalyzer
                 InkAnalyzer.RemoveDataForStroke(stroke.Id);
             }
+
             StartTimer();
         }
 
@@ -141,12 +142,12 @@ namespace InkPoc.Services.Ink
             return null;
         }
 
-        private void StrokesService_AddStrokeEvent(object sender, AddStrokeToContainerEventArgs e)
+        private void StrokesService_AddStrokeEvent(object sender, AddStrokeEventArgs e)
         {
             AddStroke(e.NewStroke);
         }
 
-        private void StrokesService_RemoveStrokeEvent(object sender, RemoveStrokeToContainerEventArgs e)
+        private void StrokesService_RemoveStrokeEvent(object sender, RemoveEventArgs e)
         {
             RemoveStroke(e.RemovedStroke);
         }

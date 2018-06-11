@@ -25,7 +25,12 @@ namespace InkPoc.Services.Ink
 
         DateTime lastDoubleTapTime;
 
-        public InkNodeSelectionService(InkCanvas _inkCanvas, Canvas _selectionCanvas, InkAsyncAnalyzer _analyzer, InkStrokesService _strokeService, InkSelectionRectangleService _selectionRectangleService)
+        public InkNodeSelectionService(
+            InkCanvas _inkCanvas,
+            Canvas _selectionCanvas,
+            InkAsyncAnalyzer _analyzer,
+            InkStrokesService _strokeService,
+            InkSelectionRectangleService _selectionRectangleService)
         {
             // Initialize properties
             inkCanvas = _inkCanvas;

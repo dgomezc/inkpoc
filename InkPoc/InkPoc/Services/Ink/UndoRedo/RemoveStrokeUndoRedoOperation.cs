@@ -18,11 +18,11 @@ namespace InkPoc.Services.Ink.UndoRedo
             strokeService.AddStrokeEvent += StrokeService_AddStrokeEvent;
         }
 
-        public void ExecuteRedo() => strokes.ForEach(s => strokeService.RemoveStrokeToContainer(s));
+        public void ExecuteRedo() => strokes.ForEach(s => strokeService.RemoveStroke(s));
 
-        public void ExecuteUndo() => strokes.ToList().ForEach(s => strokeService.AddStrokeToContainer(s));
+        public void ExecuteUndo() => strokes.ToList().ForEach(s => strokeService.AddStroke(s));
 
-        private void StrokeService_AddStrokeEvent(object sender, AddStrokeToContainerEventArgs e)
+        private void StrokeService_AddStrokeEvent(object sender, AddStrokeEventArgs e)
         {
             if (e.NewStroke == null)
             {

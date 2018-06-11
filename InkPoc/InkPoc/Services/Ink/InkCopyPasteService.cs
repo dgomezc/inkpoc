@@ -29,8 +29,7 @@ namespace InkPoc.Services.Ink
             pastePosition = new Point(rect.X, rect.Y);
             return pastePosition;
         }
-
-
+        
         public Rect Paste()
         {
             pastePosition.X += PASTE_DISTANCE;

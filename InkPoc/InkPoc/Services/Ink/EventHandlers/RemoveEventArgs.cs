@@ -2,11 +2,11 @@
 
 namespace InkPoc.Services.Ink.EventHandlers
 {
-    public class RemoveStrokeToContainerEventArgs
+    public class RemoveEventArgs
     {
         public InkStroke RemovedStroke { get; set; }
 
-        public RemoveStrokeToContainerEventArgs(InkStroke removedStroke)
+        public RemoveEventArgs(InkStroke removedStroke)
         {
             RemovedStroke = removedStroke;
         }

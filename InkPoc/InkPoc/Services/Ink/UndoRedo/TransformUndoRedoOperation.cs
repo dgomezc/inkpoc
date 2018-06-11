@@ -20,19 +20,17 @@ namespace InkPoc.Services.Ink.UndoRedo
 
         public void ExecuteRedo()
         {
-            //convertir las strokes en shapes
             RemoveStrokes();
             AddTextAndShapes();
         }
 
         public void ExecuteUndo()
         {
-            //convertir las shapes en strokes
             RemoveTextAndShapes();
             AddStrokes();
         }
 
-        private void StrokeService_AddStrokeEvent(object sender, AddStrokeToContainerEventArgs e)
+        private void StrokeService_AddStrokeEvent(object sender, AddStrokeEventArgs e)
         {
             if (e.NewStroke == null)
             {
@@ -69,7 +67,7 @@ namespace InkPoc.Services.Ink.UndoRedo
         {
             foreach (var stroke in transformResult.Strokes.ToList())
             {
-                strokeService.AddStrokeToContainer(stroke);
+                strokeService.AddStroke(stroke);
             }
         }
 
@@ -77,7 +75,7 @@ namespace InkPoc.Services.Ink.UndoRedo
         {
             foreach (var stroke in transformResult.Strokes)
             {
-                strokeService.RemoveStrokeToContainer(stroke);
+                strokeService.RemoveStroke(stroke);
             }
         }
     }

@@ -1,7 +1,4 @@
-﻿
-using System;
-using System.Threading.Tasks;
-using InkPoc.Helpers;
+﻿using InkPoc.Helpers;
 using InkPoc.Services.Ink;
 using InkPoc.Services.Ink.UndoRedo;
 
@@ -98,7 +95,6 @@ namespace InkPoc.ViewModels
 
         public RelayCommand ZoomOutCommand => zoomOutCommand
             ?? (zoomOutCommand = new RelayCommand(() => zoomService.ZoomOut()));
-
 
         public RelayCommand LoadInkFileCommand => loadInkFileCommand
            ?? (loadInkFileCommand = new RelayCommand(async () =>

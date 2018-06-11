@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -35,12 +32,19 @@ namespace InkPoc.Helpers
                 return null;
             }
 
-            using (var fileStream = await file.OpenAsync(FileAccessMode.Read))
+            try
             {
-                var bitmapImage = new BitmapImage();
-                await bitmapImage.SetSourceAsync(fileStream);
-                return bitmapImage;
+                using (var fileStream = await file.OpenAsync(FileAccessMode.Read))
+                {
+                    var bitmapImage = new BitmapImage();
+                    await bitmapImage.SetSourceAsync(fileStream);
+                    return bitmapImage;
+                }
             }
+            catch(Exception)
+            {
+                return null;
+            }            
         }
     }
 }

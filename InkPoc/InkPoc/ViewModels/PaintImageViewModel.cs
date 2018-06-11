@@ -1,10 +1,8 @@
 ﻿using InkPoc.Helpers;
 using InkPoc.Services.Ink;
-using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
-using Windows.Storage.Pickers;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace InkPoc.ViewModels
@@ -89,8 +87,11 @@ namespace InkPoc.ViewModels
             imageFile = await ImageHelper.LoadImageFileAsync();
             Image = await ImageHelper.GetBitmapFromImageAsync(imageFile);
 
-            var imageSize = new Size(Image.PixelWidth, Image.PixelHeight);
-            zoomService.AdjustToSize(imageSize);
+            if(Image != null)
+            {
+                var imageSize = new Size(Image.PixelWidth, Image.PixelHeight);
+                zoomService.AdjustToSize(imageSize);
+            }           
         }
 
         private async Task OnSaveImageAsync()

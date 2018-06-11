@@ -61,7 +61,7 @@ namespace InkPoc.Services.Ink
                 var textblock = DrawText(node.RecognizedText, node.BoundingRect);
 
                 var strokesIds = node.GetStrokeIds();
-                strokeService.RemoveStrokesByStrokeIds(strokesIds);
+                strokeService.RemoveStrokesByIds(strokesIds);
                 inkAnalyzer.RemoveDataForStrokes(strokesIds);
 
                 yield return textblock;
@@ -90,7 +90,7 @@ namespace InkPoc.Services.Ink
                         yield return DrawPolygon(node);
                     }
 
-                    strokeService.RemoveStrokesByStrokeIds(strokesIds);
+                    strokeService.RemoveStrokesByIds(strokesIds);
                 }
                 inkAnalyzer.RemoveDataForStrokes(strokesIds);
             }

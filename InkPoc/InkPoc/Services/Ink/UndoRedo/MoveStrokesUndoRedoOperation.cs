@@ -12,7 +12,11 @@ namespace InkPoc.Services.Ink.UndoRedo
         private readonly List<InkStroke> strokes;
         private readonly InkStrokesService strokeService;
 
-        public MoveStrokesUndoRedoOperation(IEnumerable<InkStroke> _strokes, Point _startPosition, Point _endPosition, InkStrokesService _strokeService)
+        public MoveStrokesUndoRedoOperation(
+            IEnumerable<InkStroke> _strokes,
+            Point _startPosition,
+            Point _endPosition,
+            InkStrokesService _strokeService)
         {
             strokes = new List<InkStroke>(_strokes);
             startPosition = _startPosition;
@@ -34,7 +38,7 @@ namespace InkPoc.Services.Ink.UndoRedo
             strokeService.MoveSelectedStrokes(endPosition, startPosition);
         }
 
-        private void StrokeService_AddStrokeEvent(object sender, AddStrokeToContainerEventArgs e)
+        private void StrokeService_AddStrokeEvent(object sender, AddStrokeEventArgs e)
         {
             if (e.NewStroke == null)
             {

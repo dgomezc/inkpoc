@@ -25,8 +25,11 @@ namespace InkPoc.Services.Ink
 
         public async Task<bool> LoadInkAsync()
         {
-            var openPicker = new FileOpenPicker();
-            openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+            var openPicker = new FileOpenPicker
+            {
+                SuggestedStartLocation = PickerLocationId.PicturesLibrary
+            };
+
             openPicker.FileTypeFilter.Add(".gif");
 
             var file = await openPicker.PickSingleFileAsync();
@@ -40,8 +43,11 @@ namespace InkPoc.Services.Ink
                 return;
             }
 
-            var savePicker = new FileSavePicker();
-            savePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+            var savePicker = new FileSavePicker
+            {
+                SuggestedStartLocation = PickerLocationId.PicturesLibrary
+            };
+
             savePicker.FileTypeChoices.Add("Gif with embedded ISF", new List<string> { ".gif" });
 
             var file = await savePicker.PickSaveFileAsync();
@@ -91,8 +97,6 @@ namespace InkPoc.Services.Ink
                 {
                     using (CanvasDrawingSession ds = renderTarget.CreateDrawingSession())
                     {
-                        ds.Clear(Colors.White);
-
                         ds.DrawImage(canvasbitmap, new Rect(0, 0, (int)inkCanvas.Width, (int)inkCanvas.Height));
                         ds.DrawInk(strokesService.GetStrokes());
                     }
@@ -118,7 +122,6 @@ namespace InkPoc.Services.Ink
 
             using (var ds = renderTarget.CreateDrawingSession())
             {
-                ds.Clear(Colors.White);
                 ds.DrawInk(strokesService.GetStrokes());
             }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using InkPoc.Services.Ink;
+﻿using InkPoc.Services.Ink;
 using InkPoc.Services.Ink.UndoRedo;
 using InkPoc.ViewModels;
 
@@ -29,6 +28,7 @@ namespace InkPoc.Views
                 new InkTransformService(drawingCanvas,strokeService),
                 new InkFileService(inkCanvas, strokeService));
         }
+
         private void SetCanvasSize()
         {
             inkCanvas.Width = inkCanvas.ActualWidth;

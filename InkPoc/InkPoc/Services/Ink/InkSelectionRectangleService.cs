@@ -9,11 +9,9 @@ using Windows.UI.Xaml.Shapes;
 
 namespace InkPoc.Services.Ink
 {
-
-
-
     public class InkSelectionRectangleService
     {
+        private const string selectionRectName = "selectionRectangle";
         Point dragStartPosition;
         private readonly Canvas selectionCanvas;
         InkCanvas inkCanvas;
@@ -27,7 +25,6 @@ namespace InkPoc.Services.Ink
             strokeService = _strokeService;
 
             inkCanvas.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
-            //inkCanvas.PointerPressed += InkCanvas_PointerPressed;
             inkCanvas.ManipulationStarted += InkCanvas_ManipulationStarted;
             inkCanvas.ManipulationDelta += InkCanvas_ManipulationDelta;
             inkCanvas.ManipulationCompleted += InkCanvas_ManipulationCompleted;
@@ -58,7 +55,10 @@ namespace InkPoc.Services.Ink
 
         private Rectangle GetSelectionRectangle()
         {
-            var selectionRectange = selectionCanvas.Children.FirstOrDefault(f => f is Rectangle r && r.Name == "selectionRectangle") as Rectangle;
+            var selectionRectange = selectionCanvas
+                .Children
+                .FirstOrDefault(f => f is Rectangle r && r.Name == selectionRectName)
+                as Rectangle;
 
             if (selectionRectange == null)
             {
@@ -73,32 +73,13 @@ namespace InkPoc.Services.Ink
         {
             return new Rectangle()
             {
-                Name = "selectionRectangle",
+                Name = selectionRectName,
                 Stroke = new SolidColorBrush(Colors.Gray),
                 StrokeThickness = 2,
                 StrokeDashArray = new DoubleCollection() { 2, 2 },
                 StrokeDashCap = PenLineCap.Round
             };
         }
-
-
-
-
-
-
-        ////private async void InkCanvas_PointerPressed(object sender, PointerRoutedEventArgs e)
-        ////{
-        ////    var position = e.GetCurrentPoint(inkCanvas).Position;
-
-        ////    if (!selectionStrokesRect.IsEmpty && RectHelper.Contains(selectionStrokesRect, position))
-        ////    {
-        ////        // Pressed on the selected rect, do nothing
-        ////        return;
-        ////    }
-
-        ////    selectedNode = analyzer.FindHitNode(position);
-        ////    ShowOrHideSelection(selectedNode);
-        ////}
 
         private void InkCanvas_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
