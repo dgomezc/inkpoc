@@ -1,5 +1,6 @@
 ﻿using InkPoc.Services.Ink;
 using InkPoc.ViewModels;
+using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -13,19 +14,17 @@ namespace InkPoc.Views
         {
             InitializeComponent();
             Loaded += (s, e) => SetCanvasSize();
+            image.SizeChanged += Image_SizeChanged;
 
             var strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
 
             ViewModel = new PaintImageViewModel(
                 strokeService,
                 new InkPointerDeviceService(inkCanvas),
-                new InkFileService(inkCanvas, strokeService));
+                new InkFileService(inkCanvas, strokeService),
+                new InkZoomService(canvasScroll));
         }
-
-        private void ZoomIn_Click(object sender, RoutedEventArgs e) => canvasScroll.ChangeView(canvasScroll.HorizontalOffset, canvasScroll.VerticalOffset, canvasScroll.ZoomFactor + 0.2f);
-
-        private void ZoomOut_Click(object sender, RoutedEventArgs e) => canvasScroll.ChangeView(canvasScroll.HorizontalOffset, canvasScroll.VerticalOffset, canvasScroll.ZoomFactor - 0.2f);
-
+        
         private void SetCanvasSize()
         {
             inkCanvas.Width = inkCanvas.ActualWidth;

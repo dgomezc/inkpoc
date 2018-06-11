@@ -15,12 +15,15 @@ namespace InkPoc.ViewModels
         private readonly InkCopyPasteService copyPasteService;
         private readonly InkUndoRedoService undoRedoService;
         private readonly InkFileService fileService;
+        private readonly InkZoomService zoomService;
 
         private RelayCommand cutCommand;
         private RelayCommand copyCommand;
         private RelayCommand pasteCommand;
         private RelayCommand undoCommand;
         private RelayCommand redoCommand;
+        private RelayCommand zoomInCommand;
+        private RelayCommand zoomOutCommand;
         private RelayCommand loadInkFileCommand;
         private RelayCommand saveInkFileCommand;
         private RelayCommand exportInkFileCommand;
@@ -40,7 +43,8 @@ namespace InkPoc.ViewModels
             InkPointerDeviceService _pointerDeviceService,
             InkCopyPasteService _copyPasteService,
             InkUndoRedoService _undoRedoService,
-            InkFileService _fileService)
+            InkFileService _fileService,
+            InkZoomService _zoomService)
         {
             strokeService = _strokeService;
             lassoSelectionService = _lassoSelectionService;
@@ -48,6 +52,7 @@ namespace InkPoc.ViewModels
             copyPasteService = _copyPasteService;
             undoRedoService = _undoRedoService;
             fileService = _fileService;
+            zoomService = _zoomService;
 
             EnableTouch = true;
             EnableMouse = true;
@@ -87,7 +92,14 @@ namespace InkPoc.ViewModels
                lassoSelectionService.ClearSelection();
                undoRedoService.Redo();
            }));
-        
+
+        public RelayCommand ZoomInCommand => zoomInCommand
+            ?? (zoomInCommand = new RelayCommand(() => zoomService.ZoomIn()));
+
+        public RelayCommand ZoomOutCommand => zoomOutCommand
+            ?? (zoomOutCommand = new RelayCommand(() => zoomService.ZoomOut()));
+
+
         public RelayCommand LoadInkFileCommand => loadInkFileCommand
            ?? (loadInkFileCommand = new RelayCommand(async () =>
            {

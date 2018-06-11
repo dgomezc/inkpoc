@@ -25,12 +25,9 @@ namespace InkPoc.Views
                 new InkPointerDeviceService(inkCanvas),
                 new InkCopyPasteService(strokeService),
                 new InkUndoRedoService(inkCanvas, strokeService),
-                new InkFileService(inkCanvas, strokeService));
+                new InkFileService(inkCanvas, strokeService),
+                new InkZoomService(canvasScroll));
         }
-
-        private void ZoomIn_Click(object sender, RoutedEventArgs e) => canvasScroll.ChangeView(canvasScroll.HorizontalOffset, canvasScroll.VerticalOffset, canvasScroll.ZoomFactor + 0.2f);
-
-        private void ZoomOut_Click(object sender, RoutedEventArgs e) => canvasScroll.ChangeView(canvasScroll.HorizontalOffset, canvasScroll.VerticalOffset, canvasScroll.ZoomFactor - 0.2f);
 
         private void SetCanvasSize()
         {

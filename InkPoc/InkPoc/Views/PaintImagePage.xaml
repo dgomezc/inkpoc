@@ -43,17 +43,27 @@
                 <AppBarButton
                 BorderBrush="Transparent"
                 BorderThickness="0,0,0,0"
-                Click="ZoomIn_Click"
                 Label="Zoom in"
                 Icon="ZoomIn"
-                ToolTipService.ToolTip="Zoom in" />
+                ToolTipService.ToolTip="Zoom in" >
+                    <i:Interaction.Behaviors>
+                        <ic:EventTriggerBehavior EventName="Click">
+                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.ZoomInCommand}"/>
+                        </ic:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                </AppBarButton>
                 <AppBarButton
                 BorderBrush="Transparent"
                 BorderThickness="0,0,0,0"
-                Click="ZoomOut_Click"
                 Label="Zoom out"
                 Icon="ZoomOut"
-                ToolTipService.ToolTip="Zoom out" />
+                ToolTipService.ToolTip="Zoom out" >
+                    <i:Interaction.Behaviors>
+                        <ic:EventTriggerBehavior EventName="Click">
+                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.ZoomOutCommand}"/>
+                        </ic:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                </AppBarButton>
                 <AppBarSeparator/>
                 <AppBarButton
                 BorderBrush="Transparent"
@@ -101,7 +111,7 @@
                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                 ZoomMode="Enabled">
                 <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-                    <Image Source="{x:Bind ViewModel.Image, Mode=TwoWay}" Stretch="Uniform" SizeChanged="Image_SizeChanged"/>
+                    <Image x:Name="image" Source="{x:Bind ViewModel.Image, Mode=TwoWay}" Stretch="Uniform"/>
                     <InkCanvas x:Name="inkCanvas"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"/>

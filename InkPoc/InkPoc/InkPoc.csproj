@@ -121,6 +121,7 @@
     <Compile Include="Services\Ink\InkTransformService.cs" />
     <Compile Include="Services\Ink\InkTransformResult.cs" />
     <Compile Include="Services\Ink\InkSelectionRectangleService.cs" />
+    <Compile Include="Services\Ink\InkZoomService.cs" />
     <Compile Include="Services\Ink\UndoRedo\AddStrokeUndoRedoOperation.cs" />
     <Compile Include="Services\Ink\UndoRedo\InkUndoRedoManager.cs" />
     <Compile Include="Services\Ink\UndoRedo\IUndoRedoOperation.cs" />

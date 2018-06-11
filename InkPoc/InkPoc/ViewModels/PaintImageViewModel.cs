@@ -2,9 +2,10 @@
 using InkPoc.Services.Ink;
 using System;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
-using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace InkPoc.ViewModels
 {
@@ -12,16 +13,19 @@ namespace InkPoc.ViewModels
     {
         private bool enableTouch;
         private bool enableMouse;
-        private ImageSource image;
+        private BitmapImage image;
         private StorageFile imageFile;
 
         private readonly InkStrokesService strokesService;
         private readonly InkPointerDeviceService pointerDeviceService;
         private readonly InkFileService fileService;
+        private readonly InkZoomService zoomService;
 
         private RelayCommand loadImageCommand;
         private RelayCommand saveImageCommand;
         private RelayCommand clearAllCommand;
+        private RelayCommand zoomInCommand;
+        private RelayCommand zoomOutCommand;
 
         public PaintImageViewModel()
         {
@@ -30,11 +34,13 @@ namespace InkPoc.ViewModels
         public PaintImageViewModel(
             InkStrokesService _strokesService,
             InkPointerDeviceService _pointerDeviceService,
-            InkFileService _fileService)
+            InkFileService _fileService,
+            InkZoomService _zoomService)
         {
             strokesService = _strokesService;
             pointerDeviceService = _pointerDeviceService;
             fileService = _fileService;
+            zoomService = _zoomService;
 
             enableMouse = true;
             EnableTouch = true;
@@ -60,7 +66,7 @@ namespace InkPoc.ViewModels
             }
         }
 
-        public ImageSource Image
+        public BitmapImage Image
         {
             get => image;
             set => Set(ref image, value);
@@ -71,20 +77,20 @@ namespace InkPoc.ViewModels
 
         public RelayCommand SaveImageCommand => saveImageCommand
             ?? (saveImageCommand = new RelayCommand(async () => await OnSaveImageAsync()));
-        
+
+        public RelayCommand ZoomInCommand => zoomInCommand
+            ?? (zoomInCommand = new RelayCommand(() => zoomService.ZoomIn()));
+
+        public RelayCommand ZoomOutCommand => zoomOutCommand
+            ?? (zoomOutCommand = new RelayCommand(() => zoomService.ZoomOut()));
+
         private async Task OnLoadImageAsync()
         {
-            var openPicker = new FileOpenPicker();
-
-            openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-
-            openPicker.FileTypeFilter.Add(".png");
-            openPicker.FileTypeFilter.Add(".jpeg");
-            openPicker.FileTypeFilter.Add(".jpg");
-            openPicker.FileTypeFilter.Add(".bmp");
-
-            imageFile = await openPicker.PickSingleFileAsync();
+            imageFile = await ImageHelper.LoadImageFileAsync();
             Image = await ImageHelper.GetBitmapFromImageAsync(imageFile);
+
+            var imageSize = new Size(Image.PixelWidth, Image.PixelHeight);
+            zoomService.AdjustToSize(imageSize);
         }
 
         private async Task OnSaveImageAsync()
