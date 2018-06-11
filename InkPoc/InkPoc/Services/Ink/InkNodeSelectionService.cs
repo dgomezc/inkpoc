@@ -40,7 +40,6 @@ namespace InkPoc.Services.Ink
             inkCanvas.DoubleTapped += InkCanvas_DoubleTapped;
 
             //drag and drop
-            inkCanvas.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
             inkCanvas.PointerPressed += InkCanvas_PointerPressed;
         }
 
@@ -82,11 +81,11 @@ namespace InkPoc.Services.Ink
                 await Task.Delay(TimeSpan.FromMilliseconds(BUSY_WAITING_TIME));
             }
 
-            if (selectionRectangleService.ContainsPosition(position))
-            {
-                // Pressed on the selected rect, do nothing
-                return;
-            }
+                if (selectionRectangleService.ContainsPosition(position))
+                {
+                    // Pressed on the selected rect, do nothing
+                    return;
+                }
 
             selectedNode = analyzer.FindHitNode(position);
             ShowOrHideSelection(selectedNode);

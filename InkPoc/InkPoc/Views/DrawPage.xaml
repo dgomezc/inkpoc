@@ -182,11 +182,12 @@
                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                 ZoomMode="Enabled">
                     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-                        <Canvas x:Name="selectionCanvas"/>
+                        
                         <InkCanvas x:Name="inkCanvas"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"/>
-                    </Grid>
+                    <Canvas x:Name="selectionCanvas"/>
+                </Grid>
             </ScrollViewer>
         </Grid>
     </Grid>

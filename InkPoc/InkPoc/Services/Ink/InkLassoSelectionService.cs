@@ -42,6 +42,13 @@ namespace InkPoc.Services.Ink
 
         private void UnprocessedInput_PointerPressed(InkUnprocessedInput sender, PointerEventArgs args)
         {
+            var position = args.CurrentPoint.Position;
+            if (selectionRectangleService.ContainsPosition(position))
+            {
+                // Pressed on the selected rect, do nothing
+                return;
+            }
+
             lasso = new Polyline()
             {
                 Stroke = new SolidColorBrush(Colors.Blue),
