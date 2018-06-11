@@ -1,42 +1,69 @@
 ﻿using InkPoc.Helpers;
-using InkPoc.Services;
+using InkPoc.Services.Ink;
 using System;
 using System.Threading.Tasks;
-using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
-using Windows.UI.Input.Inking;
+using Windows.UI.Xaml.Media;
 
 namespace InkPoc.ViewModels
 {
     public class PaintImageViewModel : Observable
     {
+        private bool enableTouch;
+        private bool enableMouse;
+        private ImageSource image;
         private StorageFile imageFile;
+
+        private readonly InkStrokesService strokesService;
+        private readonly InkPointerDeviceService pointerDeviceService;
+        private readonly InkFileService fileService;
+
         private RelayCommand loadImageCommand;
         private RelayCommand saveImageCommand;
-        private InkStrokeContainer strokes;
+        private RelayCommand clearAllCommand;
 
         public PaintImageViewModel()
         {
-            strokes = new InkStrokeContainer();
+        }
+        
+        public PaintImageViewModel(
+            InkStrokesService _strokesService,
+            InkPointerDeviceService _pointerDeviceService,
+            InkFileService _fileService)
+        {
+            strokesService = _strokesService;
+            pointerDeviceService = _pointerDeviceService;
+            fileService = _fileService;
+
+            enableMouse = true;
+            EnableTouch = true;
         }
 
-        public StorageFile ImageFile
+        public bool EnableTouch
         {
-            get => imageFile;
+            get => enableTouch;
             set
             {
-                Set(ref imageFile, value);
-                OnPropertyChanged(nameof(HasImage));
+                Set(ref enableTouch, value);
+                pointerDeviceService.EnableTouch = value;
             }
         }
 
-        public bool HasImage => ImageFile != null;
-
-        public InkStrokeContainer Strokes
+        public bool EnableMouse
         {
-            get => strokes;
-            set => Set(ref strokes, value);
+            get => enableMouse;
+            set
+            {
+                Set(ref enableMouse, value);
+                pointerDeviceService.EnableMouse = value;
+            }
+        }
+
+        public ImageSource Image
+        {
+            get => image;
+            set => Set(ref image, value);
         }
 
         public RelayCommand LoadImageCommand => loadImageCommand
@@ -45,14 +72,6 @@ namespace InkPoc.ViewModels
         public RelayCommand SaveImageCommand => saveImageCommand
             ?? (saveImageCommand = new RelayCommand(async () => await OnSaveImageAsync()));
         
-        private async Task OnSaveImageAsync()
-        {
-            await Task.CompletedTask;
-            //await InkService.ExportToImageAsync(strokes, CanvasSize, ImageFile);
-        }
-
-        public Size CanvasSize { get; set; }
-
         private async Task OnLoadImageAsync()
         {
             var openPicker = new FileOpenPicker();
@@ -64,12 +83,23 @@ namespace InkPoc.ViewModels
             openPicker.FileTypeFilter.Add(".jpg");
             openPicker.FileTypeFilter.Add(".bmp");
 
-            var file = await openPicker.PickSingleFileAsync();
+            imageFile = await openPicker.PickSingleFileAsync();
+            Image = await ImageHelper.GetBitmapFromImageAsync(imageFile);
+        }
 
-            if(file != null)
-            {
-                ImageFile = file;
-            }
+        private async Task OnSaveImageAsync()
+        {
+            await fileService.ExportToImageAsync(imageFile);
+        }
+
+        public RelayCommand ClearAllCommand => clearAllCommand
+           ?? (clearAllCommand = new RelayCommand(ClearAll));
+
+        private void ClearAll()
+        {
+            strokesService.ClearStrokes();
+            imageFile = null;
+            Image = null;
         }
     }
 }

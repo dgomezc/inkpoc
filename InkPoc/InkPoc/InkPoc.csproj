@@ -111,6 +111,7 @@
     <Compile Include="Controls\InkControl.xaml.cs">
       <DependentUpon>InkControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Services\Ink\InkAsyncAnalyzer.cs" />
     <Compile Include="Services\Ink\InkCopyPasteService.cs" />
     <Compile Include="Services\Ink\InkFileService.cs" />
