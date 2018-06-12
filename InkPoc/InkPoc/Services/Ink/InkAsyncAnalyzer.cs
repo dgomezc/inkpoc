@@ -31,13 +31,13 @@ namespace InkPoc.Services.Ink
             strokesService.CutStrokesEvent += StrokesService_CutStrokesEvent;
             strokesService.PasteStrokesEvent += StrokesService_PasteStrokesEvent;
             strokesService.ClearStrokesEvent += StrokesService_ClearStrokesEvent;
-
+            strokesService.LoadInkFileEvent += StrokesService_LoadInkFileEvent;
 
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += DispatcherTimer_Tick;
             dispatcherTimer.Interval = TimeSpan.FromMilliseconds(IDLE_WAITING_TIME);
-        }        
-
+        }
+        
         public InkAnalyzer InkAnalyzer { get; private set; } = new InkAnalyzer();
 
         public bool IsAnalyzing => InkAnalyzer.IsAnalyzing;
@@ -182,6 +182,12 @@ namespace InkPoc.Services.Ink
         private void StrokesService_ClearStrokesEvent(object sender, EventArgs e)
         {
             ClearAnalysis();
+        }
+
+
+        private async void StrokesService_LoadInkFileEvent(object sender, EventArgs e)
+        {
+            await AnalyzeAsync(true);
         }
     }
 }
