@@ -59,34 +59,30 @@ namespace InkPoc.ViewModels
            ?? (cutCommand = new RelayCommand(() =>
            {
                copyPasteService.Cut();
-               lassoSelectionService.ClearSelection();
+               ClearSelection();
            }));
 
         public RelayCommand CopyCommand => copyCommand
-           ?? (copyCommand = new RelayCommand(() =>
-           {
-               copyPasteService.Copy();
-               lassoSelectionService.ClearSelection();
-           }));
+           ?? (copyCommand = new RelayCommand(() => copyPasteService.Copy()));
 
         public RelayCommand PasteCommand => pasteCommand
            ?? (pasteCommand = new RelayCommand(() =>
            {
                copyPasteService.Paste();
-               lassoSelectionService.ClearSelection();
+               ClearSelection();
            }));
 
         public RelayCommand UndoCommand => undoCommand
            ?? (undoCommand = new RelayCommand(() =>
            {
-               lassoSelectionService.ClearSelection();
+               ClearSelection();
                undoRedoService.Undo();
            }));
 
         public RelayCommand RedoCommand => redoCommand
            ?? (redoCommand = new RelayCommand(() =>
            {
-               lassoSelectionService.ClearSelection();
+               ClearSelection();
                undoRedoService.Redo();
            }));
 
@@ -99,7 +95,7 @@ namespace InkPoc.ViewModels
         public RelayCommand LoadInkFileCommand => loadInkFileCommand
            ?? (loadInkFileCommand = new RelayCommand(async () =>
            {
-               lassoSelectionService.ClearSelection();
+               ClearSelection();
                var fileLoaded = await fileService.LoadInkAsync();
 
                if(fileLoaded)
@@ -111,14 +107,14 @@ namespace InkPoc.ViewModels
         public RelayCommand SaveInkFileCommand => saveInkFileCommand
            ?? (saveInkFileCommand = new RelayCommand(async () =>
            {
-               lassoSelectionService.ClearSelection();
+               ClearSelection();
                await fileService.SaveInkAsync();
            }));
 
         public RelayCommand ExportInkFileCommand => exportInkFileCommand
            ?? (exportInkFileCommand = new RelayCommand(async () =>
            {
-               lassoSelectionService.ClearSelection();
+               ClearSelection();
                await fileService.ExportToImageAsync();
            }));
 
@@ -169,9 +165,11 @@ namespace InkPoc.ViewModels
 
         private void ClearAll()
         {
-            lassoSelectionService.ClearSelection();
+            ClearSelection();
             strokeService.ClearStrokes();
             undoRedoService.Reset();
         }
+
+        private void ClearSelection() => lassoSelectionService.ClearSelection();
     }
 }
