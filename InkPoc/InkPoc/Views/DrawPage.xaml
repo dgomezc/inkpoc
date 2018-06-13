@@ -134,8 +134,7 @@
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                 ZoomMode="Enabled">
-                    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-                        
+                    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">                        
                         <InkCanvas x:Name="inkCanvas"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"/>
