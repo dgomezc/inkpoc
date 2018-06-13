@@ -7,12 +7,13 @@
     xmlns:controls="using:InkPoc.Controls"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
-    <controls:WindowsInkControl>
+    <controls:WindowsInkControl x:Name="inkControl">
         <controls:WindowsInkControl.Options>
-            <controls:CutCopyPasteInkOption />
-            <controls:ZoomInkOption />
             <controls:UndoRedoInkOption />
+            <controls:CutCopyPasteInkOption />
             <controls:FileImportExportInkOption />
+            <controls:ZoomInkOption />
+            <controls:TransformTextAndShapesInkOption />
         </controls:WindowsInkControl.Options>
     </controls:WindowsInkControl>
 </Page>

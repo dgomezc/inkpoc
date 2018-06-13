@@ -113,6 +113,7 @@
     </Compile>
     <Compile Include="Controls\InkOptions\CutCopyPasteInkOption.cs" />
     <Compile Include="Controls\InkOptions\FileImportExportInkOption.cs" />
+    <Compile Include="Controls\InkOptions\TransformTextAndShapesInkOption.cs" />
     <Compile Include="Controls\InkOptions\UndoRedoInkOption.cs" />
     <Compile Include="Controls\WindowsInkControl.xaml.cs">
       <DependentUpon>WindowsInkControl.xaml</DependentUpon>

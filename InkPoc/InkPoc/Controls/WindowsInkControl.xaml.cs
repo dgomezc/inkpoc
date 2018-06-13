@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 using InkPoc.Services.Ink;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -21,6 +22,8 @@ namespace InkPoc.Controls
         private InkUndoRedoService _undoRedoService;
         private InkFileService _fileService;
         private InkZoomService _zoomService;
+        private InkTransformService _transformService;
+        private InkNodeSelectionService _nodeSelectionService;
 
         #region Properties
         public ObservableCollection<InkOption> Options => (ObservableCollection<InkOption>)GetValue(OptionsProperty);
@@ -105,6 +108,9 @@ namespace InkPoc.Controls
                     case FileImportExportInkOption fileImportExport:
                         EnableFileImportExport(fileImportExport);
                         break;
+                    case TransformTextAndShapesInkOption transformTextAndShapes:
+                        EnableTransformTextAndShapes(transformTextAndShapes);
+                        break;
                     default:
                         break;
                 }
@@ -115,9 +121,11 @@ namespace InkPoc.Controls
         {
             _zoomService = new InkZoomService(canvasScroll);
             commandBar.PrimaryCommands.Add(new AppBarSeparator());
+
             var zoomInButton = zoom.ZoomInButton;
             zoomInButton.Click += OnZoomInButtonClick;
             commandBar.PrimaryCommands.Add(zoomInButton);
+
             var zoomOutButton = zoom.ZoomOutButton;
             zoomOutButton.Click += OnZoomOutButtonClick;
             commandBar.PrimaryCommands.Add(zoomOutButton);
@@ -127,12 +135,15 @@ namespace InkPoc.Controls
         {
             _copyPasteService = new InkCopyPasteService(_strokeService);
             commandBar.PrimaryCommands.Add(new AppBarSeparator());
+
             var cutButton = cutOption.CutButton;
             cutButton.Click += OnCutButtonClick;
             commandBar.PrimaryCommands.Add(cutButton);
+
             var copyButton = cutOption.CopyButton;
             copyButton.Click += OnCopyButtonClick;
             commandBar.PrimaryCommands.Add(copyButton);
+
             var pasteButton = cutOption.PasteButton;
             pasteButton.Click += OnPasteButtonClick;
             commandBar.PrimaryCommands.Add(pasteButton);
@@ -142,9 +153,11 @@ namespace InkPoc.Controls
         {
             _undoRedoService = new InkUndoRedoService(inkCanvas, _strokeService);
             commandBar.PrimaryCommands.Add(new AppBarSeparator());
+
             var undoButton = undoRedo.UndoButton;
             undoButton.Click += OnUndoButtonClick;
             commandBar.PrimaryCommands.Add(undoButton);
+
             var redoButton = undoRedo.RedoButton;
             redoButton.Click += OnRedoButtonClick;
             commandBar.PrimaryCommands.Add(redoButton);
@@ -154,15 +167,31 @@ namespace InkPoc.Controls
         {
             _fileService = new InkFileService(inkCanvas, _strokeService);
             commandBar.PrimaryCommands.Add(new AppBarSeparator());
+
             var openFileButton = fileImportExport.OpenFileButton;
             openFileButton.Click += OnOpenFileButtonClick;
             commandBar.PrimaryCommands.Add(openFileButton);
+
             var saveFileButton = fileImportExport.SaveFileButton;
             saveFileButton.Click += OnSaveFileButtonClick;
             commandBar.PrimaryCommands.Add(saveFileButton);
+
             var exportAsImageButton = fileImportExport.ExportAsImageButton;
             exportAsImageButton.Click += OnExportAsImageButtonClick;
             commandBar.PrimaryCommands.Add(exportAsImageButton);
+        }
+
+        private void EnableTransformTextAndShapes(TransformTextAndShapesInkOption transformTextAndShapes)
+        {
+            var analyzer = new InkAsyncAnalyzer(inkCanvas, _strokeService);
+            var selectionRectangleService = new InkSelectionRectangleService(inkCanvas, selectionCanvas, _strokeService);
+            _transformService = new InkTransformService(drawingCanvas, _strokeService);
+            _nodeSelectionService = new InkNodeSelectionService(inkCanvas, selectionCanvas, analyzer, _strokeService, selectionRectangleService);
+            commandBar.PrimaryCommands.Add(new AppBarSeparator());
+
+            var transformTextAndShapesButton = transformTextAndShapes.TransformTextAndShapesButton;
+            transformTextAndShapesButton.Click += OnTransformTextAndShapesButtonClick;
+            commandBar.PrimaryCommands.Add(transformTextAndShapesButton);
         }
 
         private void OnZoomInButtonClick(object sender, RoutedEventArgs e) => _zoomService.ZoomIn();
@@ -220,6 +249,17 @@ namespace InkPoc.Controls
         {
             _lassoSelectionService.ClearSelection();
             await _fileService.ExportToImageAsync();
+        }
+
+        private async void OnTransformTextAndShapesButtonClick(object sender, RoutedEventArgs e)
+        {
+            var result = await _transformService.TransformTextAndShapesAsync();
+            if (result.TextAndShapes.Any())
+            {
+                _nodeSelectionService?.ClearSelection();
+                _lassoSelectionService?.ClearSelection();
+                _undoRedoService?.AddOperation(new TransformUndoRedoOperation(result, _strokeService));
+            }
         }
     }
 }

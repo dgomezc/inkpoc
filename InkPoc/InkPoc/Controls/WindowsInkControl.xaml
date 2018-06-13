@@ -61,6 +61,8 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch" />
                 <Canvas
+                    x:Name="drawingCanvas"/>
+                <Canvas
                     x:Name="selectionCanvas"/>
             </Grid>
         </ScrollViewer>

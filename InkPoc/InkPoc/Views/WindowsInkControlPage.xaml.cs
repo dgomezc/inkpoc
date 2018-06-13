@@ -14,5 +14,9 @@ namespace InkPoc.Views
         {
             InitializeComponent();
         }
+
+        private void InkControl_OnCopy(object sender, EventArgs e)
+        {
+        }
     }
 }
