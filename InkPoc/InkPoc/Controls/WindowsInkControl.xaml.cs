@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using InkPoc.Services.Ink;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -15,15 +16,41 @@ namespace InkPoc.Controls
         private const bool DefaultEnableTouchValue = true;
         private const bool DefaultEnableMouseValue = true;
 
-        private readonly InkStrokesService _strokeService;
-        private InkLassoSelectionService _lassoSelectionService;
-        private InkPointerDeviceService _pointerDeviceService;
         private InkCopyPasteService _copyPasteService;
         private InkUndoRedoService _undoRedoService;
         private InkFileService _fileService;
         private InkZoomService _zoomService;
         private InkTransformService _transformService;
         private InkNodeSelectionService _nodeSelectionService;
+        private InkAsyncAnalyzer _analyzer;
+
+        private readonly InkStrokesService StrokeService;
+        private readonly InkLassoSelectionService LassoSelectionService;
+        private readonly InkPointerDeviceService PointerDeviceService;
+        private readonly InkSelectionRectangleService SelectionRectangleService;
+        private InkZoomService ZoomService => _zoomService ?? (_zoomService = new InkZoomService(canvasScroll));
+        private InkCopyPasteService CopyPasteService => _copyPasteService ?? (_copyPasteService = new InkCopyPasteService(StrokeService));
+        private InkUndoRedoService UndoRedoService => _undoRedoService ?? (_undoRedoService = new InkUndoRedoService(inkCanvas, StrokeService));
+
+        private InkFileService FileService => _fileService ?? (_fileService = new InkFileService(inkCanvas, StrokeService));
+
+        private InkTransformService TransformService => _transformService ?? (_transformService = new InkTransformService(drawingCanvas, StrokeService));
+
+        private InkAsyncAnalyzer Analyzer => _analyzer ?? (_analyzer = new InkAsyncAnalyzer(inkCanvas, StrokeService));
+
+        private InkNodeSelectionService NodeSelectionService => _nodeSelectionService ?? (_nodeSelectionService = new InkNodeSelectionService(inkCanvas, selectionCanvas, Analyzer, StrokeService, SelectionRectangleService));
+
+        public event EventHandler OnCut;
+        public event EventHandler OnCopy;
+        public event EventHandler OnPaste;
+        public event EventHandler OnFileOpened;
+        public event EventHandler OnFileSaved;
+        public event EventHandler OnImageExported;
+        public event EventHandler OnTextAndShapesTransformed;
+        public event EventHandler OnUndo;
+        public event EventHandler OnRedo;
+        public event EventHandler<float> OnZoomIn;
+        public event EventHandler<float> OnZoomOut;
 
         #region Properties
         public ObservableCollection<InkOption> Options => (ObservableCollection<InkOption>)GetValue(OptionsProperty);
@@ -59,10 +86,10 @@ namespace InkPoc.Controls
         {
             this.InitializeComponent();
             SetValue(OptionsProperty, new ObservableCollection<InkOption>());
-            _strokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
-            var selectionRectangleService = new InkSelectionRectangleService(inkCanvas, selectionCanvas, _strokeService);
-            _lassoSelectionService = new InkLassoSelectionService(inkCanvas, selectionCanvas, _strokeService, selectionRectangleService);
-            _pointerDeviceService = new InkPointerDeviceService(inkCanvas);
+            StrokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
+            SelectionRectangleService = new InkSelectionRectangleService(inkCanvas, selectionCanvas, StrokeService);
+            LassoSelectionService = new InkLassoSelectionService(inkCanvas, selectionCanvas, StrokeService, SelectionRectangleService);
+            PointerDeviceService = new InkPointerDeviceService(inkCanvas);
         }
 
         private static void OnOptionsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -85,11 +112,11 @@ namespace InkPoc.Controls
         }
         private void UpdateEnableLassoSelectionProperty()
         {
-            if (EnableLassoSelection) _lassoSelectionService.StartLassoSelectionConfig();
-            else _lassoSelectionService.EndLassoSelectionConfig();
+            if (EnableLassoSelection) LassoSelectionService.StartLassoSelectionConfig();
+            else LassoSelectionService.EndLassoSelectionConfig();
         }
-        private void UpdateEnableTouchProperty() => _pointerDeviceService.EnableTouch = EnableTouch;
-        private void UpdateEnableMouseProperty() => _pointerDeviceService.EnableMouse = EnableMouse;
+        private void UpdateEnableTouchProperty() => PointerDeviceService.EnableTouch = EnableTouch;
+        private void UpdateEnableMouseProperty() => PointerDeviceService.EnableMouse = EnableMouse;
         private void OnOptionsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             foreach (var option in e.NewItems)
@@ -119,146 +146,155 @@ namespace InkPoc.Controls
 
         private void EnableZoom(ZoomInkOption zoom)
         {
-            _zoomService = new InkZoomService(canvasScroll);
             commandBar.PrimaryCommands.Add(new AppBarSeparator());
 
             var zoomInButton = zoom.ZoomInButton;
-            zoomInButton.Click += OnZoomInButtonClick;
+            zoomInButton.Click += (sender, e) => ZoomIn();
             commandBar.PrimaryCommands.Add(zoomInButton);
 
             var zoomOutButton = zoom.ZoomOutButton;
-            zoomOutButton.Click += OnZoomOutButtonClick;
+            zoomOutButton.Click += (sender, e) => ZoomOut();
             commandBar.PrimaryCommands.Add(zoomOutButton);
         }
 
         private void EnableCutCopyPaste(CutCopyPasteInkOption cutOption)
         {
-            _copyPasteService = new InkCopyPasteService(_strokeService);
             commandBar.PrimaryCommands.Add(new AppBarSeparator());
 
             var cutButton = cutOption.CutButton;
-            cutButton.Click += OnCutButtonClick;
+            cutButton.Click += (sender, e) => Cut();
             commandBar.PrimaryCommands.Add(cutButton);
 
             var copyButton = cutOption.CopyButton;
-            copyButton.Click += OnCopyButtonClick;
+            copyButton.Click += (sender, e) => Copy();
             commandBar.PrimaryCommands.Add(copyButton);
 
             var pasteButton = cutOption.PasteButton;
-            pasteButton.Click += OnPasteButtonClick;
+            pasteButton.Click += (sender, e) => Paste();
             commandBar.PrimaryCommands.Add(pasteButton);
         }
 
         private void EnableUndoRedo(UndoRedoInkOption undoRedo)
         {
-            _undoRedoService = new InkUndoRedoService(inkCanvas, _strokeService);
             commandBar.PrimaryCommands.Add(new AppBarSeparator());
 
             var undoButton = undoRedo.UndoButton;
-            undoButton.Click += OnUndoButtonClick;
+            undoButton.Click += (sender, e) => Undo();
             commandBar.PrimaryCommands.Add(undoButton);
 
             var redoButton = undoRedo.RedoButton;
-            redoButton.Click += OnRedoButtonClick;
+            redoButton.Click += (sender, e) => Redo();
             commandBar.PrimaryCommands.Add(redoButton);
         }
 
         private void EnableFileImportExport(FileImportExportInkOption fileImportExport)
         {
-            _fileService = new InkFileService(inkCanvas, _strokeService);
             commandBar.PrimaryCommands.Add(new AppBarSeparator());
 
             var openFileButton = fileImportExport.OpenFileButton;
-            openFileButton.Click += OnOpenFileButtonClick;
+            openFileButton.Click += async (sender, e) => await OpenFileAsync();
             commandBar.PrimaryCommands.Add(openFileButton);
 
             var saveFileButton = fileImportExport.SaveFileButton;
-            saveFileButton.Click += OnSaveFileButtonClick;
+            saveFileButton.Click += async (sender, e) => await SaveFileAsync();
             commandBar.PrimaryCommands.Add(saveFileButton);
 
             var exportAsImageButton = fileImportExport.ExportAsImageButton;
-            exportAsImageButton.Click += OnExportAsImageButtonClick;
+            exportAsImageButton.Click += async (sender, e) => await ExportAsImageAsync();
             commandBar.PrimaryCommands.Add(exportAsImageButton);
         }
 
         private void EnableTransformTextAndShapes(TransformTextAndShapesInkOption transformTextAndShapes)
         {
-            var analyzer = new InkAsyncAnalyzer(inkCanvas, _strokeService);
-            var selectionRectangleService = new InkSelectionRectangleService(inkCanvas, selectionCanvas, _strokeService);
-            _transformService = new InkTransformService(drawingCanvas, _strokeService);
-            _nodeSelectionService = new InkNodeSelectionService(inkCanvas, selectionCanvas, analyzer, _strokeService, selectionRectangleService);
             commandBar.PrimaryCommands.Add(new AppBarSeparator());
 
             var transformTextAndShapesButton = transformTextAndShapes.TransformTextAndShapesButton;
-            transformTextAndShapesButton.Click += OnTransformTextAndShapesButtonClick;
+            transformTextAndShapesButton.Click += async (sender, e) => await TransformTextAndShapesAsync();
             commandBar.PrimaryCommands.Add(transformTextAndShapesButton);
         }
 
-        private void OnZoomInButtonClick(object sender, RoutedEventArgs e) => _zoomService.ZoomIn();
-
-        private void OnZoomOutButtonClick(object sender, RoutedEventArgs e) => _zoomService.ZoomOut();
-
-        private void OnCutButtonClick(object sender, RoutedEventArgs e)
+        public void ZoomIn()
         {
-            _copyPasteService.Cut();
-            _lassoSelectionService?.ClearSelection();
+            var zoomFactor = ZoomService.ZoomIn();
+            OnZoomIn?.Invoke(this, zoomFactor);
         }
 
-        private void OnCopyButtonClick(object sender, RoutedEventArgs e)
+        public void ZoomOut()
         {
-            _copyPasteService.Copy();
-            _lassoSelectionService?.ClearSelection();
+            var zoomFactor = ZoomService.ZoomOut();
+            OnZoomOut?.Invoke(this, zoomFactor);
         }
 
-        private void OnPasteButtonClick(object sender, RoutedEventArgs e)
+        public void Cut()
         {
-            _copyPasteService.Paste();
-            _lassoSelectionService?.ClearSelection();
+            CopyPasteService.Cut();
+            LassoSelectionService.ClearSelection();
+            OnCut?.Invoke(this, EventArgs.Empty);
         }
 
-        private void OnUndoButtonClick(object sender, RoutedEventArgs e)
+        public void Copy()
         {
-            _lassoSelectionService?.ClearSelection();
-            _undoRedoService.Undo();
+            CopyPasteService.Copy();
+            LassoSelectionService.ClearSelection();
+            OnCopy?.Invoke(this, EventArgs.Empty);
         }
 
-        private void OnRedoButtonClick(object sender, RoutedEventArgs e)
+        public void Paste()
         {
-            _lassoSelectionService?.ClearSelection();
-            _undoRedoService.Redo();
+            CopyPasteService.Paste();
+            LassoSelectionService.ClearSelection();
+            OnPaste?.Invoke(this, EventArgs.Empty);
         }
 
-        private async void OnOpenFileButtonClick(object sender, RoutedEventArgs e)
+        public void Undo()
         {
-            _lassoSelectionService?.ClearSelection();
-            var fileLoaded = await _fileService.LoadInkAsync();
+            LassoSelectionService.ClearSelection();
+            UndoRedoService.Undo();
+            OnUndo?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void Redo()
+        {
+            LassoSelectionService.ClearSelection();
+            UndoRedoService.Redo();
+            OnRedo?.Invoke(this, EventArgs.Empty);
+        }
+
+        public async Task OpenFileAsync()
+        {
+            LassoSelectionService.ClearSelection();
+            var fileLoaded = await FileService.LoadInkAsync();
 
             if (fileLoaded)
             {
-                _undoRedoService?.Reset();
+                UndoRedoService.Reset();
+                OnFileOpened?.Invoke(this, EventArgs.Empty);
             }
         }
 
-        private async void OnSaveFileButtonClick(object sender, RoutedEventArgs e)
+        public async Task SaveFileAsync()
         {
-            _lassoSelectionService?.ClearSelection();
-            await _fileService.SaveInkAsync();
+            LassoSelectionService.ClearSelection();
+            await FileService.SaveInkAsync();
+            OnFileSaved?.Invoke(this, EventArgs.Empty);
         }
 
-        private async void OnExportAsImageButtonClick(object sender, RoutedEventArgs e)
+        public async Task ExportAsImageAsync()
         {
-            _lassoSelectionService.ClearSelection();
-            await _fileService.ExportToImageAsync();
+            LassoSelectionService.ClearSelection();
+            await FileService.ExportToImageAsync();
+            OnImageExported?.Invoke(this, EventArgs.Empty);
         }
 
-        private async void OnTransformTextAndShapesButtonClick(object sender, RoutedEventArgs e)
+        public async Task TransformTextAndShapesAsync()
         {
-            var result = await _transformService.TransformTextAndShapesAsync();
+            var result = await TransformService.TransformTextAndShapesAsync();
             if (result.TextAndShapes.Any())
             {
-                _nodeSelectionService?.ClearSelection();
-                _lassoSelectionService?.ClearSelection();
-                _undoRedoService?.AddOperation(new TransformUndoRedoOperation(result, _strokeService));
+                NodeSelectionService.ClearSelection();
+                LassoSelectionService.ClearSelection();
+                UndoRedoService.AddOperation(new TransformUndoRedoOperation(result, StrokeService));
+                OnTextAndShapesTransformed?.Invoke(this, EventArgs.Empty);
             }
         }
     }

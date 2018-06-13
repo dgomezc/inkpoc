@@ -3,6 +3,7 @@
 using InkPoc.ViewModels;
 
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 namespace InkPoc.Views
 {
@@ -15,7 +16,12 @@ namespace InkPoc.Views
             InitializeComponent();
         }
 
-        private void InkControl_OnCopy(object sender, EventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+        }
+
+        private void Button_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
         }
     }

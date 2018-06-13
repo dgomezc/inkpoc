@@ -7,13 +7,16 @@
     xmlns:controls="using:InkPoc.Controls"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
-    <controls:WindowsInkControl x:Name="inkControl">
-        <controls:WindowsInkControl.Options>
-            <controls:UndoRedoInkOption />
-            <controls:CutCopyPasteInkOption />
-            <controls:FileImportExportInkOption />
-            <controls:ZoomInkOption />
-            <controls:TransformTextAndShapesInkOption />
-        </controls:WindowsInkControl.Options>
-    </controls:WindowsInkControl>
+    <Grid>
+        <controls:WindowsInkControl x:Name="inkControl">
+            <controls:WindowsInkControl.Options>
+                <!--<controls:UndoRedoInkOption />
+                <controls:CutCopyPasteInkOption />
+                <controls:FileImportExportInkOption />
+                <controls:ZoomInkOption />
+                <controls:TransformTextAndShapesInkOption />-->
+            </controls:WindowsInkControl.Options>
+        </controls:WindowsInkControl>
+        <Button Content="Test" Click="Button_Click"/>
+    </Grid>
 </Page>

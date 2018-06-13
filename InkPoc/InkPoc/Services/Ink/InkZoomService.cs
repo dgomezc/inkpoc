@@ -14,9 +14,9 @@ namespace InkPoc.Services.Ink
             scrollViewer = _scrollViewer;
         }
 
-        public void ZoomIn(float zoomFactor = defaultZoomFactor) => ExecuteZoom(scrollViewer.ZoomFactor + zoomFactor);
+        public float ZoomIn(float zoomFactor = defaultZoomFactor) => ExecuteZoom(scrollViewer.ZoomFactor + zoomFactor);
 
-        public void ZoomOut(float zoomFactor = defaultZoomFactor) => ExecuteZoom(scrollViewer.ZoomFactor - zoomFactor);
+        public float ZoomOut(float zoomFactor = defaultZoomFactor) => ExecuteZoom(scrollViewer.ZoomFactor - zoomFactor);
 
         public void AdjustToSize(Size size)
         {
@@ -35,6 +35,10 @@ namespace InkPoc.Services.Ink
             ExecuteZoom(zoomFactor);
         }
 
-        private void ExecuteZoom(float zoomFactor) => scrollViewer.ChangeView(scrollViewer.HorizontalOffset, scrollViewer.VerticalOffset, zoomFactor);
+        private float ExecuteZoom(float zoomFactor)
+        {
+            scrollViewer.ChangeView(scrollViewer.HorizontalOffset, scrollViewer.VerticalOffset, zoomFactor);
+            return scrollViewer.ZoomFactor;
+        }
     }
 }
