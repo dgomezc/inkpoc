@@ -1,5 +1,4 @@
 ﻿using InkPoc.Services.Ink;
-using InkPoc.Services.Ink.UndoRedo;
 using InkPoc.ViewModels;
 
 using Windows.UI.Xaml.Controls;

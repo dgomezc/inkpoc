@@ -111,6 +111,14 @@
     <Compile Include="Controls\InkControl.xaml.cs">
       <DependentUpon>InkControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\InkOptions\CutCopyPasteInkOption.cs" />
+    <Compile Include="Controls\InkOptions\FileImportExportInkOption.cs" />
+    <Compile Include="Controls\InkOptions\UndoRedoInkOption.cs" />
+    <Compile Include="Controls\WindowsInkControl.xaml.cs">
+      <DependentUpon>WindowsInkControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InkOptions\InkOption.cs" />
+    <Compile Include="Controls\InkOptions\ZoomInkOption.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Services\Ink\InkAsyncAnalyzer.cs" />
     <Compile Include="Services\Ink\InkCopyPasteService.cs" />
@@ -144,6 +152,7 @@
     <Compile Include="ViewModels\PaintImageViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\SmartCanvasViewModel.cs" />
+    <Compile Include="ViewModels\WindowsInkControlViewModel.cs" />
     <Compile Include="Views\DrawPage.xaml.cs">
       <DependentUpon>DrawPage.xaml</DependentUpon>
     </Compile>
@@ -159,6 +168,9 @@
     <Compile Include="Views\SmartCanvasPage.xaml.cs">
       <DependentUpon>SmartCanvasPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\WindowsInkControlPage.xaml.cs">
+      <DependentUpon>WindowsInkControlPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -168,6 +180,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\InkControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\WindowsInkControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -212,6 +228,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\SmartCanvasPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\WindowsInkControlPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

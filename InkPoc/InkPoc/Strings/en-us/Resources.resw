@@ -141,4 +141,8 @@
     <value>DrawWithControl</value>
     <comment>Navigation view item name for DrawWithControl</comment>
   </data>
+  <data name="Shell_WindowsInkControl.Content" xml:space="preserve">
+    <value>WindowsInkControl</value>
+    <comment>Navigation view item name for WindowsInkControl</comment>
+  </data>
 </root>

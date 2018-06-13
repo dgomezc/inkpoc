@@ -1,6 +1,5 @@
 ﻿using InkPoc.Helpers;
 using InkPoc.Services.Ink;
-using InkPoc.Services.Ink.UndoRedo;
 
 namespace InkPoc.ViewModels
 {

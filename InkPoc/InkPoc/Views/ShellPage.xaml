@@ -28,6 +28,7 @@
             <NavigationViewItem x:Uid="Shell_PaintImage" Icon="Document" helpers:NavHelper.NavigateTo="views:PaintImagePage" />
             <NavigationViewItemSeparator/>
             <NavigationViewItem x:Uid="Shell_DrawWithControl" Icon="Document" helpers:NavHelper.NavigateTo="views:DrawWithControlPage" />
+            <NavigationViewItem x:Uid="Shell_WindowsInkControl" Icon="Document" helpers:NavHelper.NavigateTo="views:WindowsInkControlPage" />
         </NavigationView.MenuItems>
         <NavigationView.HeaderTemplate>
             <DataTemplate>

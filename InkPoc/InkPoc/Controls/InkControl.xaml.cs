@@ -1,16 +1,10 @@
-﻿using InkPoc.Services.Ink;
-using InkPoc.Services.Ink.UndoRedo;
-using InkPoc.Services;
+﻿using System;
 using InkPoc.Services.Ink;
-using System;
-using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Storage;
-using Windows.UI.Core;
 using Windows.UI.Input.Inking;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace InkPoc.Controls

@@ -1,9 +1,8 @@
-﻿using InkPoc.Services.Ink.EventHandlers;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Xaml.Controls;
 
-namespace InkPoc.Services.Ink.UndoRedo
+namespace InkPoc.Services.Ink
 {
     public class InkUndoRedoService
     {

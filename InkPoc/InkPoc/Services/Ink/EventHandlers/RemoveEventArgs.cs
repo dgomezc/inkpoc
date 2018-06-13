@@ -1,6 +1,6 @@
 ﻿using Windows.UI.Input.Inking;
 
-namespace InkPoc.Services.Ink.EventHandlers
+namespace InkPoc.Services.Ink
 {
     public class RemoveEventArgs
     {
