@@ -16,6 +16,11 @@ namespace InkPoc.Services.Ink
 
         public Point Copy()
         {
+            if(!CanCopy)
+            {
+                return new Point();
+            }
+
             var rect = strokesService.CopySelectedStrokes();
 
             pastePosition = new Point(rect.X, rect.Y);
@@ -24,6 +29,11 @@ namespace InkPoc.Services.Ink
 
         public Point Cut()
         {
+            if (!CanCut)
+            {
+                return new Point();
+            }
+
             var rect = strokesService.CutSelectedStrokes();
 
             pastePosition = new Point(rect.X, rect.Y);

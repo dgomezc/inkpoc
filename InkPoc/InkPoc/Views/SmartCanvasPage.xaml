@@ -4,8 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:i="using:Microsoft.Xaml.Interactivity"
-    xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
     <Grid
@@ -52,62 +50,38 @@
                 BorderThickness="0,0,0,0"
                 Label="Undo"
                 Icon="Undo"
-                ToolTipService.ToolTip="Undo">
-                    <i:Interaction.Behaviors>
-                        <ic:EventTriggerBehavior EventName="Click">
-                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.UndoCommand}"/>
-                        </ic:EventTriggerBehavior>
-                    </i:Interaction.Behaviors>
-                </AppBarButton>
+                Command="{x:Bind ViewModel.UndoCommand}"
+                ToolTipService.ToolTip="Undo" />
                 <AppBarButton
                 BorderBrush="Transparent"
                 BorderThickness="0,0,0,0"
                 Label="Redo"
                 Icon="Redo"
-                ToolTipService.ToolTip="Redo">
-                    <i:Interaction.Behaviors>
-                        <ic:EventTriggerBehavior EventName="Click">
-                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.RedoCommand}"/>
-                        </ic:EventTriggerBehavior>
-                    </i:Interaction.Behaviors>
-                </AppBarButton>
+                    Command="{x:Bind ViewModel.RedoCommand}"
+                ToolTipService.ToolTip="Redo" />
                 <AppBarSeparator/>
                 <AppBarButton
                 BorderBrush="Transparent"
                 BorderThickness="0,0,0,0"
                 Label="Open file"
                 Icon="OpenFile"
-                ToolTipService.ToolTip="Open file">
-                    <i:Interaction.Behaviors>
-                        <ic:EventTriggerBehavior EventName="Click">
-                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.LoadInkFileCommand}"/>
-                        </ic:EventTriggerBehavior>
-                    </i:Interaction.Behaviors>
-                </AppBarButton>
+                    Command="{x:Bind ViewModel.LoadInkFileCommand}"
+                ToolTipService.ToolTip="Open file" />
                 <AppBarButton
                 BorderBrush="Transparent"
                 BorderThickness="0,0,0,0"
                 Label="Save file"
                 Icon="Save"
-                ToolTipService.ToolTip="Save file">
-                    <i:Interaction.Behaviors>
-                        <ic:EventTriggerBehavior EventName="Click">
-                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.SaveInkFileCommand}"/>
-                        </ic:EventTriggerBehavior>
-                    </i:Interaction.Behaviors>
-                </AppBarButton>
+                    Command="{x:Bind ViewModel.SaveInkFileCommand}"
+                ToolTipService.ToolTip="Save file" />
                 <AppBarSeparator/>
                 <AppBarButton
                 BorderBrush="Transparent"
                 BorderThickness="0,0,0,0"
                 Label="Transform text and shapes"
+                Command="{x:Bind ViewModel.TransformTextAndShapesCommand}"
                 ToolTipService.ToolTip="Transform text and shapes">
                     <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEA80;" />
-                    <i:Interaction.Behaviors>
-                        <ic:EventTriggerBehavior EventName="Click">
-                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.TransformTextAndShapesCommand}"/>
-                        </ic:EventTriggerBehavior>
-                    </i:Interaction.Behaviors>
                 </AppBarButton>
                 <AppBarSeparator/>
                 <AppBarButton
@@ -115,13 +89,8 @@
                 BorderThickness="0,0,0,0"
                 Label="Clear all"
                 Icon="Delete"
-                ToolTipService.ToolTip="Clear all">
-                    <i:Interaction.Behaviors>
-                        <ic:EventTriggerBehavior EventName="Click">
-                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.ClearAllCommand}"/>
-                        </ic:EventTriggerBehavior>
-                    </i:Interaction.Behaviors>
-                </AppBarButton>
+                    Command="{x:Bind ViewModel.ClearAllCommand}"
+                ToolTipService.ToolTip="Clear all" />
             </CommandBar>
             <ScrollViewer
                 Name="canvasScroll"

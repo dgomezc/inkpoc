@@ -20,6 +20,7 @@ namespace InkPoc.Services.Ink
         public event EventHandler<EventArgs> ClearStrokesEvent;
         public event EventHandler<CopyPasteStrokesEventArgs> CutStrokesEvent;
         public event EventHandler<CopyPasteStrokesEventArgs> PasteStrokesEvent;
+        public event EventHandler<EventArgs> LoadInkFileEvent;
 
         private readonly InkStrokeContainer strokeContainer;
 
@@ -187,6 +188,7 @@ namespace InkPoc.Services.Ink
                 await strokeContainer.LoadAsync(stream);
             }
 
+            LoadInkFileEvent?.Invoke(this, null);
             return true;
         }
 

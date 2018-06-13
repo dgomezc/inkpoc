@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Input.Inking;
 using Windows.UI.Input.Inking.Analysis;
@@ -46,6 +47,8 @@ namespace InkPoc.Services.Ink
 
             //drag and drop
             inkCanvas.PointerPressed += InkCanvas_PointerPressed;
+
+            inkPresenter.StrokesErased += InkPresenter_StrokesErased;
         }
 
         private void InkCanvas_Tapped(object sender, TappedRoutedEventArgs e)
@@ -96,9 +99,19 @@ namespace InkPoc.Services.Ink
             ShowOrHideSelection(selectedNode);
         }
 
+        private void InkPresenter_StrokesErased(InkPresenter sender, InkStrokesErasedEventArgs e)
+        {
+            if(e.Strokes.Any(s => s.Selected))
+            {
+                ClearSelection();
+            }
+        }
+
+
         public void ClearSelection()
         {
             selectedNode = null;
+            strokeService.ClearStrokesSelection();
             selectionRectangleService.Clear();
         }
 

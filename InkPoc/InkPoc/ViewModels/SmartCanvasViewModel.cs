@@ -53,21 +53,21 @@ namespace InkPoc.ViewModels
         public RelayCommand UndoCommand => undoCommand
            ?? (undoCommand = new RelayCommand(() =>
            {
-               lassoSelectionService.ClearSelection();
+               ClearSelection();
                undoRedoService.Undo();
            }));
 
         public RelayCommand RedoCommand => redoCommand
            ?? (redoCommand = new RelayCommand(() =>
            {
-               lassoSelectionService.ClearSelection();
+               ClearSelection();
                undoRedoService.Redo();
            }));
 
         public RelayCommand LoadInkFileCommand => loadInkFileCommand
            ?? (loadInkFileCommand = new RelayCommand(async () =>
            {
-               lassoSelectionService.ClearSelection();
+               ClearSelection();
                var fileLoaded = await fileService.LoadInkAsync();
 
                if (fileLoaded)
@@ -80,7 +80,7 @@ namespace InkPoc.ViewModels
         public RelayCommand SaveInkFileCommand => saveInkFileCommand
            ?? (saveInkFileCommand = new RelayCommand(async () =>
            {
-               lassoSelectionService.ClearSelection();
+               ClearSelection();
                await fileService.SaveInkAsync();
            }));
 

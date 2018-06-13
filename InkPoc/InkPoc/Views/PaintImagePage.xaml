@@ -4,8 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:i="using:Microsoft.Xaml.Interactivity"
-    xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
     <Grid
@@ -45,63 +43,38 @@
                 BorderThickness="0,0,0,0"
                 Label="Zoom in"
                 Icon="ZoomIn"
-                ToolTipService.ToolTip="Zoom in" >
-                    <i:Interaction.Behaviors>
-                        <ic:EventTriggerBehavior EventName="Click">
-                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.ZoomInCommand}"/>
-                        </ic:EventTriggerBehavior>
-                    </i:Interaction.Behaviors>
-                </AppBarButton>
+                    Command="{x:Bind ViewModel.ZoomInCommand}"
+                ToolTipService.ToolTip="Zoom in" />
                 <AppBarButton
                 BorderBrush="Transparent"
                 BorderThickness="0,0,0,0"
                 Label="Zoom out"
                 Icon="ZoomOut"
-                ToolTipService.ToolTip="Zoom out" >
-                    <i:Interaction.Behaviors>
-                        <ic:EventTriggerBehavior EventName="Click">
-                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.ZoomOutCommand}"/>
-                        </ic:EventTriggerBehavior>
-                    </i:Interaction.Behaviors>
-                </AppBarButton>
+                    Command="{x:Bind ViewModel.ZoomOutCommand}"
+                ToolTipService.ToolTip="Zoom out" />
                 <AppBarSeparator/>
                 <AppBarButton
                 BorderBrush="Transparent"
                 BorderThickness="0,0,0,0"
                 Label="Open file"
                 Icon="OpenFile"
-                ToolTipService.ToolTip="Open file">
-                    <i:Interaction.Behaviors>
-                        <ic:EventTriggerBehavior EventName="Click">
-                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.LoadImageCommand}"/>
-                        </ic:EventTriggerBehavior>
-                    </i:Interaction.Behaviors>
-                </AppBarButton>
+                    Command="{x:Bind ViewModel.LoadImageCommand}"
+                ToolTipService.ToolTip="Open file" />
                 <AppBarButton
                 BorderBrush="Transparent"
                 BorderThickness="0,0,0,0"
                 Label="Save file"
                 Icon="Save"
-                ToolTipService.ToolTip="Save file">
-                    <i:Interaction.Behaviors>
-                        <ic:EventTriggerBehavior EventName="Click">
-                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.SaveImageCommand}"/>
-                        </ic:EventTriggerBehavior>
-                    </i:Interaction.Behaviors>
-                </AppBarButton>
+                    Command="{x:Bind ViewModel.SaveImageCommand}"
+                ToolTipService.ToolTip="Save file" />
                 <AppBarSeparator/>
                 <AppBarButton
                 BorderBrush="Transparent"
                 BorderThickness="0,0,0,0"
                 Label="Clear all"
                 Icon="Delete"
-                ToolTipService.ToolTip="Clear all">
-                    <i:Interaction.Behaviors>
-                        <ic:EventTriggerBehavior EventName="Click">
-                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.ClearAllCommand}"/>
-                        </ic:EventTriggerBehavior>
-                    </i:Interaction.Behaviors>
-                </AppBarButton>
+                    Command="{x:Bind ViewModel.ClearAllCommand}"
+                ToolTipService.ToolTip="Clear all" />
             </CommandBar>
             <ScrollViewer
                 Name="canvasScroll"

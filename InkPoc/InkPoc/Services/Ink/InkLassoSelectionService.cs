@@ -1,4 +1,5 @@
-﻿using Windows.UI;
+﻿using System.Linq;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Input.Inking;
 using Windows.UI.Xaml.Controls;
@@ -38,6 +39,11 @@ namespace InkPoc.Services.Ink
         private void InkPresenter_StrokesErased(InkPresenter sender, InkStrokesErasedEventArgs args)
         {
             EndLassoSelectionConfig();
+
+            if (args.Strokes.Any(s => s.Selected))
+            {
+                ClearSelection();
+            }
         }
 
         private void UnprocessedInput_PointerPressed(InkUnprocessedInput sender, PointerEventArgs args)
@@ -98,8 +104,8 @@ namespace InkPoc.Services.Ink
 
         public void ClearSelection()
         {
+            strokeService.ClearStrokesSelection();
             selectionRectangleService.Clear();
         }
-
     }
 }

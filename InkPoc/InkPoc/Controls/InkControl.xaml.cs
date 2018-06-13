@@ -283,24 +283,18 @@ namespace InkPoc.Controls
 
         private void Cut_Click(object sender, RoutedEventArgs e)
         {
-            copyPosition = CopyPasteService.Cut();
+            CopyPasteService.Cut();
             ClearSelection();
         }
-
-        private Point copyPosition;
-
+        
         private void Copy_Click(object sender, RoutedEventArgs e)
         {
-            copyPosition = CopyPasteService.Copy();
-            ClearSelection();
+            CopyPasteService.Copy();
         }
 
         private void Paste_Click(object sender, RoutedEventArgs e)
-        {
-            copyPosition.X += 20;
-            copyPosition.Y += 20;
-            
-            CopyPasteService.Paste(copyPosition);
+        {            
+            CopyPasteService.Paste();
             ClearSelection();
         }
         
