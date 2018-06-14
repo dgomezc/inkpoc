@@ -1,9 +1,8 @@
-﻿using InkPoc.Services.Ink.EventHandlers;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.UI.Input.Inking;
 
-namespace InkPoc.Services.Ink.UndoRedo
+namespace InkPoc.Services.Ink
 {
     public class MoveStrokesUndoRedoOperation : IUndoRedoOperation
     {

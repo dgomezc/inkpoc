@@ -1,4 +1,4 @@
-﻿namespace InkPoc.Services.Ink.UndoRedo
+﻿namespace InkPoc.Services.Ink
 {
     public interface IUndoRedoOperation
     {
