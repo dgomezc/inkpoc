@@ -7,20 +7,14 @@
     xmlns:controls="using:InkPoc.Controls"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
-    <Grid
-        x:Name="ContentArea"
-        Margin="{StaticResource MediumLeftRightMargin}">
-        <Grid Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
-            <controls:InkControl
-                ShowSelectionTool="True"
-                ShowEnableTouchInking="True"
-                ShowEnableMouseInking="True"
-                ShowCopyPaste="True"
-                ShowOpenSaveFile="True"
-                ShowUndoRedo="True"
-                ShowZoom="True"
-                ShowExportFile="True"
-                ShowClearAll="True" />
-        </Grid>
-    </Grid>
+
+    <controls:WindowsInkControl>
+        <controls:WindowsInkControl.Options>
+            <controls:ZoomInkOption />
+            <controls:CutCopyPasteInkOption />
+            <controls:UndoRedoInkOption />
+            <controls:FileImportExportInkOption />
+            <controls:ClearAllInkOption />
+        </controls:WindowsInkControl.Options>
+    </controls:WindowsInkControl>
 </Page>

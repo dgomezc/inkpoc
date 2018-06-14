@@ -28,7 +28,8 @@
             <NavigationViewItem x:Uid="Shell_PaintImage" Icon="Document" helpers:NavHelper.NavigateTo="views:PaintImagePage" />
             <NavigationViewItemSeparator/>
             <NavigationViewItem x:Uid="Shell_DrawWithControl" Icon="Document" helpers:NavHelper.NavigateTo="views:DrawWithControlPage" />
-            <NavigationViewItem x:Uid="Shell_WindowsInkControl" Icon="Document" helpers:NavHelper.NavigateTo="views:WindowsInkControlPage" />
+            <NavigationViewItem x:Uid="Shell_SmartCanvasWithControl" Icon="Document" helpers:NavHelper.NavigateTo="views:SmartCanvasWithControlPage" />
+            <NavigationViewItem x:Uid="Shell_PaintImageWithControl" Icon="Document" helpers:NavHelper.NavigateTo="views:PaintImageWithControlPage" />
         </NavigationView.MenuItems>
         <NavigationView.HeaderTemplate>
             <DataTemplate>

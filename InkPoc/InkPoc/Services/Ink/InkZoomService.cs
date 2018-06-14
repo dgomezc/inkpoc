@@ -37,7 +37,10 @@ namespace InkPoc.Services.Ink
 
         private float ExecuteZoom(float zoomFactor)
         {
-            scrollViewer.ChangeView(scrollViewer.HorizontalOffset, scrollViewer.VerticalOffset, zoomFactor);
+            if(scrollViewer.ChangeView(scrollViewer.HorizontalOffset, scrollViewer.VerticalOffset, zoomFactor))
+            {
+                return zoomFactor;
+            }
             return scrollViewer.ZoomFactor;
         }
     }

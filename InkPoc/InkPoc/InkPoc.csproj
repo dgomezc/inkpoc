@@ -111,9 +111,10 @@
     <Compile Include="Controls\InkControl.xaml.cs">
       <DependentUpon>InkControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\InkOptions\ClearAllInkOption.cs" />
     <Compile Include="Controls\InkOptions\CutCopyPasteInkOption.cs" />
     <Compile Include="Controls\InkOptions\FileImportExportInkOption.cs" />
-    <Compile Include="Controls\InkOptions\TransformTextAndShapesInkOption.cs" />
+    <Compile Include="Controls\InkOptions\SmartInkOptions.cs" />
     <Compile Include="Controls\InkOptions\UndoRedoInkOption.cs" />
     <Compile Include="Controls\WindowsInkControl.xaml.cs">
       <DependentUpon>WindowsInkControl.xaml</DependentUpon>
@@ -151,8 +152,10 @@
     <Compile Include="ViewModels\DrawViewModel.cs" />
     <Compile Include="ViewModels\DrawWithControlViewModel.cs" />
     <Compile Include="ViewModels\PaintImageViewModel.cs" />
+    <Compile Include="ViewModels\PaintImageWithControlViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\SmartCanvasViewModel.cs" />
+    <Compile Include="ViewModels\SmartCanvasWithControlViewModel.cs" />
     <Compile Include="ViewModels\WindowsInkControlViewModel.cs" />
     <Compile Include="Views\DrawPage.xaml.cs">
       <DependentUpon>DrawPage.xaml</DependentUpon>
@@ -163,11 +166,17 @@
     <Compile Include="Views\PaintImagePage.xaml.cs">
       <DependentUpon>PaintImagePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PaintImageWithControlPage.xaml.cs">
+      <DependentUpon>PaintImageWithControlPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ShellPage.xaml.cs">
       <DependentUpon>ShellPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SmartCanvasPage.xaml.cs">
       <DependentUpon>SmartCanvasPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SmartCanvasWithControlPage.xaml.cs">
+      <DependentUpon>SmartCanvasWithControlPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WindowsInkControlPage.xaml.cs">
       <DependentUpon>WindowsInkControlPage.xaml</DependentUpon>
@@ -224,11 +233,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\PaintImageWithControlPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\ShellPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\SmartCanvasPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SmartCanvasWithControlPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

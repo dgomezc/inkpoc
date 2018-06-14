@@ -16,29 +16,27 @@ namespace InkPoc.Controls
         private const bool DefaultEnableTouchValue = true;
         private const bool DefaultEnableMouseValue = true;
 
+        private InkAsyncAnalyzer _analyzer;
         private InkCopyPasteService _copyPasteService;
-        private InkUndoRedoService _undoRedoService;
         private InkFileService _fileService;
         private InkZoomService _zoomService;
         private InkTransformService _transformService;
-        private InkNodeSelectionService _nodeSelectionService;
-        private InkAsyncAnalyzer _analyzer;
 
         private readonly InkStrokesService StrokeService;
         private readonly InkLassoSelectionService LassoSelectionService;
         private readonly InkPointerDeviceService PointerDeviceService;
         private readonly InkSelectionRectangleService SelectionRectangleService;
+
         private InkZoomService ZoomService => _zoomService ?? (_zoomService = new InkZoomService(canvasScroll));
         private InkCopyPasteService CopyPasteService => _copyPasteService ?? (_copyPasteService = new InkCopyPasteService(StrokeService));
-        private InkUndoRedoService UndoRedoService => _undoRedoService ?? (_undoRedoService = new InkUndoRedoService(inkCanvas, StrokeService));
-
+        private InkUndoRedoService UndoRedoService { get; set; }
         private InkFileService FileService => _fileService ?? (_fileService = new InkFileService(inkCanvas, StrokeService));
 
         private InkTransformService TransformService => _transformService ?? (_transformService = new InkTransformService(drawingCanvas, StrokeService));
 
         private InkAsyncAnalyzer Analyzer => _analyzer ?? (_analyzer = new InkAsyncAnalyzer(inkCanvas, StrokeService));
 
-        private InkNodeSelectionService NodeSelectionService => _nodeSelectionService ?? (_nodeSelectionService = new InkNodeSelectionService(inkCanvas, selectionCanvas, Analyzer, StrokeService, SelectionRectangleService));
+        private InkNodeSelectionService NodeSelectionService { get; set; }
 
         public event EventHandler OnCut;
         public event EventHandler OnCopy;
@@ -51,6 +49,7 @@ namespace InkPoc.Controls
         public event EventHandler OnRedo;
         public event EventHandler<float> OnZoomIn;
         public event EventHandler<float> OnZoomOut;
+        public event EventHandler OnClearedAll;
 
         #region Properties
         public ObservableCollection<InkOption> Options => (ObservableCollection<InkOption>)GetValue(OptionsProperty);
@@ -63,7 +62,7 @@ namespace InkPoc.Controls
             set => SetValue(EnableLassoSelectionProperty, value);
         }
 
-        public static readonly DependencyProperty EnableLassoSelectionProperty = DependencyProperty.Register(nameof(EnableLassoSelection), typeof(bool), typeof(WindowsInkControl), new PropertyMetadata(false, OnEnableLassoSelectionPropertyChanged));        
+        public static readonly DependencyProperty EnableLassoSelectionProperty = DependencyProperty.Register(nameof(EnableLassoSelection), typeof(bool), typeof(WindowsInkControl), new PropertyMetadata(false, OnEnableLassoSelectionPropertyChanged));
 
         public bool EnableTouch
         {
@@ -135,8 +134,11 @@ namespace InkPoc.Controls
                     case FileImportExportInkOption fileImportExport:
                         EnableFileImportExport(fileImportExport);
                         break;
-                    case TransformTextAndShapesInkOption transformTextAndShapes:
-                        EnableTransformTextAndShapes(transformTextAndShapes);
+                    case SmartInkOptions smartInkOptions:
+                        EnableSmartInkOptions(smartInkOptions);
+                        break;
+                    case ClearAllInkOption clearAllOption:
+                        EnableClearAll(clearAllOption);
                         break;
                     default:
                         break;
@@ -176,8 +178,8 @@ namespace InkPoc.Controls
 
         private void EnableUndoRedo(UndoRedoInkOption undoRedo)
         {
+            UndoRedoService = new InkUndoRedoService(inkCanvas, StrokeService);
             commandBar.PrimaryCommands.Add(new AppBarSeparator());
-
             var undoButton = undoRedo.UndoButton;
             undoButton.Click += (sender, e) => Undo();
             commandBar.PrimaryCommands.Add(undoButton);
@@ -204,8 +206,9 @@ namespace InkPoc.Controls
             commandBar.PrimaryCommands.Add(exportAsImageButton);
         }
 
-        private void EnableTransformTextAndShapes(TransformTextAndShapesInkOption transformTextAndShapes)
+        private void EnableSmartInkOptions(SmartInkOptions transformTextAndShapes)
         {
+            NodeSelectionService = new InkNodeSelectionService(inkCanvas, selectionCanvas, Analyzer, StrokeService, SelectionRectangleService);
             commandBar.PrimaryCommands.Add(new AppBarSeparator());
 
             var transformTextAndShapesButton = transformTextAndShapes.TransformTextAndShapesButton;
@@ -213,16 +216,26 @@ namespace InkPoc.Controls
             commandBar.PrimaryCommands.Add(transformTextAndShapesButton);
         }
 
-        public void ZoomIn()
+        private void EnableClearAll(ClearAllInkOption clearAllOption)
+        {
+            commandBar.PrimaryCommands.Add(new AppBarSeparator());
+            var clearAllButton = clearAllOption.ClearAllButton;
+            clearAllButton.Click += (sender, e) => ClearAll();
+            commandBar.PrimaryCommands.Add(clearAllButton);
+        }
+
+        public float ZoomIn()
         {
             var zoomFactor = ZoomService.ZoomIn();
             OnZoomIn?.Invoke(this, zoomFactor);
+            return zoomFactor;
         }
 
-        public void ZoomOut()
+        public float ZoomOut()
         {
             var zoomFactor = ZoomService.ZoomOut();
             OnZoomOut?.Invoke(this, zoomFactor);
+            return zoomFactor;
         }
 
         public void Cut()
@@ -246,18 +259,28 @@ namespace InkPoc.Controls
             OnPaste?.Invoke(this, EventArgs.Empty);
         }
 
-        public void Undo()
+        public bool Undo()
         {
+            if (!IsOptionAvailable(typeof(UndoRedoInkOption)))
+            {
+                return false;
+            }
             LassoSelectionService.ClearSelection();
             UndoRedoService.Undo();
             OnUndo?.Invoke(this, EventArgs.Empty);
-        }
+            return true;
+        }        
 
-        public void Redo()
+        public bool Redo()
         {
+            if (!IsOptionAvailable(typeof(UndoRedoInkOption)))
+            {
+                return false;
+            }
             LassoSelectionService.ClearSelection();
             UndoRedoService.Redo();
             OnRedo?.Invoke(this, EventArgs.Empty);
+            return true;
         }
 
         public async Task OpenFileAsync()
@@ -267,7 +290,7 @@ namespace InkPoc.Controls
 
             if (fileLoaded)
             {
-                UndoRedoService.Reset();
+                UndoRedoService?.Reset();
                 OnFileOpened?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -291,11 +314,21 @@ namespace InkPoc.Controls
             var result = await TransformService.TransformTextAndShapesAsync();
             if (result.TextAndShapes.Any())
             {
-                NodeSelectionService.ClearSelection();
+                NodeSelectionService?.ClearSelection();
                 LassoSelectionService.ClearSelection();
-                UndoRedoService.AddOperation(new TransformUndoRedoOperation(result, StrokeService));
+                UndoRedoService?.AddOperation(new TransformUndoRedoOperation(result, StrokeService));
                 OnTextAndShapesTransformed?.Invoke(this, EventArgs.Empty);
             }
         }
+
+        public void ClearAll()
+        {
+            LassoSelectionService.ClearSelection();
+            StrokeService.ClearStrokes();
+            UndoRedoService?.Reset();
+            OnClearedAll?.Invoke(this, EventArgs.Empty);
+        }
+
+        private bool IsOptionAvailable(Type optionType) => Options.Any(o => o.GetType() == optionType);
     }
 }

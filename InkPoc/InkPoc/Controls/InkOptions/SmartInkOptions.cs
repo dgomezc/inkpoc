@@ -2,7 +2,7 @@
 
 namespace InkPoc.Controls
 {
-    public class TransformTextAndShapesInkOption : InkOption
+    public class SmartInkOptions : InkOption
     {
         private const string TransformTextAndShapesLabel = "Transform text and shapes";
 

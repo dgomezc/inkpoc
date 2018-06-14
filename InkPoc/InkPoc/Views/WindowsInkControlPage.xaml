@@ -10,13 +10,13 @@
     <Grid>
         <controls:WindowsInkControl x:Name="inkControl">
             <controls:WindowsInkControl.Options>
-                <!--<controls:UndoRedoInkOption />
                 <controls:CutCopyPasteInkOption />
-                <controls:FileImportExportInkOption />
+                <controls:UndoRedoInkOption />
                 <controls:ZoomInkOption />
-                <controls:TransformTextAndShapesInkOption />-->
+                <controls:SmartInkOptions />
+                <controls:FileImportExportInkOption />
             </controls:WindowsInkControl.Options>
         </controls:WindowsInkControl>
-        <Button Content="Test" Click="Button_Click"/>
+        <!--<Button Content="Test" Click="Button_Click"/>-->
     </Grid>
 </Page>

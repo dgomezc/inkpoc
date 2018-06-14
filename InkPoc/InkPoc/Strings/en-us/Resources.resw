@@ -138,11 +138,19 @@
     <comment>Navigation view item name for SmartCanvas</comment>
   </data>
   <data name="Shell_DrawWithControl.Content" xml:space="preserve">
-    <value>DrawWithControl</value>
+    <value>Draw with control</value>
     <comment>Navigation view item name for DrawWithControl</comment>
   </data>
   <data name="Shell_WindowsInkControl.Content" xml:space="preserve">
     <value>WindowsInkControl</value>
     <comment>Navigation view item name for WindowsInkControl</comment>
+  </data>
+  <data name="Shell_SmartCanvasWithControl.Content" xml:space="preserve">
+    <value>SmartCanvas with control</value>
+    <comment>Navigation view item name for SmartCanvasWithControl</comment>
+  </data>
+  <data name="Shell_PaintImageWithControl.Content" xml:space="preserve">
+    <value>PaintImage with control</value>
+    <comment>Navigation view item name for PaintImageWithControl</comment>
   </data>
 </root>
