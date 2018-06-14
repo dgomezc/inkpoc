@@ -74,7 +74,7 @@ namespace InkPoc.Services.Ink
         public void ClearStrokes()
         {
             strokeContainer.Clear();
-            ClearStrokesEvent?.Invoke(this, null);
+            ClearStrokesEvent?.Invoke(this, EventArgs.Empty);
         }
 
         public void ClearStrokesSelection()
@@ -188,7 +188,7 @@ namespace InkPoc.Services.Ink
                 await strokeContainer.LoadAsync(stream);
             }
 
-            LoadInkFileEvent?.Invoke(this, null);
+            LoadInkFileEvent?.Invoke(this, EventArgs.Empty);
             return true;
         }
 

@@ -52,6 +52,8 @@ namespace InkPoc.ViewModels
 
             EnableTouch = true;
             EnableMouse = true;
+
+            pointerDeviceService.DetectPenEvent += (s, e) => EnableTouch = false;
         }
 
         public RelayCommand CutCommand => cutCommand

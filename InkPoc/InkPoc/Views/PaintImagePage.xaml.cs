@@ -1,5 +1,6 @@
 ﻿using InkPoc.Services.Ink;
 using InkPoc.ViewModels;
+using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -26,8 +27,8 @@ namespace InkPoc.Views
         
         private void SetCanvasSize()
         {
-            inkCanvas.Width = inkCanvas.ActualWidth;
-            inkCanvas.Height = inkCanvas.ActualHeight;
+            inkCanvas.Width = Math.Max(inkCanvas.ActualWidth, 1000);
+            inkCanvas.Height = Math.Max(inkCanvas.ActualHeight, 1000);
         }
 
         private void Image_SizeChanged(object sender, SizeChangedEventArgs e)

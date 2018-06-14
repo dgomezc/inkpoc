@@ -1,4 +1,5 @@
-﻿using Windows.Devices.Input;
+﻿using System;
+using Windows.Devices.Input;
 using Windows.UI.Core;
 using Windows.UI.Input.Inking;
 using Windows.UI.Xaml.Controls;
@@ -12,6 +13,9 @@ namespace InkPoc.Services.Ink
         private bool enableMouse;
         private bool enablePen;
         private bool enableTouch;
+
+
+        public event EventHandler<EventArgs> DetectPenEvent;
 
         public InkPointerDeviceService(InkCanvas _inkCanvas)
         {
@@ -57,7 +61,7 @@ namespace InkPoc.Services.Ink
         {
             if (e.CurrentPoint.PointerDevice.PointerDeviceType == PointerDeviceType.Pen)
             {
-                EnableTouch = false;
+                DetectPenEvent?.Invoke(this, EventArgs.Empty);
             }
         }
         

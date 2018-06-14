@@ -42,6 +42,8 @@ namespace InkPoc.ViewModels
 
             enableMouse = true;
             EnableTouch = true;
+
+            pointerDeviceService.DetectPenEvent += (s, e) => EnableTouch = false;
         }
 
         public bool EnableTouch
