@@ -108,9 +108,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activation\ActivationHandler.cs" />
-    <Compile Include="Controls\InkControl.xaml.cs">
-      <DependentUpon>InkControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\InkOptions\ClearAllInkOption.cs" />
     <Compile Include="Controls\InkOptions\CutCopyPasteInkOption.cs" />
     <Compile Include="Controls\InkOptions\OpenImageInkOption.cs" />
@@ -118,11 +115,9 @@
     <Compile Include="Controls\InkOptions\SaveImageInkOption.cs" />
     <Compile Include="Controls\InkOptions\SmartInkOptions.cs" />
     <Compile Include="Controls\InkOptions\UndoRedoInkOption.cs" />
-    <Compile Include="Controls\WindowsInkControl.xaml.cs">
-      <DependentUpon>WindowsInkControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\InkOptions\InkOption.cs" />
     <Compile Include="Controls\InkOptions\ZoomInkOption.cs" />
+    <Compile Include="Controls\WindowsInkControl.xaml.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Services\Ink\InkAsyncAnalyzer.cs" />
     <Compile Include="Services\Ink\InkCopyPasteService.cs" />
@@ -195,13 +190,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\InkControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\WindowsInkControl.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Styles\Page.xaml">
       <Generator>MSBuild:Compile</Generator>

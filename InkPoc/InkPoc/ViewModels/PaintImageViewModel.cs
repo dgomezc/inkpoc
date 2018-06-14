@@ -92,7 +92,7 @@ namespace InkPoc.ViewModels
             if(Image != null)
             {
                 var imageSize = new Size(Image.PixelWidth, Image.PixelHeight);
-                zoomService.AdjustToSize(imageSize);
+                //zoomService.AdjustToSize(imageSize);
             }           
         }
 
