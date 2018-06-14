@@ -53,6 +53,8 @@ namespace InkPoc.Controls
         public event EventHandler<float> OnZoomIn;
         public event EventHandler<float> OnZoomOut;
         public event EventHandler OnClearedAll;
+        public event EventHandler<BitmapImage> OnImageOpened;
+        public event EventHandler<BitmapImage> OnImageSaved;
 
         #region Properties
         public ObservableCollection<InkOption> Options => (ObservableCollection<InkOption>)GetValue(OptionsProperty);
@@ -380,12 +382,15 @@ namespace InkPoc.Controls
             {
                 var imageSize = new Size(Image.PixelWidth, Image.PixelHeight);
                 ZoomService?.AdjustToSize(imageSize);
+                OnImageOpened?.Invoke(this, Image);
             }
         }
 
         public async Task SaveImageAsync()
         {
-            await FileService.ExportToImageAsync(_imageFile);
+            var storageFile = await FileService.ExportToImageAsync(_imageFile);
+            var bitmapImage = await ImageHelper.GetBitmapFromImageAsync(storageFile);
+            OnImageSaved?.Invoke(this, bitmapImage);
         }
 
         private bool IsOptionAvailable(Type optionType) => Options.Any(o => o.GetType() == optionType);

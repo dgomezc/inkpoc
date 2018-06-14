@@ -54,30 +54,30 @@ namespace InkPoc.Services.Ink
             await strokesService.SaveInkFileAsync(file);
         }
 
-        public async Task ExportToImageAsync(StorageFile imageFile = null)
+        public async Task<StorageFile> ExportToImageAsync(StorageFile imageFile = null)
         {
             if (!strokesService.GetStrokes().Any())
             {
-                return;
+                return null;
             }
 
             if (imageFile != null)
             {
-                await ExportCanvasAndImageAsync(imageFile);
+                return await ExportCanvasAndImageAsync(imageFile);
             }
             else
             {
-                await ExportCanvasAsync();
+                return await ExportCanvasAsync();
             }
         }
 
-        private  async Task ExportCanvasAndImageAsync(StorageFile imageFile)
+        private  async Task<StorageFile> ExportCanvasAndImageAsync(StorageFile imageFile)
         {
             var saveFile = await GetImageToSaveAsync();
 
             if (saveFile == null)
             {
-                return;
+                return null;
             }
 
             // Prevent updates to the file until updates are finalized with call to CompleteUpdatesAsync.
@@ -107,14 +107,16 @@ namespace InkPoc.Services.Ink
 
             // Finalize write so other apps can update file.
             FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(saveFile);
+
+            return saveFile;
         }
 
-        private async Task ExportCanvasAsync()
+        private async Task<StorageFile> ExportCanvasAsync()
         {
             var file = await GetImageToSaveAsync();
             if (file == null)
             {
-                return;
+                return null;
             }
 
             CanvasDevice device = CanvasDevice.GetSharedDevice();
@@ -129,6 +131,8 @@ namespace InkPoc.Services.Ink
             {
                 await renderTarget.SaveAsync(fileStream, CanvasBitmapFileFormat.Png);
             }
+
+            return file;
         }
 
         private async Task<StorageFile> GetImageToSaveAsync()
