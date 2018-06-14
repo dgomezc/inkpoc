@@ -137,8 +137,4 @@
     <value>SmartCanvas</value>
     <comment>Navigation view item name for SmartCanvas</comment>
   </data>
-  <data name="Shell_DrawWithControl.Content" xml:space="preserve">
-    <value>DrawWithControl</value>
-    <comment>Navigation view item name for DrawWithControl</comment>
-  </data>
 </root>

@@ -27,7 +27,6 @@
             <NavigationViewItem x:Uid="Shell_SmartCanvas" Icon="Document" helpers:NavHelper.NavigateTo="views:SmartCanvasPage" />
             <NavigationViewItem x:Uid="Shell_PaintImage" Icon="Document" helpers:NavHelper.NavigateTo="views:PaintImagePage" />
             <NavigationViewItemSeparator/>
-            <NavigationViewItem x:Uid="Shell_DrawWithControl" Icon="Document" helpers:NavHelper.NavigateTo="views:DrawWithControlPage" />
         </NavigationView.MenuItems>
         <NavigationView.HeaderTemplate>
             <DataTemplate>
