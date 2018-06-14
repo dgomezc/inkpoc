@@ -6,7 +6,7 @@ namespace InkPoc.Services.Ink
 {
     public class InkZoomService
     {
-        private const float defaultZoomFactor = 0.2f;
+        private const float defaultZoomFactor = 0.1f;
         private readonly ScrollViewer scrollViewer;
 
         public InkZoomService(ScrollViewer _scrollViewer)

@@ -1,7 +1,7 @@
 ﻿using InkPoc.Services.Ink;
 using InkPoc.Services.Ink.UndoRedo;
 using InkPoc.ViewModels;
-
+using System;
 using Windows.UI.Xaml.Controls;
 
 namespace InkPoc.Views
@@ -31,14 +31,8 @@ namespace InkPoc.Views
 
         private void SetCanvasSize()
         {
-            inkCanvas.Width = inkCanvas.ActualWidth;
-            inkCanvas.Height = inkCanvas.ActualHeight;
-
-            selectionCanvas.Width = inkCanvas.Width;
-            selectionCanvas.Height = inkCanvas.Height;
-
-            drawingCanvas.Width = inkCanvas.Width;
-            drawingCanvas.Height = inkCanvas.Height;
+            inkCanvas.Width = Math.Max(inkCanvas.ActualWidth, 1000);
+            inkCanvas.Height = Math.Max(inkCanvas.ActualHeight, 1000);
         }
     }
 }
