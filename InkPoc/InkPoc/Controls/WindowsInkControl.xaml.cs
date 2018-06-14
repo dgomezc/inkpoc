@@ -3,9 +3,13 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+using InkPoc.Helpers;
 using InkPoc.Services.Ink;
+using Windows.Foundation;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -20,7 +24,7 @@ namespace InkPoc.Controls
         private InkCopyPasteService _copyPasteService;
         private InkFileService _fileService;
         private InkZoomService _zoomService;
-        private InkTransformService _transformService;
+        private StorageFile _imageFile;
 
         private readonly InkStrokesService StrokeService;
         private readonly InkLassoSelectionService LassoSelectionService;
@@ -31,18 +35,17 @@ namespace InkPoc.Controls
         private InkCopyPasteService CopyPasteService => _copyPasteService ?? (_copyPasteService = new InkCopyPasteService(StrokeService));
         private InkUndoRedoService UndoRedoService { get; set; }
         private InkFileService FileService => _fileService ?? (_fileService = new InkFileService(inkCanvas, StrokeService));
-
-        private InkTransformService TransformService => _transformService ?? (_transformService = new InkTransformService(drawingCanvas, StrokeService));
-
         private InkAsyncAnalyzer Analyzer => _analyzer ?? (_analyzer = new InkAsyncAnalyzer(inkCanvas, StrokeService));
+
+        private InkTransformService TransformService { get; set; }
 
         private InkNodeSelectionService NodeSelectionService { get; set; }
 
         public event EventHandler OnCut;
         public event EventHandler OnCopy;
         public event EventHandler OnPaste;
-        public event EventHandler OnFileOpened;
-        public event EventHandler OnFileSaved;
+        public event EventHandler OnStrokesOpened;
+        public event EventHandler OnStrokesSaved;
         public event EventHandler OnImageExported;
         public event EventHandler OnTextAndShapesTransformed;
         public event EventHandler OnUndo;
@@ -79,6 +82,16 @@ namespace InkPoc.Controls
         }
 
         public static readonly DependencyProperty EnableMouseProperty = DependencyProperty.Register(nameof(EnableMouse), typeof(bool), typeof(WindowsInkControl), new PropertyMetadata(DefaultEnableMouseValue, OnEnableMousePropertyChanged));
+
+
+
+        public BitmapImage Image
+        {
+            get { return (BitmapImage)GetValue(ImageProperty); }
+            set { SetValue(ImageProperty, value); }
+        }
+
+        public static readonly DependencyProperty ImageProperty = DependencyProperty.Register("Image", typeof(BitmapImage), typeof(WindowsInkControl), new PropertyMetadata(null));
         #endregion
 
         public WindowsInkControl()
@@ -131,14 +144,20 @@ namespace InkPoc.Controls
                     case UndoRedoInkOption undoRedo:
                         EnableUndoRedo(undoRedo);
                         break;
-                    case FileImportExportInkOption fileImportExport:
-                        EnableFileImportExport(fileImportExport);
+                    case OpenSaveStrokesInkOption openSaveStrokes:
+                        EnableOpenSaveStrokes(openSaveStrokes);
                         break;
                     case SmartInkOptions smartInkOptions:
                         EnableSmartInkOptions(smartInkOptions);
                         break;
                     case ClearAllInkOption clearAllOption:
                         EnableClearAll(clearAllOption);
+                        break;
+                    case OpenImageInkOption openImageOption:
+                        EnableOpenImage(openImageOption);
+                        break;
+                    case SaveImageInkOption saveImageInkOption:
+                        EnableSaveImage(saveImageInkOption);
                         break;
                     default:
                         break;
@@ -189,25 +208,22 @@ namespace InkPoc.Controls
             commandBar.PrimaryCommands.Add(redoButton);
         }
 
-        private void EnableFileImportExport(FileImportExportInkOption fileImportExport)
+        private void EnableOpenSaveStrokes(OpenSaveStrokesInkOption fileImportExport)
         {
             commandBar.PrimaryCommands.Add(new AppBarSeparator());
 
-            var openFileButton = fileImportExport.OpenFileButton;
-            openFileButton.Click += async (sender, e) => await OpenFileAsync();
-            commandBar.PrimaryCommands.Add(openFileButton);
+            var openStrokesButton = fileImportExport.OpenStrokesButton;
+            openStrokesButton.Click += async (sender, e) => await OpenStrokesAsync();
+            commandBar.PrimaryCommands.Add(openStrokesButton);
 
-            var saveFileButton = fileImportExport.SaveFileButton;
-            saveFileButton.Click += async (sender, e) => await SaveFileAsync();
-            commandBar.PrimaryCommands.Add(saveFileButton);
-
-            var exportAsImageButton = fileImportExport.ExportAsImageButton;
-            exportAsImageButton.Click += async (sender, e) => await ExportAsImageAsync();
-            commandBar.PrimaryCommands.Add(exportAsImageButton);
+            var saveStrokesButton = fileImportExport.SaveStrokesButton;
+            saveStrokesButton.Click += async (sender, e) => await SaveStrokesAsync();
+            commandBar.PrimaryCommands.Add(saveStrokesButton);
         }
 
         private void EnableSmartInkOptions(SmartInkOptions transformTextAndShapes)
         {
+            TransformService = new InkTransformService(drawingCanvas, StrokeService);
             NodeSelectionService = new InkNodeSelectionService(inkCanvas, selectionCanvas, Analyzer, StrokeService, SelectionRectangleService);
             commandBar.PrimaryCommands.Add(new AppBarSeparator());
 
@@ -222,6 +238,22 @@ namespace InkPoc.Controls
             var clearAllButton = clearAllOption.ClearAllButton;
             clearAllButton.Click += (sender, e) => ClearAll();
             commandBar.PrimaryCommands.Add(clearAllButton);
+        }
+
+        private void EnableOpenImage(OpenImageInkOption openImageInkOption)
+        {
+            commandBar.PrimaryCommands.Add(new AppBarSeparator());
+            var openImageButton = openImageInkOption.OpenImageButton;
+            openImageButton.Click += async (sender, e) => await OpenImageAsync();
+            commandBar.PrimaryCommands.Add(openImageButton);
+        }
+
+        private void EnableSaveImage(SaveImageInkOption saveImageInkOption)
+        {
+            commandBar.PrimaryCommands.Add(new AppBarSeparator());
+            var saveImageButton = saveImageInkOption.SaveImageButton;
+            saveImageButton.Click += async (sender, e) => await SaveImageAsync();
+            commandBar.PrimaryCommands.Add(saveImageButton);
         }
 
         public float ZoomIn()
@@ -283,7 +315,7 @@ namespace InkPoc.Controls
             return true;
         }
 
-        public async Task OpenFileAsync()
+        public async Task OpenStrokesAsync()
         {
             LassoSelectionService.ClearSelection();
             var fileLoaded = await FileService.LoadInkAsync();
@@ -291,15 +323,15 @@ namespace InkPoc.Controls
             if (fileLoaded)
             {
                 UndoRedoService?.Reset();
-                OnFileOpened?.Invoke(this, EventArgs.Empty);
+                OnStrokesOpened?.Invoke(this, EventArgs.Empty);
             }
         }
 
-        public async Task SaveFileAsync()
+        public async Task SaveStrokesAsync()
         {
             LassoSelectionService.ClearSelection();
             await FileService.SaveInkAsync();
-            OnFileSaved?.Invoke(this, EventArgs.Empty);
+            OnStrokesSaved?.Invoke(this, EventArgs.Empty);
         }
 
         public async Task ExportAsImageAsync()
@@ -309,8 +341,12 @@ namespace InkPoc.Controls
             OnImageExported?.Invoke(this, EventArgs.Empty);
         }
 
-        public async Task TransformTextAndShapesAsync()
+        public async Task<bool> TransformTextAndShapesAsync()
         {
+            if (!IsOptionAvailable(typeof(SmartInkOptions)))
+            {
+                return false;
+            }
             var result = await TransformService.TransformTextAndShapesAsync();
             if (result.TextAndShapes.Any())
             {
@@ -318,17 +354,53 @@ namespace InkPoc.Controls
                 LassoSelectionService.ClearSelection();
                 UndoRedoService?.AddOperation(new TransformUndoRedoOperation(result, StrokeService));
                 OnTextAndShapesTransformed?.Invoke(this, EventArgs.Empty);
+                return true;
             }
+            return false;
         }
 
         public void ClearAll()
         {
-            LassoSelectionService.ClearSelection();
+            LassoSelectionService.ClearSelection();            
             StrokeService.ClearStrokes();
+            NodeSelectionService?.ClearSelection();
             UndoRedoService?.Reset();
+            TransformService?.ClearTextAndShapes();
             OnClearedAll?.Invoke(this, EventArgs.Empty);
+            _imageFile = null;
+            Image = null;
+        }
+
+        public async Task OpenImageAsync()
+        {
+            _imageFile = await ImageHelper.LoadImageFileAsync();
+            Image = await ImageHelper.GetBitmapFromImageAsync(_imageFile);
+
+            if (Image != null)
+            {
+                var imageSize = new Size(Image.PixelWidth, Image.PixelHeight);
+                ZoomService?.AdjustToSize(imageSize);
+            }
+        }
+
+        public async Task SaveImageAsync()
+        {
+            await FileService.ExportToImageAsync(_imageFile);
         }
 
         private bool IsOptionAvailable(Type optionType) => Options.Any(o => o.GetType() == optionType);
+
+        private void OnImageSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width > 0)
+            {
+                inkCanvas.Width = e.NewSize.Width;
+            }
+
+            if (e.NewSize.Height > 0)
+            {
+                inkCanvas.Height = e.NewSize.Height;
+            }
+        }
     }
 }

@@ -13,7 +13,8 @@
             <controls:ZoomInkOption />
             <controls:CutCopyPasteInkOption />
             <controls:UndoRedoInkOption />
-            <controls:FileImportExportInkOption />
+            <controls:OpenSaveStrokesInkOption />
+            <controls:SaveImageInkOption/>
             <controls:ClearAllInkOption />
         </controls:WindowsInkControl.Options>
     </controls:WindowsInkControl>

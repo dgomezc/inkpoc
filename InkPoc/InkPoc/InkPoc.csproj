@@ -113,7 +113,9 @@
     </Compile>
     <Compile Include="Controls\InkOptions\ClearAllInkOption.cs" />
     <Compile Include="Controls\InkOptions\CutCopyPasteInkOption.cs" />
-    <Compile Include="Controls\InkOptions\FileImportExportInkOption.cs" />
+    <Compile Include="Controls\InkOptions\OpenImageInkOption.cs" />
+    <Compile Include="Controls\InkOptions\OpenSaveStrokesInkOption.cs" />
+    <Compile Include="Controls\InkOptions\SaveImageInkOption.cs" />
     <Compile Include="Controls\InkOptions\SmartInkOptions.cs" />
     <Compile Include="Controls\InkOptions\UndoRedoInkOption.cs" />
     <Compile Include="Controls\WindowsInkControl.xaml.cs">
@@ -151,6 +153,7 @@
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="ViewModels\DrawViewModel.cs" />
     <Compile Include="ViewModels\DrawWithControlViewModel.cs" />
+    <Compile Include="ViewModels\FullControlViewModel.cs" />
     <Compile Include="ViewModels\PaintImageViewModel.cs" />
     <Compile Include="ViewModels\PaintImageWithControlViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
@@ -162,6 +165,9 @@
     </Compile>
     <Compile Include="Views\DrawWithControlPage.xaml.cs">
       <DependentUpon>DrawWithControlPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FullControlPage.xaml.cs">
+      <DependentUpon>FullControlPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PaintImagePage.xaml.cs">
       <DependentUpon>PaintImagePage.xaml</DependentUpon>
@@ -226,6 +232,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\DrawWithControlPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\FullControlPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

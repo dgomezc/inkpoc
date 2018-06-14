@@ -56,6 +56,9 @@
                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                 ZoomMode="Enabled">
             <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                <Image
+                    Source="{x:Bind Image, Mode=OneWay}"
+                    SizeChanged="OnImageSizeChanged"/>
                 <InkCanvas
                     x:Name="inkCanvas"
                     HorizontalAlignment="Stretch"

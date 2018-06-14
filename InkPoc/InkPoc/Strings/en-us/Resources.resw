@@ -153,4 +153,8 @@
     <value>PaintImage with control</value>
     <comment>Navigation view item name for PaintImageWithControl</comment>
   </data>
+  <data name="Shell_FullControl.Content" xml:space="preserve">
+    <value>FullControl</value>
+    <comment>Navigation view item name for FullControl</comment>
+  </data>
 </root>
