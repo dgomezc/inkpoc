@@ -26,22 +26,7 @@
                 <InkToolbar
                     x:Name="toolbar"
                     TargetInkCanvas="{x:Bind inkCanvas}"
-                    ActiveToolChanged="OnInkToolbarActiveToolChanged">
-                    <InkToolbarCustomToggleButton
-                        ToolTipService.ToolTip="Touch Inking"
-                        IsChecked="{x:Bind EnableTouch, Mode=TwoWay}">
-                        <FontIcon
-                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                            Glyph="&#xED5F;" />
-                    </InkToolbarCustomToggleButton>
-                    <InkToolbarCustomToggleButton
-                        ToolTipService.ToolTip="Mouse Inking"
-                        IsChecked="{x:Bind EnableMouse, Mode=TwoWay}">
-                        <FontIcon
-                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                            Glyph="&#xE962;" />
-                    </InkToolbarCustomToggleButton>
-                </InkToolbar>
+                    ActiveToolChanged="OnInkToolbarActiveToolChanged" />
             </CommandBar.Content>
         </CommandBar>
         <ScrollViewer

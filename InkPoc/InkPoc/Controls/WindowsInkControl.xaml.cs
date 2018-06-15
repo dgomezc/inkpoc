@@ -9,6 +9,7 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media.Imaging;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -125,6 +126,12 @@ namespace InkPoc.Controls
                     case LassoSelectionInkOption lassoSelectionOption:
                         EnableLassoSelectionOption(lassoSelectionOption);
                         break;
+                    case TouchInkingInkOption touchInkingOption:
+                        EnableTouchInking(touchInkingOption);
+                        break;
+                    case MouseInkingInkOption mouseInkingOption:
+                        EnableMouseInking(mouseInkingOption);
+                        break;
                     case ZoomInkOption zoom:
                         EnableZoom(zoom);
                         break;
@@ -159,6 +166,24 @@ namespace InkPoc.Controls
         {
             var lassoSelectionButton = lassoSelectionOption.LassoSelectionButton;
             toolbar.Children.Insert(0, lassoSelectionButton);
+        }
+
+        private void EnableTouchInking(TouchInkingInkOption touchInkingOption)
+        {
+            var touchInkingButton = touchInkingOption.TouchInkingButton;
+            touchInkingButton.DataContext = this;
+            var binding = new Binding() { Path = new PropertyPath("EnableTouch"), Mode = BindingMode.TwoWay };
+            touchInkingButton.SetBinding(InkToolbarCustomToggleButton.IsCheckedProperty, binding);
+            toolbar.Children.Insert(0, touchInkingButton);
+        }
+
+        private void EnableMouseInking(MouseInkingInkOption mouseInkingOption)
+        {
+            var mouseInkingButton = mouseInkingOption.MouseInkingButton;
+            mouseInkingButton.DataContext = this;
+            var binding = new Binding() { Path = new PropertyPath("EnableMouse"), Mode = BindingMode.TwoWay };
+            mouseInkingButton.SetBinding(InkToolbarCustomToggleButton.IsCheckedProperty, binding);
+            toolbar.Children.Insert(0, mouseInkingButton);
         }
 
         private void EnableZoom(ZoomInkOption zoom)

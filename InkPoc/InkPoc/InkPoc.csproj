@@ -112,10 +112,12 @@
     <Compile Include="Controls\InkOptions\CutCopyPasteInkOption.cs" />
     <Compile Include="Controls\InkOptions\InkOptionHelper.cs" />
     <Compile Include="Controls\InkOptions\LassoSelectionInkOption.cs" />
+    <Compile Include="Controls\InkOptions\MouseInkingInkOption.cs" />
     <Compile Include="Controls\InkOptions\OpenImageInkOption.cs" />
     <Compile Include="Controls\InkOptions\OpenSaveStrokesInkOption.cs" />
     <Compile Include="Controls\InkOptions\SaveImageInkOption.cs" />
     <Compile Include="Controls\InkOptions\SmartInkOptions.cs" />
+    <Compile Include="Controls\InkOptions\TouchInkingInkOption.cs" />
     <Compile Include="Controls\InkOptions\UndoRedoInkOption.cs" />
     <Compile Include="Controls\InkOptions\InkOption.cs" />
     <Compile Include="Controls\InkOptions\ZoomInkOption.cs" />

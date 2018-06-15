@@ -11,6 +11,8 @@
     <controls:WindowsInkControl>
         <controls:WindowsInkControl.Options>
             <controls:LassoSelectionInkOption />
+            <controls:TouchInkingInkOption />
+            <controls:MouseInkingInkOption />
             <controls:ZoomInkOption />
             <controls:CutCopyPasteInkOption />
             <controls:UndoRedoInkOption />

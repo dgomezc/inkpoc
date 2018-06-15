@@ -34,9 +34,25 @@ namespace InkPoc.Controls
             return BuildInkToolbarCustomToolButton(label, icon, tag);
         }
 
+        internal static InkToolbarCustomToggleButton BuildInkToolbarCustomToggleButton(string label, string codeString, string tag = null)
+        {
+            int code = int.Parse(codeString, NumberStyles.HexNumber);
+            var icon = new FontIcon()
+            {
+                FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                Glyph = char.ConvertFromUtf32(code)
+            };
+            return BuildInkToolbarCustomToggleButton(label, icon, tag);
+        }
+
         internal static InkToolbarCustomToolButton BuildInkToolbarCustomToolButton(string label, Symbol icon, string tag = null)
         {
             return BuildInkToolbarCustomToolButton(label, new SymbolIcon(icon), tag);
+        }
+
+        internal static InkToolbarCustomToggleButton BuildInkToolbarCustomToggleButton(string label, Symbol icon, string tag = null)
+        {
+            return BuildInkToolbarCustomToggleButton(label, new SymbolIcon(icon), tag);
         }
 
         internal static AppBarButton BuildAppBarButton(string label, IconElement icon)
@@ -60,6 +76,17 @@ namespace InkPoc.Controls
             };
             ToolTipService.SetToolTip(inkToolbarCustomToolButton, label);
             return inkToolbarCustomToolButton;
+        }
+
+        internal static InkToolbarCustomToggleButton BuildInkToolbarCustomToggleButton(string label, IconElement icon, string tag = null)
+        {
+            var inkToolbarCustomToggleButton = new InkToolbarCustomToggleButton()
+            {
+                Content = icon,
+                Tag = tag
+            };
+            ToolTipService.SetToolTip(inkToolbarCustomToggleButton, label);
+            return inkToolbarCustomToggleButton;
         }
     }
 }
