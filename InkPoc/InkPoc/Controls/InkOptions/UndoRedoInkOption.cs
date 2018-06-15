@@ -10,8 +10,8 @@ namespace InkPoc.Controls
         private AppBarButton _undoButton;
         private AppBarButton _redoButton;
 
-        public AppBarButton UndoButton => _undoButton ?? (_undoButton = BuildAppBarButton(UndoLabel, Symbol.Undo));
+        public AppBarButton UndoButton => _undoButton ?? (_undoButton = InkOptionHelper.BuildAppBarButton(UndoLabel, Symbol.Undo));
 
-        public AppBarButton RedoButton => _redoButton ?? (_redoButton = BuildAppBarButton(RedoLabel, Symbol.Redo));
+        public AppBarButton RedoButton => _redoButton ?? (_redoButton = InkOptionHelper.BuildAppBarButton(RedoLabel, Symbol.Redo));
     }
 }

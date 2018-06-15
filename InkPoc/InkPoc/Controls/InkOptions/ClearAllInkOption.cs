@@ -8,6 +8,6 @@ namespace InkPoc.Controls
 
         private AppBarButton _clearAllButton;
 
-        public AppBarButton ClearAllButton => _clearAllButton ?? (_clearAllButton = BuildAppBarButton(ClearAllLabel, Symbol.Delete));
+        public AppBarButton ClearAllButton => _clearAllButton ?? (_clearAllButton = InkOptionHelper.BuildAppBarButton(ClearAllLabel, Symbol.Delete));
     }
 }

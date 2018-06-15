@@ -10,8 +10,8 @@ namespace InkPoc.Controls
         private AppBarButton _zoomInButton;
         private AppBarButton _zoomOutButton;
 
-        public AppBarButton ZoomInButton => _zoomInButton ?? (_zoomInButton = BuildAppBarButton(ZoomInLabel, Symbol.ZoomIn));
+        public AppBarButton ZoomInButton => _zoomInButton ?? (_zoomInButton = InkOptionHelper.BuildAppBarButton(ZoomInLabel, Symbol.ZoomIn));
 
-        public AppBarButton ZoomOutButton => _zoomOutButton ?? (_zoomOutButton = BuildAppBarButton(ZoomOutLabel, Symbol.ZoomOut));
+        public AppBarButton ZoomOutButton => _zoomOutButton ?? (_zoomOutButton = InkOptionHelper.BuildAppBarButton(ZoomOutLabel, Symbol.ZoomOut));
     }
 }

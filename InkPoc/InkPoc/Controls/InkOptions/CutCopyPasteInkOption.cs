@@ -12,10 +12,10 @@ namespace InkPoc.Controls
         private AppBarButton _copyButton;
         private AppBarButton _pasteButton;
 
-        public AppBarButton CutButton => _cutButton ?? (_cutButton = BuildAppBarButton(CutLabel, Symbol.Cut));
+        public AppBarButton CutButton => _cutButton ?? (_cutButton = InkOptionHelper.BuildAppBarButton(CutLabel, Symbol.Cut));
 
-        public AppBarButton CopyButton => _copyButton ?? (_copyButton = BuildAppBarButton(CopyLabel, Symbol.Copy));
+        public AppBarButton CopyButton => _copyButton ?? (_copyButton = InkOptionHelper.BuildAppBarButton(CopyLabel, Symbol.Copy));
 
-        public AppBarButton PasteButton => _pasteButton ?? (_pasteButton = BuildAppBarButton(PasteLabel, Symbol.Paste));
+        public AppBarButton PasteButton => _pasteButton ?? (_pasteButton = InkOptionHelper.BuildAppBarButton(PasteLabel, Symbol.Paste));
     }
 }

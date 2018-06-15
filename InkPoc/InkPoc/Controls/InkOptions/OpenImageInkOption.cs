@@ -8,6 +8,6 @@ namespace InkPoc.Controls
 
         private AppBarButton _openImageButton;
 
-        public AppBarButton OpenImageButton => _openImageButton ?? (_openImageButton = BuildAppBarButton(OpenImageLabel, "EB9F"));
+        public AppBarButton OpenImageButton => _openImageButton ?? (_openImageButton = InkOptionHelper.BuildAppBarButton(OpenImageLabel, "EB9F"));
     }
 }

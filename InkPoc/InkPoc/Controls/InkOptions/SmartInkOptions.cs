@@ -8,6 +8,6 @@ namespace InkPoc.Controls
 
         private AppBarButton _transformTextAndShapesButton;
 
-        public AppBarButton TransformTextAndShapesButton => _transformTextAndShapesButton ?? (_transformTextAndShapesButton = BuildAppBarButton(TransformTextAndShapesLabel, "EA80"));
+        public AppBarButton TransformTextAndShapesButton => _transformTextAndShapesButton ?? (_transformTextAndShapesButton = InkOptionHelper.BuildAppBarButton(TransformTextAndShapesLabel, "EA80"));
     }
 }

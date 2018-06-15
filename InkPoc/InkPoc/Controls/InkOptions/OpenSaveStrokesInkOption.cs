@@ -10,8 +10,8 @@ namespace InkPoc.Controls
         private AppBarButton _openStrokesButton;
         private AppBarButton _saveStrokesButton;
 
-        public AppBarButton OpenStrokesButton => _openStrokesButton ?? (_openStrokesButton = BuildAppBarButton(OpenStrokesFileLabel, "E7C3"));
+        public AppBarButton OpenStrokesButton => _openStrokesButton ?? (_openStrokesButton = InkOptionHelper.BuildAppBarButton(OpenStrokesFileLabel, "E7C3"));
 
-        public AppBarButton SaveStrokesButton => _saveStrokesButton ?? (_saveStrokesButton = BuildAppBarButton(SaveStrokesFileLabel, "E792"));
+        public AppBarButton SaveStrokesButton => _saveStrokesButton ?? (_saveStrokesButton = InkOptionHelper.BuildAppBarButton(SaveStrokesFileLabel, "E792"));
     }
 }

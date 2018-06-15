@@ -8,6 +8,6 @@ namespace InkPoc.Controls
 
         private AppBarButton _saveImageButton;
 
-        public AppBarButton SaveImageButton => _saveImageButton ?? (_saveImageButton = BuildAppBarButton(SaveImageLabel, "EE71"));
+        public AppBarButton SaveImageButton => _saveImageButton ?? (_saveImageButton = InkOptionHelper.BuildAppBarButton(SaveImageLabel, "EE71"));
     }
 }

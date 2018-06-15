@@ -10,6 +10,7 @@
 
     <controls:WindowsInkControl>
         <controls:WindowsInkControl.Options>
+            <controls:LassoSelectionInkOption />
             <controls:ZoomInkOption />
             <controls:CutCopyPasteInkOption />
             <controls:UndoRedoInkOption />
