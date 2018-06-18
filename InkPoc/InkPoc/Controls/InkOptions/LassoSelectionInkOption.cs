@@ -7,8 +7,11 @@ namespace InkPoc.Controls
         public const string LassoSelectionButtonTag = "LassoSelection";
         private const string LassoSelectionLabel = "Selection tool";
 
-        private InkToolbarCustomToolButton _lassoSelectionButton;
+        public InkToolbarCustomToolButton LassoSelectionButton { get; set; }
 
-        public InkToolbarCustomToolButton LassoSelectionButton => _lassoSelectionButton ?? (_lassoSelectionButton = InkOptionHelper.BuildInkToolbarCustomToolButton(LassoSelectionLabel, "EF20", LassoSelectionButtonTag));
+        public LassoSelectionInkOption()
+        {
+            LassoSelectionButton = InkOptionHelper.BuildInkToolbarCustomToolButton(LassoSelectionLabel, "EF20");
+        }
     }
 }

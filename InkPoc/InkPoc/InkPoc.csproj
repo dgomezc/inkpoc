@@ -110,6 +110,7 @@
     <Compile Include="Activation\ActivationHandler.cs" />
     <Compile Include="Controls\InkOptions\ClearAllInkOption.cs" />
     <Compile Include="Controls\InkOptions\CutCopyPasteInkOption.cs" />
+    <Compile Include="Controls\InkOptions\InkOptionCollection.cs" />
     <Compile Include="Controls\InkOptions\InkOptionHelper.cs" />
     <Compile Include="Controls\InkOptions\LassoSelectionInkOption.cs" />
     <Compile Include="Controls\InkOptions\MouseInkingInkOption.cs" />

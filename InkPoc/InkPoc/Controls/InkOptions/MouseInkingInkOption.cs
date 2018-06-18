@@ -9,11 +9,13 @@ namespace InkPoc.Controls
 {
     public class MouseInkingInkOption :  InkOption
     {
-        public const string MouseInkingButtonTag = "MouseInking";
         private const string MouseInkingLabel = "Mouse inking";
 
-        private InkToolbarCustomToggleButton _mouseInkingButton;
+        public InkToolbarCustomToggleButton MouseInkingButton { get; set; }
 
-        public InkToolbarCustomToggleButton MouseInkingButton => _mouseInkingButton ?? (_mouseInkingButton = InkOptionHelper.BuildInkToolbarCustomToggleButton(MouseInkingLabel, "E962", MouseInkingButtonTag));
+        public MouseInkingInkOption()
+        {
+            MouseInkingButton = InkOptionHelper.BuildInkToolbarCustomToggleButton(MouseInkingLabel, "E962");
+        }
     }
 }

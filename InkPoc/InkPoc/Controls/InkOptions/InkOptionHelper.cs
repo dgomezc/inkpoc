@@ -23,7 +23,7 @@ namespace InkPoc.Controls
             return BuildAppBarButton(label, new SymbolIcon(icon));
         }
 
-        internal static InkToolbarCustomToolButton BuildInkToolbarCustomToolButton(string label, string codeString, string tag = null)
+        internal static InkToolbarCustomToolButton BuildInkToolbarCustomToolButton(string label, string codeString)
         {
             int code = int.Parse(codeString, NumberStyles.HexNumber);
             var icon = new FontIcon()
@@ -31,10 +31,10 @@ namespace InkPoc.Controls
                 FontFamily = new FontFamily("Segoe MDL2 Assets"),
                 Glyph = char.ConvertFromUtf32(code)
             };
-            return BuildInkToolbarCustomToolButton(label, icon, tag);
+            return BuildInkToolbarCustomToolButton(label, icon);
         }
 
-        internal static InkToolbarCustomToggleButton BuildInkToolbarCustomToggleButton(string label, string codeString, string tag = null)
+        internal static InkToolbarCustomToggleButton BuildInkToolbarCustomToggleButton(string label, string codeString)
         {
             int code = int.Parse(codeString, NumberStyles.HexNumber);
             var icon = new FontIcon()
@@ -42,17 +42,17 @@ namespace InkPoc.Controls
                 FontFamily = new FontFamily("Segoe MDL2 Assets"),
                 Glyph = char.ConvertFromUtf32(code)
             };
-            return BuildInkToolbarCustomToggleButton(label, icon, tag);
+            return BuildInkToolbarCustomToggleButton(label, icon);
         }
 
-        internal static InkToolbarCustomToolButton BuildInkToolbarCustomToolButton(string label, Symbol icon, string tag = null)
+        internal static InkToolbarCustomToolButton BuildInkToolbarCustomToolButton(string label, Symbol icon)
         {
-            return BuildInkToolbarCustomToolButton(label, new SymbolIcon(icon), tag);
+            return BuildInkToolbarCustomToolButton(label, new SymbolIcon(icon));
         }
 
-        internal static InkToolbarCustomToggleButton BuildInkToolbarCustomToggleButton(string label, Symbol icon, string tag = null)
+        internal static InkToolbarCustomToggleButton BuildInkToolbarCustomToggleButton(string label, Symbol icon)
         {
-            return BuildInkToolbarCustomToggleButton(label, new SymbolIcon(icon), tag);
+            return BuildInkToolbarCustomToggleButton(label, new SymbolIcon(icon));
         }
 
         internal static AppBarButton BuildAppBarButton(string label, IconElement icon)
@@ -67,23 +67,21 @@ namespace InkPoc.Controls
             return appBarButton;
         }
 
-        internal static InkToolbarCustomToolButton BuildInkToolbarCustomToolButton(string label, IconElement icon, string tag = null)
+        internal static InkToolbarCustomToolButton BuildInkToolbarCustomToolButton(string label, IconElement icon)
         {
             var inkToolbarCustomToolButton = new InkToolbarCustomToolButton()
             {
-                Content = icon,
-                Tag = tag
+                Content = icon
             };
             ToolTipService.SetToolTip(inkToolbarCustomToolButton, label);
             return inkToolbarCustomToolButton;
         }
 
-        internal static InkToolbarCustomToggleButton BuildInkToolbarCustomToggleButton(string label, IconElement icon, string tag = null)
+        internal static InkToolbarCustomToggleButton BuildInkToolbarCustomToggleButton(string label, IconElement icon)
         {
             var inkToolbarCustomToggleButton = new InkToolbarCustomToggleButton()
             {
-                Content = icon,
-                Tag = tag
+                Content = icon
             };
             ToolTipService.SetToolTip(inkToolbarCustomToggleButton, label);
             return inkToolbarCustomToggleButton;

@@ -58,9 +58,9 @@ namespace InkPoc.Controls
         public event EventHandler<BitmapImage> OnImageSaved;
 
         #region Properties
-        public ObservableCollection<InkOption> Options => (ObservableCollection<InkOption>)GetValue(OptionsProperty);
+        public InkOptionCollection Options => (InkOptionCollection)GetValue(OptionsProperty);
 
-        public static readonly DependencyProperty OptionsProperty = DependencyProperty.Register(nameof(Options), typeof(ObservableCollection<InkOption>), typeof(WindowsInkControl), new PropertyMetadata(null, OnOptionsPropertyChanged));
+        public static readonly DependencyProperty OptionsProperty = DependencyProperty.Register(nameof(Options), typeof(InkOptionCollection), typeof(WindowsInkControl), new PropertyMetadata(null, OnOptionsPropertyChanged));
 
         public bool EnableTouch
         {
@@ -92,7 +92,7 @@ namespace InkPoc.Controls
         public WindowsInkControl()
         {
             this.InitializeComponent();
-            SetValue(OptionsProperty, new ObservableCollection<InkOption>());
+            SetValue(OptionsProperty, new InkOptionCollection());
             StrokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
             SelectionRectangleService = new InkSelectionRectangleService(inkCanvas, selectionCanvas, StrokeService);
             LassoSelectionService = new InkLassoSelectionService(inkCanvas, selectionCanvas, StrokeService, SelectionRectangleService);
@@ -165,6 +165,7 @@ namespace InkPoc.Controls
         private void EnableLassoSelectionOption(LassoSelectionInkOption lassoSelectionOption)
         {
             var lassoSelectionButton = lassoSelectionOption.LassoSelectionButton;
+            lassoSelectionButton.Tag = LassoSelectionInkOption.LassoSelectionButtonTag;
             toolbar.Children.Insert(0, lassoSelectionButton);
         }
 
@@ -224,7 +225,7 @@ namespace InkPoc.Controls
             undoButton.Click += (sender, e) => Undo();
             commandBar.PrimaryCommands.Add(undoButton);
 
-            var redoButton = undoRedo.RedoButton;
+            var redoButton = undoRedo.RedoButton;            
             redoButton.Click += (sender, e) => Redo();
             commandBar.PrimaryCommands.Add(redoButton);
         }
@@ -434,7 +435,7 @@ namespace InkPoc.Controls
         private void OnInkToolbarActiveToolChanged(InkToolbar sender, object args)
         {
             switch (sender.ActiveTool)
-            {                
+            {
                 case InkToolbarPencilButton pencilButton:
                 case InkToolbarHighlighterButton highlighterButton:
                 case InkToolbarPenButton pen:

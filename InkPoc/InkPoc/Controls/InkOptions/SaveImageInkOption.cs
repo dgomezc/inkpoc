@@ -6,8 +6,11 @@ namespace InkPoc.Controls
     {
         private const string SaveImageLabel = "Save image";
 
-        private AppBarButton _saveImageButton;
+        public AppBarButton SaveImageButton { get; set; }
 
-        public AppBarButton SaveImageButton => _saveImageButton ?? (_saveImageButton = InkOptionHelper.BuildAppBarButton(SaveImageLabel, "EE71"));
+        public SaveImageInkOption()
+        {
+            SaveImageButton = InkOptionHelper.BuildAppBarButton(SaveImageLabel, "EE71");
+        }
     }
 }
