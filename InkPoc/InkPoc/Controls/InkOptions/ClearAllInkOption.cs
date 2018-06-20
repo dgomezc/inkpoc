@@ -6,8 +6,11 @@ namespace InkPoc.Controls
     {
         private const string ClearAllLabel = "Clear all";
 
-        private AppBarButton _clearAllButton;
+        public AppBarButton ClearAllButton { get; set; }
 
-        public AppBarButton ClearAllButton => _clearAllButton ?? (_clearAllButton = BuildAppBarButton(ClearAllLabel, Symbol.Delete));
+        public ClearAllInkOption()
+        {
+            ClearAllButton = InkOptionHelper.BuildAppBarButton(ClearAllLabel, Symbol.Delete);
+        }
     }
 }

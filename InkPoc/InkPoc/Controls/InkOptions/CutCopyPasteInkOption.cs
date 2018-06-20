@@ -8,14 +8,17 @@ namespace InkPoc.Controls
         private const string CopyLabel = "Copy";
         private const string PasteLabel = "Paste";
 
-        private AppBarButton _cutButton;
-        private AppBarButton _copyButton;
-        private AppBarButton _pasteButton;
+        public AppBarButton CutButton { get; set; }
 
-        public AppBarButton CutButton => _cutButton ?? (_cutButton = BuildAppBarButton(CutLabel, Symbol.Cut));
+        public AppBarButton CopyButton { get; set; }
 
-        public AppBarButton CopyButton => _copyButton ?? (_copyButton = BuildAppBarButton(CopyLabel, Symbol.Copy));
+        public AppBarButton PasteButton { get; set; }
 
-        public AppBarButton PasteButton => _pasteButton ?? (_pasteButton = BuildAppBarButton(PasteLabel, Symbol.Paste));
+        public CutCopyPasteInkOption()
+        {
+            CutButton = InkOptionHelper.BuildAppBarButton(CutLabel, Symbol.Cut);
+            CopyButton = InkOptionHelper.BuildAppBarButton(CopyLabel, Symbol.Copy);
+            PasteButton = InkOptionHelper.BuildAppBarButton(PasteLabel, Symbol.Paste);
+        }
     }
 }

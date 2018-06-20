@@ -7,11 +7,14 @@ namespace InkPoc.Controls
         private const string UndoLabel = "Undo";
         private const string RedoLabel = "Redo";
 
-        private AppBarButton _undoButton;
-        private AppBarButton _redoButton;
+        public AppBarButton UndoButton { get; set; }
 
-        public AppBarButton UndoButton => _undoButton ?? (_undoButton = BuildAppBarButton(UndoLabel, Symbol.Undo));
+        public AppBarButton RedoButton { get; set; }
 
-        public AppBarButton RedoButton => _redoButton ?? (_redoButton = BuildAppBarButton(RedoLabel, Symbol.Redo));
+        public UndoRedoInkOption()
+        {
+            UndoButton = InkOptionHelper.BuildAppBarButton(UndoLabel, Symbol.Undo);
+            RedoButton = InkOptionHelper.BuildAppBarButton(RedoLabel, Symbol.Redo);
+        }
     }
 }

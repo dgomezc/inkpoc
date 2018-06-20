@@ -7,11 +7,14 @@ namespace InkPoc.Controls
         private const string OpenStrokesFileLabel = "Open strokes";
         private const string SaveStrokesFileLabel = "Save strokes";
 
-        private AppBarButton _openStrokesButton;
-        private AppBarButton _saveStrokesButton;
+        public AppBarButton OpenStrokesButton { get; set; }
 
-        public AppBarButton OpenStrokesButton => _openStrokesButton ?? (_openStrokesButton = BuildAppBarButton(OpenStrokesFileLabel, "E7C3"));
+        public AppBarButton SaveStrokesButton { get; set; }
 
-        public AppBarButton SaveStrokesButton => _saveStrokesButton ?? (_saveStrokesButton = BuildAppBarButton(SaveStrokesFileLabel, "E792"));
+        public OpenSaveStrokesInkOption()
+        {
+            OpenStrokesButton = InkOptionHelper.BuildAppBarButton(OpenStrokesFileLabel, "E7C3");
+            SaveStrokesButton = InkOptionHelper.BuildAppBarButton(SaveStrokesFileLabel, "E792");
+        }
     }
 }

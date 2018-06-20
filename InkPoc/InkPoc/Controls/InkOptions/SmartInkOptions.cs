@@ -6,8 +6,11 @@ namespace InkPoc.Controls
     {
         private const string TransformTextAndShapesLabel = "Transform text and shapes";
 
-        private AppBarButton _transformTextAndShapesButton;
+        public AppBarButton TransformTextAndShapesButton { get; set; }
 
-        public AppBarButton TransformTextAndShapesButton => _transformTextAndShapesButton ?? (_transformTextAndShapesButton = BuildAppBarButton(TransformTextAndShapesLabel, "EA80"));
+        public SmartInkOptions()
+        {
+            TransformTextAndShapesButton = InkOptionHelper.BuildAppBarButton(TransformTextAndShapesLabel, "EA80");
+        }
     }
 }

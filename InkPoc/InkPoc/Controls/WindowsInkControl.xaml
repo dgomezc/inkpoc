@@ -23,29 +23,10 @@
             HorizontalAlignment="Left"
             HorizontalContentAlignment="Left">
             <CommandBar.Content>
-                <InkToolbar x:Name="toolbar" TargetInkCanvas="{x:Bind inkCanvas}">
-                    <InkToolbarCustomToolButton
-                        IsChecked="{x:Bind EnableLassoSelection, Mode=TwoWay}"
-                        ToolTipService.ToolTip="Selection tool">
-                        <FontIcon
-                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                            Glyph="&#xEF20;" />
-                    </InkToolbarCustomToolButton>
-                    <InkToolbarCustomToggleButton
-                        ToolTipService.ToolTip="Touch Inking"
-                        IsChecked="{x:Bind EnableTouch, Mode=TwoWay}">
-                        <FontIcon
-                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                            Glyph="&#xED5F;" />
-                    </InkToolbarCustomToggleButton>
-                    <InkToolbarCustomToggleButton
-                        ToolTipService.ToolTip="Mouse Inking"
-                        IsChecked="{x:Bind EnableMouse, Mode=TwoWay}">
-                        <FontIcon
-                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                            Glyph="&#xE962;" />
-                    </InkToolbarCustomToggleButton>
-                </InkToolbar>
+                <InkToolbar
+                    x:Name="toolbar"
+                    TargetInkCanvas="{x:Bind inkCanvas}"
+                    ActiveToolChanged="OnInkToolbarActiveToolChanged" />
             </CommandBar.Content>
         </CommandBar>
         <ScrollViewer
@@ -64,9 +45,13 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch" />
                 <Canvas
-                    x:Name="drawingCanvas"/>
+                    x:Name="drawingCanvas"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch" />
                 <Canvas
-                    x:Name="selectionCanvas"/>
+                    x:Name="selectionCanvas"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch" />
             </Grid>
         </ScrollViewer>
     </Grid>

@@ -7,11 +7,14 @@ namespace InkPoc.Controls
         private const string ZoomInLabel = "Zoom in";
         private const string ZoomOutLabel = "Zoom out";
 
-        private AppBarButton _zoomInButton;
-        private AppBarButton _zoomOutButton;
+        public AppBarButton ZoomInButton { get; set; }
 
-        public AppBarButton ZoomInButton => _zoomInButton ?? (_zoomInButton = BuildAppBarButton(ZoomInLabel, Symbol.ZoomIn));
+        public AppBarButton ZoomOutButton { get; set; }
 
-        public AppBarButton ZoomOutButton => _zoomOutButton ?? (_zoomOutButton = BuildAppBarButton(ZoomOutLabel, Symbol.ZoomOut));
+        public ZoomInkOption()
+        {
+            ZoomInButton = InkOptionHelper.BuildAppBarButton(ZoomInLabel, Symbol.ZoomIn);
+            ZoomOutButton = InkOptionHelper.BuildAppBarButton(ZoomOutLabel, Symbol.ZoomOut);
+        }
     }
 }

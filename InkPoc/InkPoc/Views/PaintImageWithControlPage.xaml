@@ -9,6 +9,8 @@
     mc:Ignorable="d">
     <controls:WindowsInkControl>
         <controls:WindowsInkControl.Options>
+            <controls:TouchInkingInkOption />
+            <controls:MouseInkingInkOption />
             <controls:ZoomInkOption />
             <controls:OpenImageInkOption />
             <controls:SaveImageInkOption />

@@ -9,6 +9,7 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media.Imaging;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -57,17 +58,9 @@ namespace InkPoc.Controls
         public event EventHandler<BitmapImage> OnImageSaved;
 
         #region Properties
-        public ObservableCollection<InkOption> Options => (ObservableCollection<InkOption>)GetValue(OptionsProperty);
+        public InkOptionCollection Options => (InkOptionCollection)GetValue(OptionsProperty);
 
-        public static readonly DependencyProperty OptionsProperty = DependencyProperty.Register(nameof(Options), typeof(ObservableCollection<InkOption>), typeof(WindowsInkControl), new PropertyMetadata(null, OnOptionsPropertyChanged));
-
-        public bool EnableLassoSelection
-        {
-            get => (bool)GetValue(EnableLassoSelectionProperty);
-            set => SetValue(EnableLassoSelectionProperty, value);
-        }
-
-        public static readonly DependencyProperty EnableLassoSelectionProperty = DependencyProperty.Register(nameof(EnableLassoSelection), typeof(bool), typeof(WindowsInkControl), new PropertyMetadata(false, OnEnableLassoSelectionPropertyChanged));
+        public static readonly DependencyProperty OptionsProperty = DependencyProperty.Register(nameof(Options), typeof(InkOptionCollection), typeof(WindowsInkControl), new PropertyMetadata(null, OnOptionsPropertyChanged));
 
         public bool EnableTouch
         {
@@ -99,7 +92,7 @@ namespace InkPoc.Controls
         public WindowsInkControl()
         {
             this.InitializeComponent();
-            SetValue(OptionsProperty, new ObservableCollection<InkOption>());
+            SetValue(OptionsProperty, new InkOptionCollection());
             StrokeService = new InkStrokesService(inkCanvas.InkPresenter.StrokeContainer);
             SelectionRectangleService = new InkSelectionRectangleService(inkCanvas, selectionCanvas, StrokeService);
             LassoSelectionService = new InkLassoSelectionService(inkCanvas, selectionCanvas, StrokeService, SelectionRectangleService);
@@ -108,8 +101,6 @@ namespace InkPoc.Controls
 
         private static void OnOptionsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
             => (d as WindowsInkControl)?.UpdateOptionsProperty();
-        private static void OnEnableLassoSelectionPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            => (d as WindowsInkControl)?.UpdateEnableLassoSelectionProperty();
         private static void OnEnableTouchPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
             => (d as WindowsInkControl)?.UpdateEnableTouchProperty();
         private static void OnEnableMousePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -124,11 +115,6 @@ namespace InkPoc.Controls
             selectionCanvas.Width = inkCanvas.Width;
             selectionCanvas.Height = inkCanvas.Height;
         }
-        private void UpdateEnableLassoSelectionProperty()
-        {
-            if (EnableLassoSelection) LassoSelectionService.StartLassoSelectionConfig();
-            else LassoSelectionService.EndLassoSelectionConfig();
-        }
         private void UpdateEnableTouchProperty() => PointerDeviceService.EnableTouch = EnableTouch;
         private void UpdateEnableMouseProperty() => PointerDeviceService.EnableMouse = EnableMouse;
         private void OnOptionsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -137,6 +123,15 @@ namespace InkPoc.Controls
             {
                 switch (option)
                 {
+                    case LassoSelectionInkOption lassoSelectionOption:
+                        EnableLassoSelectionOption(lassoSelectionOption);
+                        break;
+                    case TouchInkingInkOption touchInkingOption:
+                        EnableTouchInking(touchInkingOption);
+                        break;
+                    case MouseInkingInkOption mouseInkingOption:
+                        EnableMouseInking(mouseInkingOption);
+                        break;
                     case ZoomInkOption zoom:
                         EnableZoom(zoom);
                         break;
@@ -165,6 +160,31 @@ namespace InkPoc.Controls
                         break;
                 }
             }
+        }
+
+        private void EnableLassoSelectionOption(LassoSelectionInkOption lassoSelectionOption)
+        {
+            var lassoSelectionButton = lassoSelectionOption.LassoSelectionButton;
+            lassoSelectionButton.Tag = LassoSelectionInkOption.LassoSelectionButtonTag;
+            toolbar.Children.Insert(0, lassoSelectionButton);
+        }
+
+        private void EnableTouchInking(TouchInkingInkOption touchInkingOption)
+        {
+            var touchInkingButton = touchInkingOption.TouchInkingButton;
+            touchInkingButton.DataContext = this;
+            var binding = new Binding() { Path = new PropertyPath("EnableTouch"), Mode = BindingMode.TwoWay };
+            touchInkingButton.SetBinding(InkToolbarCustomToggleButton.IsCheckedProperty, binding);
+            toolbar.Children.Insert(0, touchInkingButton);
+        }
+
+        private void EnableMouseInking(MouseInkingInkOption mouseInkingOption)
+        {
+            var mouseInkingButton = mouseInkingOption.MouseInkingButton;
+            mouseInkingButton.DataContext = this;
+            var binding = new Binding() { Path = new PropertyPath("EnableMouse"), Mode = BindingMode.TwoWay };
+            mouseInkingButton.SetBinding(InkToolbarCustomToggleButton.IsCheckedProperty, binding);
+            toolbar.Children.Insert(0, mouseInkingButton);
         }
 
         private void EnableZoom(ZoomInkOption zoom)
@@ -205,7 +225,7 @@ namespace InkPoc.Controls
             undoButton.Click += (sender, e) => Undo();
             commandBar.PrimaryCommands.Add(undoButton);
 
-            var redoButton = undoRedo.RedoButton;
+            var redoButton = undoRedo.RedoButton;            
             redoButton.Click += (sender, e) => Redo();
             commandBar.PrimaryCommands.Add(redoButton);
         }
@@ -303,7 +323,7 @@ namespace InkPoc.Controls
             UndoRedoService.Undo();
             OnUndo?.Invoke(this, EventArgs.Empty);
             return true;
-        }        
+        }
 
         public bool Redo()
         {
@@ -363,7 +383,7 @@ namespace InkPoc.Controls
 
         public void ClearAll()
         {
-            LassoSelectionService.ClearSelection();            
+            LassoSelectionService.ClearSelection();
             StrokeService.ClearStrokes();
             NodeSelectionService?.ClearSelection();
             UndoRedoService?.Reset();
@@ -400,11 +420,37 @@ namespace InkPoc.Controls
             if (e.NewSize.Width > 0)
             {
                 inkCanvas.Width = e.NewSize.Width;
+                drawingCanvas.Width = e.NewSize.Width;
+                selectionCanvas.Width = e.NewSize.Width;
             }
 
             if (e.NewSize.Height > 0)
             {
                 inkCanvas.Height = e.NewSize.Height;
+                drawingCanvas.Height = e.NewSize.Height;
+                selectionCanvas.Height = e.NewSize.Height;
+            }
+        }
+
+        private void OnInkToolbarActiveToolChanged(InkToolbar sender, object args)
+        {
+            switch (sender.ActiveTool)
+            {
+                case InkToolbarPencilButton pencilButton:
+                case InkToolbarHighlighterButton highlighterButton:
+                case InkToolbarPenButton pen:
+                case InkToolbarEraserButton eraser:
+                    LassoSelectionService.EndLassoSelectionConfig();
+                    LassoSelectionService.ClearSelection();
+                    break;
+                case InkToolbarCustomToolButton customButton:
+                    if (customButton.Tag as string == LassoSelectionInkOption.LassoSelectionButtonTag)
+                    {
+                        LassoSelectionService.StartLassoSelectionConfig();
+                    }
+                    break;
+                default:
+                    break;
             }
         }
     }

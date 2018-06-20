@@ -110,14 +110,18 @@
     <Compile Include="Activation\ActivationHandler.cs" />
     <Compile Include="Controls\InkOptions\ClearAllInkOption.cs" />
     <Compile Include="Controls\InkOptions\CutCopyPasteInkOption.cs" />
+    <Compile Include="Controls\InkOptions\InkOptionCollection.cs" />
+    <Compile Include="Controls\InkOptions\InkOptionHelper.cs" />
+    <Compile Include="Controls\InkOptions\LassoSelectionInkOption.cs" />
+    <Compile Include="Controls\InkOptions\MouseInkingInkOption.cs" />
     <Compile Include="Controls\InkOptions\OpenImageInkOption.cs" />
     <Compile Include="Controls\InkOptions\OpenSaveStrokesInkOption.cs" />
     <Compile Include="Controls\InkOptions\SaveImageInkOption.cs" />
     <Compile Include="Controls\InkOptions\SmartInkOptions.cs" />
+    <Compile Include="Controls\InkOptions\TouchInkingInkOption.cs" />
     <Compile Include="Controls\InkOptions\UndoRedoInkOption.cs" />
     <Compile Include="Controls\InkOptions\InkOption.cs" />
     <Compile Include="Controls\InkOptions\ZoomInkOption.cs" />
-    <Compile Include="Controls\WindowsInkControl.xaml.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Services\Ink\InkAsyncAnalyzer.cs" />
     <Compile Include="Services\Ink\InkCopyPasteService.cs" />
@@ -155,6 +159,9 @@
     <Compile Include="ViewModels\SmartCanvasViewModel.cs" />
     <Compile Include="ViewModels\SmartCanvasWithControlViewModel.cs" />
     <Compile Include="ViewModels\WindowsInkControlViewModel.cs" />
+    <Compile Include="Controls\WindowsInkControl.xaml.cs">
+      <DependentUpon>WindowsInkControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DrawPage.xaml.cs">
       <DependentUpon>DrawPage.xaml</DependentUpon>
     </Compile>
