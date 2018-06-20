@@ -9,8 +9,9 @@ namespace InkPoc.ViewModels
 {
     public class PaintImageViewModel : Observable
     {
-        private bool enableTouch;
-        private bool enableMouse;
+        private bool enableTouch = true;
+        private bool enableMouse = true;
+
         private BitmapImage image;
 
         private readonly InkStrokesService strokesService;
@@ -38,9 +39,6 @@ namespace InkPoc.ViewModels
             pointerDeviceService = _pointerDeviceService;
             fileService = _fileService;
             zoomService = _zoomService;
-
-            enableMouse = true;
-            EnableTouch = true;
 
             pointerDeviceService.DetectPenEvent += (s, e) => EnableTouch = false;
         }

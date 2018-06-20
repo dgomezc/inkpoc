@@ -21,9 +21,10 @@ namespace InkPoc.ViewModels
         private RelayCommand transformTextAndShapesCommand;
         private RelayCommand clearAllCommand;
 
-        private bool enableTouch;
-        private bool enableMouse;
-        private bool enablePen;
+        private bool enableTouch = true;
+        private bool enableMouse = true;
+        private bool enablePen = true;
+
         private bool enableLassoSelection;
 
         public SmartCanvasViewModel()
@@ -46,9 +47,6 @@ namespace InkPoc.ViewModels
             undoRedoService = _undoRedoService;
             transformService = _transformService;
             fileService = _fileService;
-
-            EnableTouch = true;
-            EnableMouse = true;
 
             pointerDeviceService.DetectPenEvent += (s, e) => EnableTouch = false;
         }
