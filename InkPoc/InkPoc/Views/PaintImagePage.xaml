@@ -56,17 +56,23 @@
                 <AppBarButton
                 BorderBrush="Transparent"
                 BorderThickness="0,0,0,0"
-                Label="Open file"
-                Icon="OpenFile"
-                    Command="{x:Bind ViewModel.LoadImageCommand}"
-                ToolTipService.ToolTip="Open file" />
+                Label="Open image"
+                Command="{x:Bind ViewModel.LoadImageCommand}"
+                ToolTipService.ToolTip="Open image" >
+                <FontIcon
+                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                    Glyph="&#xEB9F;" />
+                </AppBarButton>
                 <AppBarButton
                 BorderBrush="Transparent"
                 BorderThickness="0,0,0,0"
-                Label="Save file"
-                Icon="Save"
-                    Command="{x:Bind ViewModel.SaveImageCommand}"
-                ToolTipService.ToolTip="Save file" />
+                Label="Save image"
+                Command="{x:Bind ViewModel.SaveImageCommand}"
+                ToolTipService.ToolTip="Save image">
+                <FontIcon
+                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                    Glyph="&#xEE71;" />
+                </AppBarButton>
                 <AppBarSeparator/>
                 <AppBarButton
                 BorderBrush="Transparent"
