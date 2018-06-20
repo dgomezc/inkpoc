@@ -42,6 +42,16 @@
                             FontFamily="{ThemeResource SymbolThemeFontFamily}"
                             Glyph="&#xE962;" />
                         </InkToolbarCustomToggleButton>
+
+                        <InkToolbarCustomToggleButton
+                            ToolTipService.ToolTip="Pen"
+                            IsChecked="{x:Bind ViewModel.EnablePen, Mode=TwoWay}">
+                            <FontIcon
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            Glyph="&#xEDC6;" />
+                        </InkToolbarCustomToggleButton>
+
+
                     </InkToolbar>
                 </CommandBar.Content>
                 <AppBarSeparator/>

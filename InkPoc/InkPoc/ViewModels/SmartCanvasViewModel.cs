@@ -23,6 +23,7 @@ namespace InkPoc.ViewModels
 
         private bool enableTouch;
         private bool enableMouse;
+        private bool enablePen;
         private bool enableLassoSelection;
 
         public SmartCanvasViewModel()
@@ -117,6 +118,16 @@ namespace InkPoc.ViewModels
             {
                 Set(ref enableMouse, value);
                 pointerDeviceService.EnableMouse = value;
+            }
+        }
+
+        public bool EnablePen
+        {
+            get => enablePen;
+            set
+            {
+                Set(ref enablePen, value);
+                pointerDeviceService.EnablePen = value;
             }
         }
 
