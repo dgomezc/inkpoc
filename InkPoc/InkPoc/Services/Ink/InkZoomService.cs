@@ -18,15 +18,15 @@ namespace InkPoc.Services.Ink
 
         public float ZoomOut(float zoomFactor = defaultZoomFactor) => ExecuteZoom(scrollViewer.ZoomFactor - zoomFactor);
 
-        public void AdjustToSize(Size size)
+        public void AdjustToSize(int width, int height)
         {
-            if(size.IsEmpty)
+            if(width == 0 || height == 0)
             {
                 return;
             }
 
-            var ratioWidth = scrollViewer.ViewportWidth / size.Width;
-            var ratioHeight = scrollViewer.ViewportHeight / size.Height;
+            var ratioWidth = scrollViewer.ViewportWidth / width;
+            var ratioHeight = scrollViewer.ViewportHeight / height;
 
             var zoomFactor = (ratioWidth >= 1 && ratioHeight >= 1)
                 ? 1F
@@ -41,6 +41,7 @@ namespace InkPoc.Services.Ink
             {
                 return zoomFactor;
             }
+
             return scrollViewer.ZoomFactor;
         }
     }

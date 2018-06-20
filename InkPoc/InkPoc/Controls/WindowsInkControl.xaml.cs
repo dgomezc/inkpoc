@@ -109,11 +109,8 @@ namespace InkPoc.Controls
         private void UpdateOptionsProperty() => Options.CollectionChanged += OnOptionsCollectionChanged;
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            inkCanvas.Width = inkCanvas.ActualWidth;
-            inkCanvas.Height = inkCanvas.ActualHeight;
-
-            selectionCanvas.Width = inkCanvas.Width;
-            selectionCanvas.Height = inkCanvas.Height;
+            inkCanvas.Width = Math.Max(inkCanvas.ActualWidth, 1000);
+            inkCanvas.Height = Math.Max(inkCanvas.ActualHeight, 1000);
         }
         private void UpdateEnableTouchProperty() => PointerDeviceService.EnableTouch = EnableTouch;
         private void UpdateEnableMouseProperty() => PointerDeviceService.EnableMouse = EnableMouse;
@@ -395,13 +392,14 @@ namespace InkPoc.Controls
 
         public async Task OpenImageAsync()
         {
-            _imageFile = await ImageHelper.LoadImageFileAsync();
-            Image = await ImageHelper.GetBitmapFromImageAsync(_imageFile);
+            var file = await ImageHelper.LoadImageFileAsync();
+            var bitmapImage = await ImageHelper.GetBitmapFromImageAsync(file);
 
-            if (Image != null)
+            if (file != null && bitmapImage != null)
             {
-                var imageSize = new Size(Image.PixelWidth, Image.PixelHeight);
-                ZoomService?.AdjustToSize(imageSize);
+                _imageFile = file;
+                Image = bitmapImage;
+                ZoomService?.AdjustToSize(Image.PixelWidth, Image.PixelHeight);
                 OnImageOpened?.Invoke(this, Image);
             }
         }
@@ -420,15 +418,11 @@ namespace InkPoc.Controls
             if (e.NewSize.Width > 0)
             {
                 inkCanvas.Width = e.NewSize.Width;
-                drawingCanvas.Width = e.NewSize.Width;
-                selectionCanvas.Width = e.NewSize.Width;
             }
 
             if (e.NewSize.Height > 0)
             {
                 inkCanvas.Height = e.NewSize.Height;
-                drawingCanvas.Height = e.NewSize.Height;
-                selectionCanvas.Height = e.NewSize.Height;
             }
         }
 

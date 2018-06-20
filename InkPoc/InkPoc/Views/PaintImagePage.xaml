@@ -86,7 +86,7 @@
                 <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                       Width="{Binding ElementName=inkCanvas, Path=Width}"
                       Height="{Binding ElementName=inkCanvas, Path=Height}">
-                    <Image x:Name="image" Source="{x:Bind ViewModel.Image, Mode=TwoWay}" Stretch="Uniform"/>
+                    <Image x:Name="image" Source="{x:Bind ViewModel.Image, Mode=TwoWay}" Stretch="None"/>
                     <InkCanvas x:Name="inkCanvas"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"/>

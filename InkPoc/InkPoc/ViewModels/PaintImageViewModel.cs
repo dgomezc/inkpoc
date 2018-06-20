@@ -12,7 +12,6 @@ namespace InkPoc.ViewModels
         private bool enableTouch;
         private bool enableMouse;
         private BitmapImage image;
-        private StorageFile imageFile;
 
         private readonly InkStrokesService strokesService;
         private readonly InkPointerDeviceService pointerDeviceService;
@@ -66,6 +65,8 @@ namespace InkPoc.ViewModels
             }
         }
 
+        public StorageFile ImageFile { get; set; }
+
         public BitmapImage Image
         {
             get => image;
@@ -86,19 +87,20 @@ namespace InkPoc.ViewModels
 
         private async Task OnLoadImageAsync()
         {
-            imageFile = await ImageHelper.LoadImageFileAsync();
-            Image = await ImageHelper.GetBitmapFromImageAsync(imageFile);
+            var file = await ImageHelper.LoadImageFileAsync();
+            var bitmapImage = await ImageHelper.GetBitmapFromImageAsync(file);
 
-            if(Image != null)
+            if (file != null && bitmapImage != null)
             {
-                var imageSize = new Size(Image.PixelWidth, Image.PixelHeight);
-                //zoomService.AdjustToSize(imageSize);
-            }           
+                ImageFile = file;
+                Image = await ImageHelper.GetBitmapFromImageAsync(ImageFile);
+                zoomService.AdjustToSize(Image.PixelWidth, Image.PixelHeight);
+            }
         }
 
         private async Task OnSaveImageAsync()
         {
-            await fileService.ExportToImageAsync(imageFile);
+            await fileService.ExportToImageAsync(ImageFile);
         }
 
         public RelayCommand ClearAllCommand => clearAllCommand
@@ -107,7 +109,7 @@ namespace InkPoc.ViewModels
         private void ClearAll()
         {
             strokesService.ClearStrokes();
-            imageFile = null;
+            ImageFile = null;
             Image = null;
         }
     }
