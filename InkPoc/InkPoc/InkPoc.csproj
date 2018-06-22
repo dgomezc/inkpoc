@@ -108,20 +108,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activation\ActivationHandler.cs" />
-    <Compile Include="Controls\InkOptions\ClearAllInkOption.cs" />
-    <Compile Include="Controls\InkOptions\CutCopyPasteInkOption.cs" />
-    <Compile Include="Controls\InkOptions\InkOptionCollection.cs" />
-    <Compile Include="Controls\InkOptions\InkOptionHelper.cs" />
-    <Compile Include="Controls\InkOptions\LassoSelectionInkOption.cs" />
-    <Compile Include="Controls\InkOptions\MouseInkingInkOption.cs" />
-    <Compile Include="Controls\InkOptions\OpenImageInkOption.cs" />
-    <Compile Include="Controls\InkOptions\OpenSaveStrokesInkOption.cs" />
-    <Compile Include="Controls\InkOptions\SaveImageInkOption.cs" />
-    <Compile Include="Controls\InkOptions\SmartInkOptions.cs" />
-    <Compile Include="Controls\InkOptions\TouchInkingInkOption.cs" />
-    <Compile Include="Controls\InkOptions\UndoRedoInkOption.cs" />
-    <Compile Include="Controls\InkOptions\InkOption.cs" />
-    <Compile Include="Controls\InkOptions\ZoomInkOption.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Services\Ink\InkAsyncAnalyzer.cs" />
     <Compile Include="Services\Ink\InkCopyPasteService.cs" />
@@ -151,43 +137,20 @@
     <Compile Include="Services\Ink\EventHandlers\RemoveEventArgs.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="ViewModels\DrawViewModel.cs" />
-    <Compile Include="ViewModels\DrawWithControlViewModel.cs" />
-    <Compile Include="ViewModels\FullControlViewModel.cs" />
     <Compile Include="ViewModels\PaintImageViewModel.cs" />
-    <Compile Include="ViewModels\PaintImageWithControlViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\SmartCanvasViewModel.cs" />
-    <Compile Include="ViewModels\SmartCanvasWithControlViewModel.cs" />
-    <Compile Include="ViewModels\WindowsInkControlViewModel.cs" />
-    <Compile Include="Controls\WindowsInkControl.xaml.cs">
-      <DependentUpon>WindowsInkControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\DrawPage.xaml.cs">
       <DependentUpon>DrawPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\DrawWithControlPage.xaml.cs">
-      <DependentUpon>DrawWithControlPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\FullControlPage.xaml.cs">
-      <DependentUpon>FullControlPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\PaintImagePage.xaml.cs">
       <DependentUpon>PaintImagePage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PaintImageWithControlPage.xaml.cs">
-      <DependentUpon>PaintImageWithControlPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ShellPage.xaml.cs">
       <DependentUpon>ShellPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SmartCanvasPage.xaml.cs">
       <DependentUpon>SmartCanvasPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\SmartCanvasWithControlPage.xaml.cs">
-      <DependentUpon>SmartCanvasWithControlPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\WindowsInkControlPage.xaml.cs">
-      <DependentUpon>WindowsInkControlPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -197,10 +160,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\WindowsInkControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Styles\Page.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -229,19 +188,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\DrawWithControlPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\FullControlPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\PaintImagePage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\PaintImageWithControlPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -250,14 +197,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\SmartCanvasPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\SmartCanvasWithControlPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\WindowsInkControlPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

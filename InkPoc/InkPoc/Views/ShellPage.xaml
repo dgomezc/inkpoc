@@ -24,15 +24,8 @@
             Edit String/en-US/Resources.resw: Add a menu item title for each page
             -->
             <NavigationViewItem x:Uid="Shell_Draw" Icon="Document" helpers:NavHelper.NavigateTo="views:DrawPage" />
-            <NavigationViewItem x:Uid="Shell_DrawWithControl" Icon="Document" helpers:NavHelper.NavigateTo="views:DrawWithControlPage" />
-            <NavigationViewItemSeparator/>
             <NavigationViewItem x:Uid="Shell_SmartCanvas" Icon="Document" helpers:NavHelper.NavigateTo="views:SmartCanvasPage" />
-            <NavigationViewItem x:Uid="Shell_SmartCanvasWithControl" Icon="Document" helpers:NavHelper.NavigateTo="views:SmartCanvasWithControlPage" />
-            <NavigationViewItemSeparator/>
             <NavigationViewItem x:Uid="Shell_PaintImage" Icon="Document" helpers:NavHelper.NavigateTo="views:PaintImagePage" />
-            <NavigationViewItem x:Uid="Shell_PaintImageWithControl" Icon="Document" helpers:NavHelper.NavigateTo="views:PaintImageWithControlPage" />
-            <NavigationViewItemSeparator/>
-            <NavigationViewItem x:Uid="Shell_FullControl" Icon="Document" helpers:NavHelper.NavigateTo="views:FullControlPage" />
         </NavigationView.MenuItems>
         <NavigationView.HeaderTemplate>
             <DataTemplate>
