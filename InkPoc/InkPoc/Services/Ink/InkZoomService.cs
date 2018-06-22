@@ -1,5 +1,6 @@
 ﻿using System;
 using Windows.Foundation;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace InkPoc.Services.Ink
@@ -18,19 +19,26 @@ namespace InkPoc.Services.Ink
 
         public float ZoomOut(float zoomFactor = defaultZoomFactor) => ExecuteZoom(scrollViewer.ZoomFactor - zoomFactor);
 
-        public void AdjustToSize(int width, int height)
+        public float ResetZoom() => ExecuteZoom(1f);
+
+        public void FitToScreen()
         {
-            if(width == 0 || height == 0)
+            if (scrollViewer.Content is FrameworkElement element)
+            {
+                FitToSize(element.Width, element.Height);
+            }
+        }
+
+        public void FitToSize(double width, double height)
+        {
+            if (width == 0 || height == 0)
             {
                 return;
             }
 
             var ratioWidth = scrollViewer.ViewportWidth / width;
             var ratioHeight = scrollViewer.ViewportHeight / height;
-
-            var zoomFactor = (ratioWidth >= 1 && ratioHeight >= 1)
-                ? 1F
-                : (float)(Math.Min(ratioWidth, ratioHeight));
+            var zoomFactor = (float)(Math.Min(ratioWidth, ratioHeight));
 
             ExecuteZoom(zoomFactor);
         }

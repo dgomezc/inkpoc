@@ -27,19 +27,19 @@ namespace InkPoc.Views
         
         private void SetCanvasSize()
         {
-            inkCanvas.Width = Math.Max(inkCanvas.ActualWidth, 1000);
-            inkCanvas.Height = Math.Max(inkCanvas.ActualHeight, 1000);
+            inkCanvas.Width = Math.Max(canvasScroll.ViewportWidth, 1000);
+            inkCanvas.Height = Math.Max(canvasScroll.ViewportHeight, 1000);
         }
 
         private void Image_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (e.NewSize.Width > 0)
+            if(e.NewSize.Height == 0 || e.NewSize.Width == 0)
+            {
+                SetCanvasSize();
+            }
+            else
             {
                 inkCanvas.Width = e.NewSize.Width;
-            }
-
-            if (e.NewSize.Height > 0)
-            {
                 inkCanvas.Height = e.NewSize.Height;
             }
         }

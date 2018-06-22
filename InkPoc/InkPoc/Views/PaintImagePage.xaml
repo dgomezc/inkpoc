@@ -39,19 +39,36 @@
                 </CommandBar.Content>
                 <AppBarSeparator />
                 <AppBarButton
-                BorderBrush="Transparent"
-                BorderThickness="0,0,0,0"
-                Label="Zoom in"
-                Icon="ZoomIn"
+                    BorderBrush="Transparent"
+                    BorderThickness="0,0,0,0"
+                    Label="Zoom in"
+                    Icon="ZoomIn"
                     Command="{x:Bind ViewModel.ZoomInCommand}"
-                ToolTipService.ToolTip="Zoom in" />
+                    ToolTipService.ToolTip="Zoom in" />
+                <AppBarButton
+                    BorderBrush="Transparent"
+                    BorderThickness="0,0,0,0"
+                    Label="Zoom out"
+                    Icon="ZoomOut"
+                    Command="{x:Bind ViewModel.ZoomOutCommand}"
+                    ToolTipService.ToolTip="Zoom out" />
                 <AppBarButton
                 BorderBrush="Transparent"
                 BorderThickness="0,0,0,0"
-                Label="Zoom out"
-                Icon="ZoomOut"
-                    Command="{x:Bind ViewModel.ZoomOutCommand}"
-                ToolTipService.ToolTip="Zoom out" />
+                Label="Original size"
+                Icon="FullScreen"
+                Command="{x:Bind ViewModel.ResetZoomCommand}"
+                ToolTipService.ToolTip="Original size" />
+                <AppBarButton
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,0"
+                Label="Fit to screen"
+                Command="{x:Bind ViewModel.FitToScreenCommand}"
+                ToolTipService.ToolTip="Fit to screen" >
+                    <FontIcon
+                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                    Glyph="&#xE73F;" />
+                </AppBarButton>
                 <AppBarSeparator/>
                 <AppBarButton
                 BorderBrush="Transparent"

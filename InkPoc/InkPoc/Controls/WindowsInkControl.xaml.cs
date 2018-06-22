@@ -399,7 +399,7 @@ namespace InkPoc.Controls
             {
                 _imageFile = file;
                 Image = bitmapImage;
-                ZoomService?.AdjustToSize(Image.PixelWidth, Image.PixelHeight);
+                ZoomService?.FitToSize(Image.PixelWidth, Image.PixelHeight);
                 OnImageOpened?.Invoke(this, Image);
             }
         }

@@ -24,6 +24,8 @@ namespace InkPoc.ViewModels
         private RelayCommand clearAllCommand;
         private RelayCommand zoomInCommand;
         private RelayCommand zoomOutCommand;
+        private RelayCommand resetZoomCommand;
+        private RelayCommand fitToScreenCommand;
 
         public PaintImageViewModel()
         {
@@ -83,6 +85,12 @@ namespace InkPoc.ViewModels
         public RelayCommand ZoomOutCommand => zoomOutCommand
             ?? (zoomOutCommand = new RelayCommand(() => zoomService.ZoomOut()));
 
+        public RelayCommand ResetZoomCommand => resetZoomCommand
+            ?? (resetZoomCommand = new RelayCommand(() => zoomService.ResetZoom()));
+
+        public RelayCommand FitToScreenCommand => fitToScreenCommand
+            ?? (fitToScreenCommand = new RelayCommand(() => zoomService.FitToScreen()));
+
         private async Task OnLoadImageAsync()
         {
             var file = await ImageHelper.LoadImageFileAsync();
@@ -90,9 +98,10 @@ namespace InkPoc.ViewModels
 
             if (file != null && bitmapImage != null)
             {
+                ClearAll();
                 ImageFile = file;
-                Image = await ImageHelper.GetBitmapFromImageAsync(ImageFile);
-                zoomService.AdjustToSize(Image.PixelWidth, Image.PixelHeight);
+                Image = bitmapImage;
+                zoomService.FitToSize(Image.PixelWidth, Image.PixelHeight);
             }
         }
 
